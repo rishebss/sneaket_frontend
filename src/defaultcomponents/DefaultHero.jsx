@@ -9,7 +9,7 @@ export default function Hero() {
       {/* Dark Overlay for Better Text Readability */}
       <div className="absolute inset-0 z-0">
         <DarkVeil
-          hueShift={35}
+          hueShift={40}
           noiseIntensity={0.02}
           scanlineIntensity={0}
           speed={1.1}
