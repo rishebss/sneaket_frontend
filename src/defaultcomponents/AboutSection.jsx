@@ -25,7 +25,6 @@ export default function AboutSection() {
             <span className="text-xs md:text-xl font-mono text-cyan-400 uppercase tracking-[0.3em]">
               WHY CHOOSE SNEAKET
             </span>
-            <div className="h-px w-8 bg-gradient-to-l from-transparent to-blue-500/50" />
           </div>
 
           <p className="text-gray-400 max-w-2xl mx-auto text-sm md:text-base">

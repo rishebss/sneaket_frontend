@@ -69,7 +69,6 @@ const Features = ({
             <span className="text-xs md:text-xl font-mono text-cyan-400 uppercase tracking-[0.3em]">
               CATEGORIES
             </span>
-            <div className="h-px w-8 bg-gradient-to-l from-transparent to-blue-500/50" />
           </div>
         </div>
 
