@@ -9,7 +9,7 @@ export default function Hero() {
       {/* Dark Overlay for Better Text Readability */}
       <div className="absolute inset-0 z-0">
         <DarkVeil
-          hueShift={0}
+          hueShift={35}
           noiseIntensity={0.02}
           scanlineIntensity={0}
           speed={1.1}
@@ -67,10 +67,10 @@ export default function Hero() {
           {/* Login Link */}
           <Link to="/login" className="group relative px-6 py-3 sm:px-8 sm:py-4 overflow-hidden rounded-full">
             {/* Ambient Background Glow */}
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-700/10 via-purple-500/10 to-blue-700/10 opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-700/10 via-blue-500/10 to-cyan-700/10 opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
 
             {/* Animated Border Gradient */}
-            <div className="absolute -inset-[1px] bg-gradient-to-r from-blue-700 via-purple-500 to-blue-700 rounded-full opacity-30 group-hover:opacity-100 blur-[2px] group-hover:blur-[4px] transition-all duration-500 animate-[pulse_3s_infinite]" />
+            <div className="absolute -inset-[1px] bg-gradient-to-r from-cyan-700 via-blue-500 to-cyan-700 rounded-full opacity-30 group-hover:opacity-100 blur-[2px] group-hover:blur-[4px] transition-all duration-500 animate-[pulse_3s_infinite]" />
 
             {/* Glassmorphism Inner Body */}
             <div className="absolute inset-[1px] bg-black/40 backdrop-blur-md rounded-full z-1 shadow-inner" />
