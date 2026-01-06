@@ -295,7 +295,7 @@ const MAX_CLICKS = 10;
 const PixelBlast = ({
   variant = 'square',
   pixelSize = 7,
-  color = '#4426a8ff',
+  color = '#8299d2',
   className,
   style,
   antialias = true,
@@ -323,6 +323,7 @@ const PixelBlast = ({
   const threeRef = useRef(null);
   const prevConfigRef = useRef(null);
   useEffect(() => {
+    console.log('PixelBlast config:', { color, variant, pixelSize });
     const container = containerRef.current;
     if (!container) return;
     speedRef.current = speed;

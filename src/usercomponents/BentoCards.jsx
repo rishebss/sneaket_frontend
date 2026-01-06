@@ -40,12 +40,12 @@ export default function BentoCards() {
                         {/* Plasma Background */}
                         <div className="absolute inset-0 z-0">
                             <PixelBlast
-                                color="#44289f"
+                                color="#8299d2"
                             />
                         </div>
 
                         {/* Dark Overlay for Better Text Readability */}
-                        <div className="absolute inset-0 z-1 bg-transparent rounded-2xl" />
+                        <div className="absolute inset-0 z-1 bg-black/10 rounded-2xl" />
 
                         {/* Cyan Gradient Overlay on Hover */}
                         <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-2" />
