@@ -78,12 +78,12 @@ export default function Signup() {
                 <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-purple-500/20 blur-[100px] rounded-full pointer-events-none -z-10" />
 
                 {/* Glass Card */}
-                <div className="relative bg-gray-900/50 backdrop-blur-2xl rounded-2xl border border-white/10 p-6 md:p-7 shadow-2xl">
+                <div className="relative bg-gray-900/50 backdrop-blur-2xl rounded-2xl border border-white/10 p-5 md:p-7 shadow-2xl">
                     {/* Sharp Top-Edge Highlight */}
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-px w-1/2 h-px bg-gradient-to-r from-transparent via-cyan-400 to-transparent z-10 shadow-[0_0_15px_rgba(34,211,238,0.8)]" />
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-px w-1/3 h-[2px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent blur-[2px] z-10" />
                     {/* Header */}
-                    <div className="text-center mb-6">
+                    <div className="text-center mb-4 md:mb-6">
                         <h1 className="text-xl font-semibold text-white tracking-tight mb-1">
                             Create Account
                         </h1>
@@ -100,7 +100,7 @@ export default function Signup() {
                     )}
 
                     {/* Signup Form */}
-                    <form onSubmit={handleSubmit} className="space-y-3">
+                    <form onSubmit={handleSubmit} className="space-y-2 md:space-y-3">
                         {/* Name Fields (Row) */}
                         <div className="grid grid-cols-2 gap-4">
                             <div className="group">
@@ -116,7 +116,7 @@ export default function Signup() {
                                         name="first_name"
                                         value={formData.first_name}
                                         onChange={handleChange}
-                                        className={`w-full pl-11 pr-4 py-2 bg-white/5 border ${errors.first_name ? 'border-red-500/50' : 'border-white/10'} rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-sm`}
+                                        className={`w-full pl-11 pr-4 py-1.5 md:py-2 bg-white/5 border ${errors.first_name ? 'border-red-500/50' : 'border-white/10'} rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-sm`}
                                         placeholder="John"
                                         required
                                     />
@@ -136,7 +136,7 @@ export default function Signup() {
                                         name="last_name"
                                         value={formData.last_name}
                                         onChange={handleChange}
-                                        className={`w-full pl-11 pr-4 py-2 bg-white/5 border ${errors.last_name ? 'border-red-500/50' : 'border-white/10'} rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-sm`}
+                                        className={`w-full pl-11 pr-4 py-1.5 md:py-2 bg-white/5 border ${errors.last_name ? 'border-red-500/50' : 'border-white/10'} rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-sm`}
                                         placeholder="Doe"
                                         required
                                     />
@@ -159,7 +159,7 @@ export default function Signup() {
                                     name="username"
                                     value={formData.username}
                                     onChange={handleChange}
-                                    className={`w-full pl-11 pr-4 py-2 bg-white/5 border ${errors.username ? 'border-red-500/50' : 'border-white/10'} rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-sm`}
+                                    className={`w-full pl-11 pr-4 py-1.5 md:py-2 bg-white/5 border ${errors.username ? 'border-red-500/50' : 'border-white/10'} rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-sm`}
                                     placeholder="johndoe123"
                                     required
                                 />
@@ -181,7 +181,7 @@ export default function Signup() {
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    className={`w-full pl-11 pr-4 py-2 bg-white/5 border ${errors.email ? 'border-red-500/50' : 'border-white/10'} rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-sm`}
+                                    className={`w-full pl-11 pr-4 py-1.5 md:py-2 bg-white/5 border ${errors.email ? 'border-red-500/50' : 'border-white/10'} rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-sm`}
                                     placeholder="john@example.com"
                                     required
                                 />
@@ -203,7 +203,7 @@ export default function Signup() {
                                     name="password"
                                     value={formData.password}
                                     onChange={handleChange}
-                                    className={`w-full pl-11 pr-4 py-2 bg-white/5 border ${errors.password ? 'border-red-500/50' : 'border-white/10'} rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-sm`}
+                                    className={`w-full pl-11 pr-4 py-1.5 md:py-2 bg-white/5 border ${errors.password ? 'border-red-500/50' : 'border-white/10'} rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-sm`}
                                     placeholder="••••••••"
                                     required
                                 />
@@ -215,7 +215,7 @@ export default function Signup() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full group relative py-2.5 mt-1 rounded-xl bg-white/5 border border-white/10 hover:border-cyan-500/50 hover:bg-white/10 transition-all duration-500 overflow-hidden"
+                            className="w-full group relative py-2 md:py-2.5 mt-1 rounded-xl bg-white/5 border border-white/10 hover:border-cyan-500/50 hover:bg-white/10 transition-all duration-500 overflow-hidden"
                         >
                             <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-cyan-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                             <span className="relative z-10 flex items-center justify-center gap-2 text-white/90 group-hover:text-white font-medium tracking-wide text-sm transition-colors">
@@ -232,7 +232,7 @@ export default function Signup() {
                     </form>
 
                     {/* Divider */}
-                    <div className="my-4 flex items-center">
+                    <div className="my-3 md:my-4 flex items-center">
                         <div className="flex-1 h-px bg-gray-700/50" />
                         <span className="px-4 text-[10px] text-gray-500 uppercase tracking-widest">Or</span>
                         <div className="flex-1 h-px bg-gray-700/50" />
@@ -240,7 +240,7 @@ export default function Signup() {
 
                     {/* Social Signup */}
                     <div className="flex flex-col gap-3">
-                        <button className="group relative w-full py-2.5 bg-white/5 border border-white/10 rounded-xl hover:border-white/20 hover:bg-white/10 transition-all duration-300">
+                        <button className="group relative w-full py-2 md:py-2.5 bg-white/5 border border-white/10 rounded-xl hover:border-white/20 hover:bg-white/10 transition-all duration-300">
                             <div className="flex items-center justify-center gap-2">
                                 <FaGoogle className="w-4 h-4 text-white/60 group-hover:text-white transition-colors" />
                                 <span className="text-xs text-gray-400 group-hover:text-white">Sign up with Google</span>
@@ -249,7 +249,7 @@ export default function Signup() {
                     </div>
 
                     {/* Login Link */}
-                    <div className="mt-4 text-center">
+                    <div className="mt-3 md:mt-4 text-center">
                         <p className="text-gray-400 text-sm">
                             Already have an account?{' '}
                             <Link
