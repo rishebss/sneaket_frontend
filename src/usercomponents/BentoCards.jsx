@@ -149,24 +149,25 @@ export default function BentoCards() {
                             </div>
 
                             {/* Stats & Progress section at bottom */}
-                            <div className="mt-8 max-w-[200px]">
-                                <div className="flex justify-between items-center mb-2">
+                            <div className="mt-8 flex items-end justify-between gap-4">
+                                <div className="flex-1 max-w-[150px] sm:max-w-[200px]">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <span className="text-xs text-amber-300 font-mono ">Profile Status</span>
+                                    </div>
+                                    <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
+                                        <div className="h-full w-2/3 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full animate-pulse" />
+                                    </div>
+                                    <div className="mt-1">
+                                        <span className="text-[8px] text-gray-500 font-mono">65% LOCK</span>
+                                    </div>
+                                </div>
 
-                                    <span className="text-xs text-amber-300 font-mono ">Profile Status</span>
+                                {/* Login button - integrated into the flow to prevent overlap */}
+                                <div className="z-20 mb-1">
+                                    <div className="px-4 py-2 rounded-lg bg-amber-500/10 border border-amber-500/20 backdrop-blur-md group-hover:bg-amber-500/20 transition-all duration-300 cursor-pointer">
+                                        <span className="text-amber-400 text-sm font-mono">VIEW</span>
+                                    </div>
                                 </div>
-                                <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
-                                    <div className="h-full w-2/3 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full animate-pulse" />
-                                </div>
-                                <div className="flex justify-between mt-1">
-                                    <span className="text-[8px] text-gray-500 font-mono text-right w-full">65% LOCK</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Login button - bottom right corner of card */}
-                        <div className="absolute bottom-6 right-6 z-20 flex flex-col items-end gap-2">
-                            <div className="px-4 py-2 rounded-lg bg-amber-500/10 border border-amber-500/20 backdrop-blur-md group-hover:bg-amber-500/20 transition-all duration-300">
-                                <span className="text-amber-400 text-sm font-mono">VIEW</span>
                             </div>
                         </div>
 
