@@ -65,10 +65,11 @@ const Features = ({
       >
         <div className="flex justify-center">
           <div className="inline-flex items-center gap-2 mb-4 mt-[-10px] md:mt-10">
-            <div className="h-px w-8 bg-black" />
-            <span className="text-xs md:text-xl font-mono text-cyan-400 uppercase tracking-[0.3em]">
+            <div className="h-px w-8 bg-gradient-to-r from-transparent to-blue-500/50" />
+            <span className="text-xs md:text-xl font-mono text-cyan-400 uppercase tracking-[0.3em] whitespace-nowrap">
               CATEGORIES
             </span>
+            <div className="h-px w-8 bg-gradient-to-l from-transparent to-blue-500/50" />
           </div>
         </div>
 

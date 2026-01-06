@@ -21,10 +21,11 @@ export default function AboutSection() {
         {/* Section Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 mb-4">
-            <div className="h-px w-8 bg-transparent" />
-            <span className="text-xs md:text-xl font-mono text-cyan-400 uppercase tracking-[0.3em]">
+            <div className="h-px w-8 bg-gradient-to-r from-transparent to-blue-500/50" />
+            <span className="text-xs md:text-xl font-mono text-cyan-400 uppercase tracking-[0.3em] whitespace-nowrap">
               WHY CHOOSE SNEAKET
             </span>
+            <div className="h-px w-8 bg-gradient-to-l from-transparent to-blue-500/50" />
           </div>
 
           <p className="text-gray-400 max-w-2xl mx-auto text-sm md:text-base">
