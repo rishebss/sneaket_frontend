@@ -15,25 +15,25 @@ const Features = ({
       step: "01",
       title: "Low",
       content: "Sleek and versatile low-cut silhouettes for everyday comfort and effortless style.",
-      image: "https://i.pinimg.com/736x/60/f0/ba/60f0baf691a75554c1a0068233e30542.jpg"
+      image: "https://res.cloudinary.com/dviwae8cc/image/upload/v1767742568/Gemini_Generated_Image_yszaluyszaluysza-Photoroom_pdvyav.png"
     },
     {
       step: "02",
       title: "Ankles",
       content: "Classic mid-top designs that provide extra support and a balanced, iconic look.",
-      image: "https://res.cloudinary.com/dviwae8cc/image/upload/v1767661022/download_8_1_bbotny.jpg"
+      image: "https://res.cloudinary.com/dviwae8cc/image/upload/v1767742706/Gemini_Generated_Image_j1zgbtj1zgbtj1zg-Photoroom_cioifd.png"
     },
     {
       step: "03",
       title: "Chunky",
       content: "Bold, expressive soles and retro-inspired designs for those who want to make a statement.",
-      image: "https://res.cloudinary.com/dviwae8cc/image/upload/v1767662835/ChatGPT_Image_Jan_6_2026_06_56_14_AM_mzdc3t.png"
+      image: "https://res.cloudinary.com/dviwae8cc/image/upload/v1767743020/Gemini_Generated_Image_ewpahvewpahvewpa-Photoroom_b53sak.png"
     },
     {
       step: "04",
       title: "Boots",
       content: "Rugged durability meets high-end street fashion with our premium hybrid boots.",
-      image: "https://res.cloudinary.com/dviwae8cc/image/upload/v1767664048/ChatGPT_Image_Jan_6_2026_07_02_08_AM_fryyvk.png"
+      image: "https://res.cloudinary.com/dviwae8cc/image/upload/v1767743238/Gemini_Generated_Image_rayliorayliorayl-Photoroom_ztqjph.png"
     }
   ]
 

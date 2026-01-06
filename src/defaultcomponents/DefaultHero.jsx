@@ -6,7 +6,7 @@ import DarkVeil from "./DarkVeil";
 export default function Hero() {
   return (
     <div className="w-full relative">
-      {/* Dark Overlay for Better Text Readability */}
+      {/* 
       <div className="absolute inset-0 z-0">
         <DarkVeil
           hueShift={40}
@@ -16,7 +16,7 @@ export default function Hero() {
           scanlineFrequency={0}
           warpAmount={0}
         />
-      </div>
+      </div> */}
 
       {/* Main Content */}
       <div className="relative z-10 flex flex-col items-center justify-center px-6 sm:px-12 lg:px-24 pt-32 pb-12">
