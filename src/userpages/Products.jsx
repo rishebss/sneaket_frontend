@@ -239,7 +239,7 @@ export default function Products() {
                         ) : (
                             <div className="flex flex-col items-center justify-center py-20 bg-white/5 rounded-lg border border-dashed border-white/10">
                                 <FiX className="text-4xl text-gray-600 mb-4" />
-                                <p className="text-gray-400 font-mono">No sneakers found matching your criteria</p>
+                                <p className="text-gray-400 font-mono">No sneakers found </p>
                                 <button
                                     onClick={() => {
                                         setSearchQuery('');
