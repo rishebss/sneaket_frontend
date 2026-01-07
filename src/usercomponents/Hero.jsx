@@ -22,7 +22,7 @@ export default function Hero() {
 
                         {/* Main Headline with Glitch Effect */}
                         <div className="relative mb-8">
-                            <h1 className="text-3xl font-normal tracking-tight text-white sm:text-5xl lg:text-7xl leading-[0.9]">
+                            <h1 className="text-3xl font-normal tracking-tight text-white sm:text-5xl lg:text-6xl leading-[0.9]">
                                 <span className="block mb-2 text-white/90 font-sneaket">REDEFINE</span>
                                 <span className="relative inline-block">
                                     <span className="bg-gradient-to-r from-cyan-400 via-white to-purple-400 bg-clip-text text-transparent font-sneaket">
