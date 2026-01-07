@@ -28,7 +28,7 @@ export default function BentoCards() {
                     <div className="inline-flex items-center gap-2 mb-4">
                         <div className="h-px w-8 bg-gradient-to-r from-transparent to-cyan-500/50" />
                         <span className="md:text-xl text-xs font-mono text-cyan-400 uppercase tracking-[0.3em] whitespace-nowrap">
-                            LATEST COLLECTIONS
+                            EXPLORE COLLECTIONS
                         </span>
                         <div className="h-px w-8 bg-gradient-to-l from-transparent to-cyan-500/50" />
                     </div>
