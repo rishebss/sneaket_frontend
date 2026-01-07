@@ -40,7 +40,7 @@ export default function Hero() {
                                 <p className="font-mono text-xs sm:text-sm text-gray-400 tracking-[0.2em] animate-pulse">
                                     // NEXT-GEN FOOTWEAR
                                 </p>
-                                <div className="h-px flex-1 lg:flex-none lg:w-24 bg-gradient-to-r from-transparent to--500/50" />
+                                <div className="h-px flex-1 lg:flex-none lg:w-24 bg-gradient-to-r from-transparent to-cyan-500/50" />
                             </div>
                         </div>
 
