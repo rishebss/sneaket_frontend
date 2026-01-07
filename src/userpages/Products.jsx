@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { FiSearch, FiFilter, FiChevronDown, FiStar, FiShoppingBag, FiArrowRight, FiX } from 'react-icons/fi';
+import Loader from '../defaultcomponents/Loader';
 
 const CATEGORIES = [
     { id: 'all', name: 'All' },
@@ -223,10 +224,8 @@ export default function Products() {
                 {/* Products Grid */}
                 <div className="w-full">
                     {loading ? (
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-                            {[...Array(6)].map((_, i) => (
-                                <div key={i} className="bg-white/5 rounded-lg h-[450px] animate-pulse border border-white/10" />
-                            ))}
+                        <div className="flex items-center justify-center min-h-[300px]">
+                            <Loader />
                         </div>
                     ) : filteredProducts.length > 0 ? (
                         <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6">

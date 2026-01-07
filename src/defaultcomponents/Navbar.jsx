@@ -14,7 +14,7 @@ export default function Navbar({ isLoggedIn }) {
 
     const navItems = isLoggedIn
         ? ["Products", "About Us", "Profile", "Logout"]
-        : ["Products", "About Us", "Login", "Signup", "Github"];
+        : ["About Us", "Login", "Signup", "Github"];
 
     return (
         <>
