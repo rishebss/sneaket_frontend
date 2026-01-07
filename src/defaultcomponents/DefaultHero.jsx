@@ -22,10 +22,10 @@ export default function Hero() {
             <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-7xl font-sneaket text-white mb-2 leading-tight">
               <span className="block">Redefine</span>
               <span className="relative inline-block">
-                <span className="bg-gradient-to-r from-cyan-400 via-white to-purple-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-cyan-400 via-white to-blue-400 bg-clip-text text-transparent">
                   YOUR <span className="font-black">KICKS</span>
                 </span>
-                <span className="absolute -top-1 left-0 bg-gradient-to-r from-cyan-400 via-white to-purple-400 bg-clip-text text-transparent opacity-20 blur-sm">
+                <span className="absolute -top-1 left-0 bg-gradient-to-r from-cyan-400 via-white to-blue-400 bg-clip-text text-transparent opacity-20 blur-sm">
                   YOUR <span className="font-black">KICKS</span>
                 </span>
               </span>
@@ -38,7 +38,7 @@ export default function Hero() {
             <p className="font-mono text-xs sm:text-sm text-cyan-300 tracking-[0.3em] animate-pulse">
               // NEXT-GEN FOOTWEAR
             </p>
-            <div className="h-px w-8 sm:w-12 bg-gradient-to-l from-purple-500/50 to-transparent" />
+            <div className="h-px w-8 sm:w-12 bg-gradient-to-l from-cyan-500/50 to-transparent" />
           </div>
         </div>
 
