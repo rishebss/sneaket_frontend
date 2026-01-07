@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { FiSearch, FiFilter, FiChevronDown, FiStar, FiShoppingBag, FiArrowRight, FiX } from 'react-icons/fi';
+import { MdDoubleArrow } from 'react-icons/md';
 import Loader from '../defaultcomponents/Loader';
 import DefaultFooter from '../defaultcomponents/DefaultFooter';
 
@@ -277,23 +278,23 @@ function ProductCard({ product, index }) {
             className="group relative bg-white/5 backdrop-blur-xl rounded-lg border border-white/10 overflow-hidden hover:border-blue-500/50 transition-all duration-500 flex flex-col h-full shadow-2xl"
         >
             {/* Badge */}
-            <div className="absolute top-5 left-5 z-20 flex flex-col gap-2">
+            <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
                 {product.features?.includes('new_arrival') && (
-                    <span className="bg-blue-500 text-white text-[8px] md:text-[10px] font-bold px-2 md:px-3 py-0.5 md:py-1 rounded-full uppercase tracking-tighter shadow-[0_0_10px_rgba(59,130,246,0.5)]">New Drop</span>
+                    <span className="bg-blue-500 text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter shadow-[0_0_10px_rgba(59,130,246,0.5)]">New Drop</span>
                 )}
                 {hasDiscount && (
-                    <span className="bg-red-500 text-white text-[8px] md:text-[10px] font-bold px-2 md:px-3 py-0.5 md:py-1 rounded-full uppercase tracking-tighter">
+                    <span className="bg-red-500 text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter">
                         -{Math.round(((product.original_price - product.price) / product.original_price) * 100)}%
                     </span>
                 )}
             </div>
 
-            <button className="absolute top-3 right-3 md:top-5 md:right-5 z-20 w-8 h-8 md:w-10 md:h-10 rounded-full bg-blue-600 shadow-[0_0_15px_rgba(37,99,235,0.4)] border border-blue-400/50 flex items-center justify-center text-white hover:bg-blue-500 hover:scale-110 transition-all">
-                <FiShoppingBag className="w-4 h-4 md:w-5 md:h-5" />
+            <button className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-blue-600 shadow-[0_0_15px_rgba(37,99,235,0.4)] border border-blue-400/50 flex items-center justify-center text-white hover:bg-blue-500 hover:scale-110 transition-all">
+                <FiShoppingBag className="w-4 h-4" />
             </button>
 
             {/* Image Container */}
-            <div className="relative aspect-square overflow-hidden bg-gradient-to-b from-[#1a2333] to-transparent">
+            <div className="relative aspect-square overflow-hidden bg-gradient-to-b from-[#1a2333]/50 to-transparent">
                 <AnimatePresence mode="wait">
                     <motion.img
                         key={hovered && product.img2 ? 'img2' : 'img1'}
@@ -306,41 +307,39 @@ function ProductCard({ product, index }) {
                         className="w-full h-full object-contain"
                     />
                 </AnimatePresence>
-
-                {/* Glow Effect */}
-                <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
             </div>
 
-            {/* Content */}
-            <div className="p-4 md:p-6 flex flex-col flex-1">
-                <div className="flex justify-between items-start mb-2">
-                    <span className="text-gray-500 text-[10px] font-mono uppercase tracking-[0.2em]">{product.brand}</span>
-                    <div className="flex items-center gap-1">
-                        <FiStar className="w-3 h-3 text-amber-500 fill-amber-500" />
-                        <span className="text-gray-400 text-xs font-mono">{product.rating || '4.5'}</span>
+            {/* Content Link Section */}
+            <Link to={`/products/${product.id}`} className="p-4 flex flex-col flex-1 group/content">
+                <div className="flex justify-between items-center mb-1.5">
+                    <span className="text-gray-500 text-[10px] font-mono uppercase tracking-[0.15em]">{product.brand}</span>
+                    <div className="flex items-center gap-1 bg-white/5 px-2 py-0.5 rounded-full border border-white/5">
+                        <FiStar className="w-2.5 h-2.5 text-amber-500 fill-amber-500" />
+                        <span className="text-gray-400 text-[10px] font-mono">{product.rating || '4.5'}</span>
                     </div>
                 </div>
 
-                <h3 className="text-sm md:text-lg text-white mb-1 md:mb-2 line-clamp-1 group-hover:text-blue-400 transition-colors">{product.name}</h3>
+                <h3 className="text-sm md:text-base text-white/90 mb-2 line-clamp-1 group-hover/content:text-blue-400 transition-colors font-medium">{product.name}</h3>
 
-                <p className="hidden md:line-clamp-2 text-gray-400 text-xs mb-6 leading-relaxed">
+                <p className="hidden md:line-clamp-2 text-gray-400 text-[11px] mb-4 leading-relaxed opacity-60 group-hover/content:opacity-100 transition-opacity">
                     {product.short_description || product.description}
                 </p>
 
-                <div className="mt-auto flex items-center justify-between">
-                    <div className="flex flex-col">
+                <div className="mt-auto pt-2 border-t border-white/5 flex items-center justify-end md:justify-between">
+                    <div className="flex items-baseline gap-2">
                         {hasDiscount && (
-                            <span className="text-[10px] text-gray-600 line-through font-mono mt-[-1px] md:mt-[-10px]">₹{parseFloat(product.original_price).toLocaleString()}</span>
+                            <span className="text-xs text-gray-500 line-through font-mono opacity-70">₹{parseFloat(product.original_price).toLocaleString()}</span>
                         )}
-                        <span className="text-sm md:text-base font-mono text-white">₹{displayPrice}</span>
+                        <span className="text-sm md:text-base font-mono font-bold text-white">₹{displayPrice}</span>
                     </div>
 
-                    <Link to={`/products/${product.id}`} className="flex items-center gap-1 md:gap-2 text-blue-400 text-[10px] md:text-sm font-semibold group/btn">
-                        <span className="hidden sm:inline">Details</span>
-                        <FiArrowRight className="group-hover/btn:translate-x-1 transition-transform" />
-                    </Link>
+                    <div className="hidden md:flex items-center text-blue-500/50 group-hover/content:text-blue-400 transition-colors">
+                        <MdDoubleArrow className="w-8 h-8" />
+                        <MdDoubleArrow className="w-8 h-8 -ml-3" />
+                    </div>
                 </div>
-            </div>
+            </Link>
         </motion.div>
     );
 }
