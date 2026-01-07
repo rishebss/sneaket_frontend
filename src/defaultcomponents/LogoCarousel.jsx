@@ -98,7 +98,7 @@ export default function LogoCarousel({ columnCount = 4 }) {
   }, [logos, columnCount]);
 
   return (
-    <div className="relative w-full bg-black py-24 overflow-hidden">
+    <div className="relative w-full bg-black py-8 overflow-hidden">
       <motion.div
         initial={{ opacity: 0, y: 50, rotate: -2 }}
         whileInView={{ opacity: 1, y: 0, rotate: 0 }}
@@ -112,7 +112,7 @@ export default function LogoCarousel({ columnCount = 4 }) {
       >
 
         <div className="flex flex-col items-center justify-center mb-24">
-          <div className="inline-flex items-center gap-2 mb-[-100px] md:mt-0 mt-[-20px]">
+          <div className="inline-flex items-center gap-2 ">
             <div className="h-px w-8 bg-gradient-to-r from-transparent to-cyan-500/50" />
             <span className="md:text-xl text-[10px] font-mono text-cyan-400 uppercase tracking-[0.3em] whitespace-nowrap">
               BRAND COLLECTIONS
@@ -122,7 +122,7 @@ export default function LogoCarousel({ columnCount = 4 }) {
          
         </div>
 
-        <div className="flex justify-center space-x-2 md:space-x-8">
+        <div className="flex justify-center space-x-2 md:space-x-8 mt-[-80px] md:mt-[-30px] mb-24">
           {logoSets.map((column, index) => (
             <LogoColumn
               key={index}

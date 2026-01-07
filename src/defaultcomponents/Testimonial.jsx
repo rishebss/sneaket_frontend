@@ -60,9 +60,9 @@ const testimonials = [
   },
 ];
 
-const firstColumn = testimonials.slice(0, 3);
-const secondColumn = testimonials.slice(3, 6);
-const thirdColumn = testimonials.slice(6, 9);
+const firstColumn = testimonials;
+const secondColumn = [...testimonials.slice(3), ...testimonials.slice(0, 3)];
+const thirdColumn = [...testimonials.slice(6), ...testimonials.slice(0, 6)];
 
 // --- Sub-Components ---
 const TestimonialsColumn = ({ className, testimonials, duration }) => {
@@ -151,37 +151,37 @@ const TestimonialsSection = () => {
         }}
         className="container px-4 z-10 mx-auto"
       >
-        <div className="flex flex-col items-center justify-center max-w-[540px] mx-auto mb-16 mt-[-90px] md:mt-[-40px]">
+        <div className="flex flex-col items-center justify-center max-w-[540px] mx-auto mb-16 mt-[-60px] md:mt-[10px]">
           <div className="mt-16 text-center">
-                    <div className="inline-flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 p-4 sm:p-6 max-w-full">
-                      <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-                        <div className="flex -space-x-1.5 sm:-space-x-2">
-                          <img
-                            src="https://res.cloudinary.com/dviwae8cc/image/upload/v1766746071/999_11zon_p1cwr4.jpg"
-                            alt="Community member"
-                            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-gray-900 object-cover"
-                          />
-                          <img
-                            src="https://res.cloudinary.com/dviwae8cc/image/upload/v1766745906/3D_UrbanStyle_11zon_r71nzf.jpg"
-                            alt="Community member"
-                            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-gray-900 object-cover"
-                          />
-                          <img
-                            src="https://res.cloudinary.com/dviwae8cc/image/upload/v1766746136/3D_Ben_Benyamin_Bayati___%D8%A8%D9%86%DB%8C%D8%A7%D9%85%DB%8C%D9%86_%D8%A8%DB%8C%D8%A7%D8%AA%DB%8C_1_ct4ukl.jpg"
-                            alt="Community member"
-                            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-gray-900 object-cover"
-                          />
-                        </div>
-                        <div className="text-left">
-                          <p className="text-white font-semibold text-xs sm:text-sm whitespace-nowrap">Join 10K+ Sneakerheads</p>
-                          <p className="text-gray-400 text-[10px] sm:text-xs font-mono">Community of collectors</p>
-                        </div>
-                      </div>
-                      
-                    </div>
-                  </div>
+            <div className="inline-flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 p-4 sm:p-6 max-w-full">
+              <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                <div className="flex -space-x-1.5 sm:-space-x-2">
+                  <img
+                    src="https://res.cloudinary.com/dviwae8cc/image/upload/v1766746071/999_11zon_p1cwr4.jpg"
+                    alt="Community member"
+                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-gray-900 object-cover"
+                  />
+                  <img
+                    src="https://res.cloudinary.com/dviwae8cc/image/upload/v1766745906/3D_UrbanStyle_11zon_r71nzf.jpg"
+                    alt="Community member"
+                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-gray-900 object-cover"
+                  />
+                  <img
+                    src="https://res.cloudinary.com/dviwae8cc/image/upload/v1766746136/3D_Ben_Benyamin_Bayati___%D8%A8%D9%86%DB%8C%D8%A7%D9%85%DB%8C%D9%86_%D8%A8%DB%8C%D8%A7%D8%AA%DB%8C_1_ct4ukl.jpg"
+                    alt="Community member"
+                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-gray-900 object-cover"
+                  />
+                </div>
+                <div className="text-left">
+                  <p className="text-white font-semibold text-xs sm:text-sm whitespace-nowrap">Join 10K+ Sneakerheads</p>
+                  <p className="text-gray-400 text-[10px] sm:text-xs font-mono">Community of collectors</p>
+                </div>
+              </div>
 
-          
+            </div>
+          </div>
+
+
           <p className="text-center mt-0 text-gray-400 max-w-2xl mx-auto text-xs md:text-base leading-relaxed">
             Discover what our sneaker enthusiasts say about Sneaket.
           </p>
@@ -192,9 +192,9 @@ const TestimonialsSection = () => {
           role="region"
           aria-label="Scrolling Testimonials"
         >
-          <TestimonialsColumn testimonials={firstColumn} duration={15} />
-          <TestimonialsColumn testimonials={secondColumn} className="hidden md:block" duration={19} />
-          <TestimonialsColumn testimonials={thirdColumn} className="hidden lg:block" duration={17} />
+          <TestimonialsColumn testimonials={firstColumn} duration={50} />
+          <TestimonialsColumn testimonials={secondColumn} className="hidden md:block" duration={70} />
+          <TestimonialsColumn testimonials={thirdColumn} className="hidden lg:block" duration={60} />
         </div>
       </motion.div>
     </section>
