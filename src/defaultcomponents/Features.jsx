@@ -13,7 +13,7 @@ const Features = ({
   const features = [
     {
       step: "01",
-      title: "Low",
+      title: "Lows",
       content: "Sleek and versatile low-cut silhouettes for everyday comfort and effortless style.",
       image: "https://res.cloudinary.com/dviwae8cc/image/upload/v1767742568/Gemini_Generated_Image_yszaluyszaluysza-Photoroom_pdvyav.png"
     },

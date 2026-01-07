@@ -85,16 +85,14 @@ export default function Hero() {
               <div className="absolute -bottom-1 -left-1 w-2 h-2 border-b border-l border-cyan-400 opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="absolute -bottom-1 -right-1 w-2 h-2 border-b border-r border-cyan-400 opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
               
-              {/* Scanning Line Effect */}
-              <div className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <div className="absolute inset-0 animate-[scan_2s_linear_infinite] bg-gradient-to-r from-transparent via-cyan-400 to-transparent" />
-              </div>
+
+              
               
               {/* Content */}
+              
               <span className="relative z-10 flex items-center justify-center gap-4 text-white font-mono text-lg tracking-widest">
                 <span className="relative">
                   LOGIN
-                  <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
                 </span>
                 <div className="relative flex items-center">
                   <MdDoubleArrow className="w-6 h-6 transform transition-all duration-300 group-hover:translate-x-2 group-hover:scale-110 group-hover:text-cyan-400" />
@@ -103,6 +101,7 @@ export default function Hero() {
                   </div>
                 </div>
               </span>
+
             </div>
           </Link>
         </div>

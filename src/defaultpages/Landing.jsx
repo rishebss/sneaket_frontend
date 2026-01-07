@@ -14,8 +14,8 @@ export default function Landing() {
             <div className="relative z-10">
                 <Hero />
                 <AboutSection />
-                <Testimonial />
                 <Features />
+                <Testimonial />
                 <LogoCarousel />
                 <Footer />
             </div>
