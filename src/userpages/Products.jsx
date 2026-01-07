@@ -90,7 +90,7 @@ export default function Products() {
     };
 
     return (
-        <div className="min-h-screen pt-24 pb-20 px-4 md:px-8 lg:px-12 relative mt-10">
+        <div className="min-h-screen pb-20 px-4 md:px-8 lg:px-12 relative mt-24 md:mt-35">
             {/* Page Header */}
             <div className="max-w-[1600px] mx-auto mb-12">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
