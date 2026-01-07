@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { FiSearch, FiFilter, FiChevronDown, FiStar, FiShoppingBag, FiArrowRight, FiX } from 'react-icons/fi';
+import { FiSearch, FiFilter, FiChevronDown, FiStar, FiHeart, FiArrowRight, FiX } from 'react-icons/fi';
 import { MdDoubleArrow } from 'react-icons/md';
 import Loader from '../defaultcomponents/Loader';
 import DefaultFooter from '../defaultcomponents/DefaultFooter';
@@ -289,8 +289,11 @@ function ProductCard({ product, index }) {
                 )}
             </div>
 
-            <button className="absolute top-2 right-2 z-20 w-8 h-8 rounded-full bg-blue-600 shadow-[0_0_15px_rgba(37,99,235,0.4)] border border-blue-400/50 flex items-center justify-center text-white hover:bg-blue-500 hover:scale-110 transition-all">
-                <FiShoppingBag className="w-4 h-4" />
+            <button
+                onClick={(e) => { e.preventDefault();  }}
+                className="absolute top-2 right-2 z-20 w-8 h-8 rounded-full bg-blue-600 border border-white/10 flex items-center justify-center text-white hover:bg-blue-500 hover:text-white hover:scale-110 transition-all shadow-lg"
+            >
+                <FiHeart className="w-4 h-4" />
             </button>
 
             {/* Image Container */}
