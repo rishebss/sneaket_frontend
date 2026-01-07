@@ -34,7 +34,7 @@ function App() {
       <Navbar isLoggedIn={isLoggedIn} />
 
       {/* Page Content */}
-      <main className="relative z-10">
+      <main className="relative">
         <Routes>
           <Route
             path="/"

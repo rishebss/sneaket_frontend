@@ -18,8 +18,8 @@ export default function Navbar({ isLoggedIn }) {
 
     return (
         <>
-            <div className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 sm:px-12">
-                <nav className="w-full max-w-2xl transition-all duration-500 rounded-[2.5rem] border border-white/10 bg-white/5 backdrop-blur-xl py-4 shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
+            <div className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 sm:px-12 pointer-events-none">
+                <nav className="w-full max-w-2xl transition-all duration-500 rounded-[2.5rem] border border-white/10 bg-white/5 backdrop-blur-xl py-4 shadow-[0_8px_32px_rgba(0,0,0,0.2)] pointer-events-auto">
                     <div className="px-6 sm:px-10 flex items-center justify-between">
                         {/* Logo */}
                         <Link to="/" className="flex items-center gap-2">

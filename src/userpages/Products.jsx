@@ -100,13 +100,12 @@ export default function Products() {
                             animate={{ opacity: 1, x: 0 }}
                             className="inline-flex items-center gap-2 mb-4"
                         >
-                            <div className="h-px w-8 bg-cyan-500" />
-                            <span className="text-cyan-400 font-mono text-sm tracking-widest uppercase">Premium Catalog</span>
+
                         </motion.div>
 
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex items-center gap-3">
                         <div className="relative group flex-1 md:flex-none md:w-80">
                             <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-cyan-400 transition-colors" />
                             <input
@@ -114,83 +113,115 @@ export default function Products() {
                                 placeholder="Search kicks..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full bg-white/5 border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 transition-all backdrop-blur-xl"
+                                className="w-full h-11 bg-white/5 border border-white/10 rounded-lg pl-12 pr-4 text-white focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 transition-all backdrop-blur-xl"
                             />
                         </div>
 
                         <button
                             onClick={() => setShowFilters(!showFilters)}
-                            className={`flex items-center gap-2 px-5 py-3 rounded-lg border transition-all backdrop-blur-xl ${showFilters
+                            className={`flex items-center justify-center h-11 w-11 rounded-lg border transition-all backdrop-blur-xl ${showFilters
                                 ? 'bg-cyan-500/10 border-cyan-500/50 text-cyan-400'
                                 : 'bg-white/5 border-white/10 text-gray-300 hover:border-white/20'
                                 }`}
                         >
-                            <FiFilter />
-                            <span>Filters</span>
+                            <FiFilter className="w-5 h-5" />
                         </button>
-
-
                     </div>
                 </div>
             </div>
 
-            <div className="max-w-[1600px] mx-auto flex flex-col lg:flex-row gap-8">
-                {/* Filters Sidebar (Collapsible) */}
-                <AnimatePresence>
-                    {showFilters && (
+            {/* Filters Sidebar Overlay */}
+            <AnimatePresence>
+                {showFilters && (
+                    <>
+                        {/* Backdrop */}
                         <motion.div
-                            initial={{ opacity: 0, x: -30 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -30 }}
-                            className="lg:w-64 space-y-8"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setShowFilters(false)}
+                            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[90]"
+                        />
+
+                        {/* Sidebar */}
+                        <motion.div
+                            initial={{ x: '100%' }}
+                            animate={{ x: 0 }}
+                            exit={{ x: '100%' }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                            className="fixed top-0 right-0 h-full w-full max-w-sm bg-gray-950/95 backdrop-blur-2xl border-l border-white/10 z-[100] p-8 shadow-2xl overflow-y-auto"
                         >
-                            <div>
-                                <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-                                    <span className="w-1 h-1 bg-cyan-500 rounded-lg" />
-                                    Categories
-                                </h3>
-                                <div className="flex flex-wrap lg:flex-col gap-2">
-                                    {CATEGORIES.map(cat => (
-                                        <button
-                                            key={cat.id}
-                                            onClick={() => setSelectedCategory(cat.id)}
-                                            className={`text-left px-4 py-2 rounded-lg text-sm transition-all ${selectedCategory === cat.id
-                                                ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
-                                                : 'text-gray-400 hover:text-white hover:bg-white/5'
-                                                }`}
-                                        >
-                                            {cat.name}
-                                        </button>
-                                    ))}
-                                </div>
+                            <div className="flex items-center justify-between mb-10">
+                                <h2 className="text-xl font-mono text-white tracking-tight">Filters</h2>
+                                <button
+                                    onClick={() => setShowFilters(false)}
+                                    className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-white transition-all"
+                                >
+                                    <FiX className="w-6 h-6" />
+                                </button>
                             </div>
 
-                            <div>
-                                <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-                                    <span className="w-1 h-1 bg-purple-500 rounded-lg" />
-                                    Brands
-                                </h3>
-                                <div className="flex flex-wrap lg:flex-col gap-2">
-                                    {BRANDS.map(brand => (
-                                        <button
-                                            key={brand.id}
-                                            onClick={() => setSelectedBrand(brand.id)}
-                                            className={`text-left px-4 py-2 rounded-lg text-sm transition-all ${selectedBrand === brand.id
-                                                ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
-                                                : 'text-gray-400 hover:text-white hover:bg-white/5'
-                                                }`}
-                                        >
-                                            {brand.name}
-                                        </button>
-                                    ))}
+                            <div className="space-y-10">
+                                <div>
+                                    <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
+                                        <span className="w-1 h-1 bg-cyan-500 rounded-lg" />
+                                        Categories
+                                    </h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {CATEGORIES.map(cat => (
+                                            <button
+                                                key={cat.id}
+                                                onClick={() => setSelectedCategory(cat.id)}
+                                                className={`px-4 py-2 rounded-lg text-sm transition-all ${selectedCategory === cat.id
+                                                    ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold'
+                                                    : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
+                                                    }`}
+                                            >
+                                                {cat.name}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
+
+                                <div>
+                                    <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
+                                        <span className="w-1 h-1 bg-purple-500 rounded-lg" />
+                                        Brands
+                                    </h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {BRANDS.map(brand => (
+                                            <button
+                                                key={brand.id}
+                                                onClick={() => setSelectedBrand(brand.id)}
+                                                className={`px-4 py-2 rounded-lg text-sm transition-all ${selectedBrand === brand.id
+                                                    ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30 font-bold'
+                                                    : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
+                                                    }`}
+                                            >
+                                                {brand.name}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={() => {
+                                        setSelectedCategory('all');
+                                        setSelectedBrand('all');
+                                    }}
+                                    className="w-full py-4 mt-8 rounded-xl border border-white/10 text-gray-400 hover:text-white hover:bg-white/5 transition-all text-sm font-mono"
+                                >
+                                    RESET FILTERS
+                                </button>
                             </div>
                         </motion.div>
-                    )}
-                </AnimatePresence>
+                    </>
+                )}
+            </AnimatePresence>
 
+            <div className="max-w-[1600px] mx-auto flex flex-col gap-8">
                 {/* Products Grid */}
-                <div className="flex-1">
+                <div className="w-full">
                     {loading ? (
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
                             {[...Array(6)].map((_, i) => (
