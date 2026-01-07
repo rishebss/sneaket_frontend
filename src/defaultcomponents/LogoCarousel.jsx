@@ -98,7 +98,7 @@ export default function LogoCarousel({ columnCount = 4 }) {
   }, [logos, columnCount]);
 
   return (
-    <div className="relative w-full bg-black py-24 overflow-hidden border-t border-white/5">
+    <div className="relative w-full bg-black py-24 overflow-hidden">
       <motion.div
         initial={{ opacity: 0, y: 50, rotate: -2 }}
         whileInView={{ opacity: 1, y: 0, rotate: 0 }}
@@ -110,7 +110,7 @@ export default function LogoCarousel({ columnCount = 4 }) {
         }}
         className="max-w-7xl mx-auto px-6 relative z-10"
       >
-        
+
 
         <div className="flex justify-center space-x-2 md:space-x-8 mt-[-70px] md:mt-[-50px]">
           {logoSets.map((column, index) => (

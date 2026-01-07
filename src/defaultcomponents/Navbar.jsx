@@ -13,8 +13,8 @@ export default function Navbar({ isLoggedIn }) {
     };
 
     const navItems = isLoggedIn
-        ? ["Market", "About Us", "Profile", "Logout"]
-        : ["About Us", "Login", "Signup", "Github"];
+        ? ["Products", "About Us", "Profile", "Logout"]
+        : ["Products", "About Us", "Login", "Signup", "Github"];
 
     return (
         <>
@@ -40,7 +40,7 @@ export default function Navbar({ isLoggedIn }) {
                                         <span className="absolute -bottom-1 left-0 w-0 h-px bg-red-500 transition-all duration-300 group-hover:w-full" />
                                         {item}
                                     </button>
-                                ) : item === "Login" || item === "Signup" ? (
+                                ) : item === "Login" || item === "Signup" || item === "Products" ? (
                                     <Link
                                         key={item}
                                         to={`/${item.toLowerCase()}`}
@@ -137,7 +137,7 @@ export default function Navbar({ isLoggedIn }) {
                                         {item}
                                     </span>
                                 </button>
-                            ) : item === "Login" || item === "Signup" ? (
+                            ) : item === "Login" || item === "Signup" || item === "Products" ? (
                                 <Link
                                     key={item}
                                     to={`/${item.toLowerCase()}`}
@@ -186,7 +186,7 @@ export default function Navbar({ isLoggedIn }) {
             </div>
 
             {/* Add animation keyframes */}
-            <style jsx>{`
+            <style>{`
                 @keyframes slideInRight {
                     from {
                         opacity: 0;

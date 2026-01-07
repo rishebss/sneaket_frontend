@@ -93,43 +93,9 @@ export default function Hero() {
 
       </div>
 
-      {/* Floating Particles Effect */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full bg-gradient-to-r from-cyan-500/20 to-purple-500/20"
-            style={{
-              width: `${Math.random() * 4 + 1}px`,
-              height: `${Math.random() * 4 + 1}px`,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animation: `float ${Math.random() * 10 + 10}s linear infinite`,
-              animationDelay: `${Math.random() * 5}s`,
-            }}
-          />
-        ))}
-      </div>
+     
 
-      {/* CSS Animation */}
-      <style jsx="true">{`
-        @keyframes float {
-          0% {
-            transform: translateY(0) translateX(0);
-            opacity: 0;
-          }
-          10% {
-            opacity: 1;
-          }
-          90% {
-            opacity: 1;
-          }
-          100% {
-            transform: translateY(-100vh) translateX(20px);
-            opacity: 0;
-          }
-        }
-      `}</style>
+      
     </div>
   );
 }

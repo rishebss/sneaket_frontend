@@ -6,6 +6,8 @@ import DarkVeil from '../defaultcomponents/DarkVeil';
 import PixelBlast from "../usercomponents/PixelBlast";
 import { motion } from "framer-motion";
 
+import { Link } from 'react-router-dom';
+
 export default function BentoCards() {
     return (
         <section className="w-full relative py-16 md:py-20 overflow-hidden bg-transparent">
@@ -26,7 +28,7 @@ export default function BentoCards() {
                     <div className="inline-flex items-center gap-2 mb-4">
                         <div className="h-px w-8 bg-gradient-to-r from-transparent to-cyan-500/50" />
                         <span className="md:text-xl text-xs font-mono text-cyan-400 uppercase tracking-[0.3em] whitespace-nowrap">
-                            EXPLORE COLLECTIONS
+                            LATEST COLLECTIONS
                         </span>
                         <div className="h-px w-8 bg-gradient-to-l from-transparent to-cyan-500/50" />
                     </div>
@@ -36,7 +38,7 @@ export default function BentoCards() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-6xl mx-auto relative">
 
                     {/* Large Card - View Store with Plasma Background */}
-                    <div className="md:col-span-2 md:row-span-2 group relative overflow-hidden rounded-2xl border border-white/10 backdrop-blur-xl transition-all duration-500 hover:border-cyan-500/30 hover:shadow-[0_0_40px_rgba(34,211,238,0.15)] min-h-[300px] md:min-h-0">
+                    <Link to="/products" className="md:col-span-2 md:row-span-2 group relative overflow-hidden rounded-2xl border border-white/10 backdrop-blur-xl transition-all duration-500 hover:border-cyan-500/30 hover:shadow-[0_0_40px_rgba(34,211,238,0.15)] min-h-[300px] md:min-h-0">
                         {/* Plasma Background */}
                         <div className="absolute inset-0 z-0">
                             <PixelBlast
@@ -76,7 +78,7 @@ export default function BentoCards() {
                         </div>
 
                         <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cyan-500/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" />
-                    </div>
+                    </Link>
 
                     {/* Small Card - New Arrivals */}
                     <div className="group relative overflow-hidden rounded-2xl border border-white/10 transition-all duration-500 hover:border-purple-500/30 hover:shadow-[0_0_40px_rgba(168,85,247,0.15)] min-h-[220px]">

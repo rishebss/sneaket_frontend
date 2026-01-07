@@ -282,7 +282,7 @@ export default function Signup() {
             </div>
 
             {/* CSS Animation */}
-            <style jsx="true">{`
+            <style>{`
                 @keyframes float {
                     0% {
                         transform: translateY(0) translateX(0);

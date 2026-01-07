@@ -6,6 +6,8 @@ import Landing from './defaultpages/Landing';
 import Login from './defaultpages/Login';
 import Signup from './defaultpages/Signup';
 
+import Products from './userpages/Products';
+
 function App() {
   // Initialize state from localStorage
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
@@ -39,6 +41,7 @@ function App() {
             element={isLoggedIn ? <Home /> : <Landing />}
           />
           <Route path="/landing" element={<Landing />} />
+          <Route path="/products" element={<Products />} />
           <Route
             path="/login"
             element={isLoggedIn ? <Navigate to="/" replace /> : <Login />}

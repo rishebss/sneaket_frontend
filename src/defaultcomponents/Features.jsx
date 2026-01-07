@@ -27,7 +27,7 @@ const Features = ({
       step: "03",
       title: "Chunky",
       content: "Bold, expressive soles and retro-inspired designs for those who want to make a statement.",
-      image: "https://res.cloudinary.com/dviwae8cc/image/upload/v1767743020/Gemini_Generated_Image_ewpahvewpahvewpa-Photoroom_b53sak.png"
+      image: "https://res.cloudinary.com/dviwae8cc/image/upload/v1767744555/Gemini_Generated_Image_47ydji47ydji47yd-Photoroom_er0kna.png"
     },
     {
       step: "04",
