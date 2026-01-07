@@ -314,9 +314,9 @@ function ProductCard({ product, index }) {
             <Link to={`/products/${product.id}`} className="p-4 flex flex-col flex-1 group/content">
                 <div className="flex justify-between items-center mb-1.5">
                     <span className="text-gray-500 text-[10px] font-mono uppercase tracking-[0.15em]">{product.brand}</span>
-                    <div className="flex items-center gap-1 bg-white/5 px-2 py-0.5 rounded-full border border-white/5">
-                        <FiStar className="w-2.5 h-2.5 text-amber-500 fill-amber-500" />
-                        <span className="text-gray-400 text-[10px] font-mono">{product.rating || '4.5'}</span>
+                    <div className="flex items-center gap-0.5 md:gap-1 bg-white/5 px-1 md:px-2 py-0.5 rounded-full border border-white/5">
+                        <FiStar className="w-2 h-2 md:w-2.5 md:h-2.5 text-amber-500 fill-amber-500" />
+                        <span className="text-gray-400 text-[8px] md:text-[10px] font-mono">{product.rating || '4.5'}</span>
                     </div>
                 </div>
 
