@@ -51,63 +51,32 @@ export default function Hero() {
         </div>
 
         {/* Login Button with Cyberpunk Style */}
-        <div className="flex flex-col sm:flex-row gap-4 md:gap-6 items-center justify-center">
-          <Link to="/login" className="group relative px-10 py-4 overflow-hidden">
-            {/* Extended Lines (2rem each side) */}
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-8 w-8 h-px bg-gradient-to-r from-transparent to-cyan-400 group-hover:w-12 group-hover:from-transparent group-hover:to-cyan-500 transition-all duration-500" />
-            
-            {/* Left Border */}
-            <div className="absolute left-0 top-0 h-full w-px">
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-400 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="absolute inset-0 bg-cyan-400 blur-[2px] opacity-30 group-hover:opacity-50 transition-opacity duration-300" />
-            </div>
-            
-            {/* Right Border */}
-            <div className="absolute right-0 top-0 h-full w-px">
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-400 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="absolute inset-0 bg-cyan-400 blur-[2px] opacity-30 group-hover:opacity-50 transition-opacity duration-300" />
-            </div>
-            
-            {/* Extended Lines (2rem each side) */}
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-8 w-8 h-px bg-gradient-to-l from-transparent to-cyan-400 group-hover:w-12 group-hover:from-transparent group-hover:to-cyan-500 transition-all duration-500" />
-            
-            {/* Main Button Body */}
-            <div className="relative px-8 py-4">
-              {/* Glow Effect Behind */}
-              <div className="absolute inset-0 bg-transparent group-hover:bg-cyan-500/20 transition-all duration-500" />
-              
-              {/* Black Background */}
-              <div className="absolute inset-0 bg-black/90 backdrop-blur-sm border-x border-cyan-500/30 group-hover:border-cyan-500/50 transition-all duration-300" />
-              
-              {/* Corner Accents */}
-              <div className="absolute -top-1 -left-1 w-2 h-2 border-t border-l border-cyan-400 opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="absolute -top-1 -right-1 w-2 h-2 border-t border-r border-cyan-400 opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="absolute -bottom-1 -left-1 w-2 h-2 border-b border-l border-cyan-400 opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="absolute -bottom-1 -right-1 w-2 h-2 border-b border-r border-cyan-400 opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
-              
+        <div className="flex items-center justify-center">
+          <Link to="/login" className="group relative flex items-center">
+            {/* Left Connecting Line */}
+            <div className="w-8 sm:w-12 h-px bg-gradient-to-r from-transparent to-cyan-400/50 group-hover:to-cyan-400 transition-all duration-300" />
 
-              
-              
-              {/* Content */}
-              
-              <span className="relative z-10 flex items-center justify-center gap-4 text-white font-mono text-lg tracking-widest">
-                <span className="relative">
-                  LOGIN
-                </span>
-                <div className="relative flex items-center">
-                  <MdDoubleArrow className="w-6 h-6 transform transition-all duration-300 group-hover:translate-x-2 group-hover:scale-110 group-hover:text-cyan-400" />
-                  <div className="absolute inset-0 blur-md scale-125 opacity-0 group-hover:opacity-50 transition-opacity">
-                    <MdDoubleArrow className="w-6 h-6 text-cyan-400" />
-                  </div>
-                </div>
-              </span>
+            {/* Button Main Body */}
+            <div className="relative px-8 py-3 sm:px-12 sm:py-4 rounded-full border border-cyan-500/20 group-hover:border-cyan-400/50 bg-white/[0.03] backdrop-blur-md transition-all duration-300 mx-[-1px] overflow-hidden">
+              {/* Ambient Background Glow (Inside) */}
+              <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-full h-20 bg-cyan-500/10 blur-2xl pointer-events-none" />
 
+              {/* Sharp Top-Edge Highlight */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-cyan-400 to-transparent z-20 shadow-[0_0_12px_rgba(34,211,238,0.6)]" />
+
+              <div className="relative z-10 flex items-center gap-4 text-white font-mono text-base sm:text-lg tracking-[0.3em]">
+                <span className="opacity-80 group-hover:opacity-100 transition-opacity">LOGIN</span>
+
+              </div>
             </div>
+
+            {/* Right Connecting Line */}
+            <div className="w-8 sm:w-12 h-px bg-gradient-to-l from-transparent to-cyan-400/50 group-hover:to-cyan-400 transition-all duration-300" />
           </Link>
         </div>
 
       </div>
-      
+
       {/* Add CSS animation for scanning line */}
       <style jsx>{`
         @keyframes scan {
