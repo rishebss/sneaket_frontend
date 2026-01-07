@@ -74,7 +74,7 @@ export default function Hero() {
             {/* Main Button Body */}
             <div className="relative px-8 py-4">
               {/* Glow Effect Behind */}
-              <div className="absolute inset-0 bg-cyan-500/10 blur-xl group-hover:bg-cyan-500/20 transition-all duration-500" />
+              <div className="absolute inset-0 bg-transparent group-hover:bg-cyan-500/20 transition-all duration-500" />
               
               {/* Black Background */}
               <div className="absolute inset-0 bg-black/90 backdrop-blur-sm border-x border-cyan-500/30 group-hover:border-cyan-500/50 transition-all duration-300" />
