@@ -22,13 +22,13 @@ export default function Hero() {
 
                         {/* Main Headline with Glitch Effect */}
                         <div className="relative mb-8">
-                            <h1 className="text-4xl font-normal tracking-tight text-white sm:text-5xl lg:text-7xl leading-[0.9]">
-                                <span className="block mb-2 text-white/90 font-bold">REDEFINE</span>
+                            <h1 className="text-3xl font-normal tracking-tight text-white sm:text-5xl lg:text-7xl leading-[0.9]">
+                                <span className="block mb-2 text-white/90 font-sneaket">REDEFINE</span>
                                 <span className="relative inline-block">
-                                    <span className="bg-gradient-to-r from-cyan-400 via-white to-purple-400 bg-clip-text text-transparent font-bold">
+                                    <span className="bg-gradient-to-r from-cyan-400 via-white to-purple-400 bg-clip-text text-transparent font-sneaket">
                                         YOUR <span className="font-sneaket">KICKS</span>
                                     </span>
-                                    <span className="absolute -top-1 left-0 bg-gradient-to-r from-cyan-400 via-white to-purple-400 bg-clip-text text-transparent opacity-20 blur-sm font-bold">
+                                    <span className="absolute -top-1 left-0 bg-gradient-to-r from-cyan-400 via-white to-purple-400 bg-clip-text text-transparent opacity-20 blur-sm font-sneaket">
                                         YOUR <span className="font-sneaket">KICKS</span>
                                     </span>
                                 </span>
@@ -51,11 +51,16 @@ export default function Hero() {
 
                         {/* Interactive CTA */}
                         <div className="flex flex-col sm:flex-row items-start justify-start gap-5">
-                            <button className="group relative w-auto sm:w-auto rounded-lg overflow-hidden border border-white/50 bg-transparent px-8 py-4 text-sm font-mono text-white backdrop-blur-sm transition-all duration-500 hover:scale-[1.02] hover:border-cyan-500/30 hover:shadow-[0_0_30px_rgba(34,211,238,0.3)]">
+                            <button className="group relative w-auto sm:w-auto rounded-none overflow-hidden bg-white/[0.02] px-10 py-4 text-sm font-mono text-white backdrop-blur-sm transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(34,211,238,0.2)]">
+                                {/* Corner Framework Borders */}
+                                <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/30 group-hover:border-cyan-400 transition-colors duration-300" />
+                                <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-white/30 group-hover:border-cyan-400 transition-colors duration-300" />
+                                <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-white/30 group-hover:border-cyan-400 transition-colors duration-300" />
+                                <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/30 group-hover:border-cyan-400 transition-colors duration-300" />
+
                                 <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                 <span className="relative z-10 flex items-center justify-center gap-3">
-                                    <span>VIEW MARKET</span>
-                                    <HiOutlineArrowNarrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1 group-hover:scale-110" />
+                                    <span className="tracking-[0.2em] font-bold">VIEW MARKET</span>
                                 </span>
                             </button>
                         </div>
@@ -64,113 +69,7 @@ export default function Hero() {
                     {/* RIGHT: Sneaker Showcase - Responsive Layout */}
                     <div className="relative order-2 lg:ml-auto w-full max-w-2xl">
                         {/* Mobile View: Stack vertically */}
-                        <div className="flex flex-col gap-4 lg:hidden">
-
-                            {/* LATEST Button - Mobile */}
-                            <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-700/80 to-black-500/80 p-5 backdrop-blur-xl">
-                                {/* Animated gradient border */}
-                                <div className="absolute -inset-px bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-2xl opacity-0 group-hover:opacity-30 blur-sm transition-opacity duration-500" />
-
-                                {/* Content */}
-                                <div className="relative z-10">
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <div className="w-2 h-2 rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 animate-pulse" />
-                                                <span className="text-[10px] font-mono text-gray-400 uppercase tracking-[0.3em]">LIVE FEED</span>
-                                            </div>
-                                            <h3 className="font-bold text-white text-xl uppercase tracking-tight flex items-center gap-3">
-                                                <span className="bg-gradient-to-r from-cyan-300 via-white to-purple-300 bg-clip-text text-transparent">
-                                                    LATEST
-                                                </span>
-                                                <span className="text-white/90">
-                                                    <MdDoubleArrow className="w-7 h-7 transition-transform group-hover:translate-x-1 group-hover:scale-110" />
-                                                </span>
-                                            </h3>
-                                        </div>
-                                        <div className="text-right">
-                                            <div className="text-[16px] text-cyan-300 font-mono tracking-tight">12 NEW</div>
-                                        </div>
-                                    </div>
-
-                                    {/* Progress indicator */}
-                                    <div className="mt-4 flex items-center gap-2">
-                                        <div className="flex-1 h-1 rounded-full bg-white/5 overflow-hidden">
-                                            <div className="h-full w-3/4 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full animate-pulse" />
-                                        </div>
-                                        <span className="text-[10px] text-gray-400 font-mono">75%</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Main Sneaker */}
-                            <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-black shadow-2xl h-[180px]">
-                                <img
-                                    src="https://i.pinimg.com/1200x/7c/5b/19/7c5b19fc1d89474f285c6ba444ff05cf.jpg"
-                                    alt="AI-Designed Quantum Sneaker"
-                                    className="h-full w-full object-cover transition-all duration-700 group-hover:scale-110"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                                {/* CUSTOMS text - Aligned RIGHT on mobile */}
-                                <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/70 to-transparent flex justify-end">
-                                    <span className="text-[12px] font-mono text-white/90 uppercase text-right">
-                                        C U S T O M S
-                                    </span>
-                                </div>
-                            </div>
-
-                            {/* MAGAZINE Button - Mobile */}
-                            <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-700/80 to-black-500/80 p-5 backdrop-blur-xl">
-                                {/* Animated gradient border */}
-                                <div className="absolute -inset-px bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 rounded-2xl opacity-0 group-hover:opacity-30 blur-sm transition-opacity duration-500" />
-
-                                {/* Content */}
-                                <div className="relative z-10">
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <FiBookOpen className="w-4 h-4 text-purple-300" />
-                                                <span className="text-[10px] font-mono text-gray-400 uppercase tracking-[0.3em]">ARCHIVES</span>
-                                            </div>
-                                            <h3 className="font-bold text-white text-xl uppercase tracking-tight flex items-center gap-3">
-                                                <span className="bg-gradient-to-r from-purple-300 via-white to-pink-300 bg-clip-text text-transparent">
-                                                    MAGAZINE
-                                                </span>
-                                                <span className="text-white/90">
-                                                    <MdDoubleArrow className="w-7 h-7 transition-transform group-hover:translate-x-1 group-hover:scale-110" />
-                                                </span>
-                                            </h3>
-                                        </div>
-                                        <div className="text-right">
-                                            <div className="text-[16px] text-purple-300 font-mono tracking-tight">24 ISSUES</div>
-                                        </div>
-                                    </div>
-
-                                    {/* Progress indicator */}
-                                    <div className="mt-4 flex items-center gap-2">
-                                        <div className="flex-1 h-1 rounded-full bg-white/5 overflow-hidden">
-                                            <div className="h-full w-2/3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-pulse" />
-                                        </div>
-                                        <span className="text-[10px] text-gray-400 font-mono">65%</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Sneaker Detail - BOOTS text aligned RIGHT on mobile */}
-                            <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gray-900 h-[150px]">
-                                <img
-                                    src="https://i.pinimg.com/1200x/2c/72/05/2c72059ce3b4ffd0cf9fe5d483edf0e9.jpg"
-                                    alt="Quantum React Technology"
-                                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                />
-                                <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/70 to-transparent flex justify-end">
-                                    <span className="text-[12px] font-mono text-white/90 uppercase text-right">
-                                    S P O R T S
-                                    </span>
-                                </div>
-                            </div>
-
-                        </div>
+                        
 
                         {/* Desktop View: Grid Layout */}
                         <div className="hidden lg:grid grid-cols-2 gap-4 h-[480px]">
