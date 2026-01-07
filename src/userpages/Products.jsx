@@ -278,7 +278,7 @@ function ProductCard({ product, index }) {
             className="group relative bg-white/5 backdrop-blur-xl rounded-lg border border-white/10 overflow-hidden hover:border-blue-500/50 transition-all duration-500 flex flex-col h-full shadow-2xl"
         >
             {/* Badge */}
-            <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
+            <div className="absolute top-2 left-2 z-20 flex flex-col gap-2">
                 {product.features?.includes('new_arrival') && (
                     <span className="bg-blue-500 text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter shadow-[0_0_10px_rgba(59,130,246,0.5)]">New Drop</span>
                 )}
@@ -289,7 +289,7 @@ function ProductCard({ product, index }) {
                 )}
             </div>
 
-            <button className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-blue-600 shadow-[0_0_15px_rgba(37,99,235,0.4)] border border-blue-400/50 flex items-center justify-center text-white hover:bg-blue-500 hover:scale-110 transition-all">
+            <button className="absolute top-2 right-2 z-20 w-8 h-8 rounded-full bg-blue-600 shadow-[0_0_15px_rgba(37,99,235,0.4)] border border-blue-400/50 flex items-center justify-center text-white hover:bg-blue-500 hover:scale-110 transition-all">
                 <FiShoppingBag className="w-4 h-4" />
             </button>
 
