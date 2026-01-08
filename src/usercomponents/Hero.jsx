@@ -69,7 +69,7 @@ export default function Hero() {
                     {/* RIGHT: Sneaker Showcase - Responsive Layout */}
                     <div className="relative order-2 lg:ml-auto w-full max-w-2xl">
                         {/* Mobile View: Stack vertically */}
-                        
+
 
                         {/* Desktop View: Grid Layout */}
                         <div className="hidden lg:grid grid-cols-2 gap-4 h-[480px]">
