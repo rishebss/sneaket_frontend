@@ -97,7 +97,7 @@ export default function Login() {
                         {/* Username/Email Field */}
                         <div className="group">
                             <label className="block text-[11px] font-medium text-gray-300 mb-1">
-                                Username or Email
+                                
                             </label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -108,7 +108,7 @@ export default function Login() {
                                     name="username_or_email"
                                     value={formData.username_or_email}
                                     onChange={handleChange}
-                                    className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-sm"
+                                    className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-sm text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-sm"
                                     placeholder="Username or Email"
                                     required
                                 />
@@ -119,7 +119,7 @@ export default function Login() {
                         <div className="group">
                             <div className="flex items-center justify-between mb-1">
                                 <label className="block text-[11px] font-medium text-gray-300">
-                                    Password
+                                    
                                 </label>
                                 <Link
                                     to="/forgot-password"
@@ -137,7 +137,7 @@ export default function Login() {
                                     name="password"
                                     value={formData.password}
                                     onChange={handleChange}
-                                    className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-sm"
+                                    className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-sm text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-sm"
                                     placeholder="••••••••"
                                     required
                                 />
@@ -150,7 +150,7 @@ export default function Login() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full group relative py-3 rounded-xl bg-white/5 border border-white/10 hover:border-cyan-500/50 hover:bg-white/10 transition-all duration-500 overflow-hidden"
+                            className="w-full group relative py-3 rounded-sm bg-white/5 border border-white/10 hover:border-cyan-500/50 hover:bg-white/10 transition-all duration-500 overflow-hidden"
                         >
                             {/* Subtle Inner Glow */}
                             <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-cyan-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
@@ -180,7 +180,7 @@ export default function Login() {
 
                     {/* Social Login */}
                     <div className="flex flex-col gap-3">
-                        <button className="group relative w-full py-2.5 bg-white/5 border border-white/10 rounded-xl hover:border-white/20 hover:bg-white/10 transition-all duration-300">
+                        <button className="group relative w-full py-2.5 bg-white/5 border border-white/10 rounded-sm hover:border-white/20 hover:bg-white/10 transition-all duration-300">
                             <div className="flex items-center justify-center gap-2">
                                 <FaGoogle className="w-4 h-4 text-white/60 group-hover:text-white transition-colors" />
                                 <span className="text-xs text-gray-400 group-hover:text-white">Sign in with Google</span>
