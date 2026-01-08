@@ -87,7 +87,7 @@ export default function Signup() {
                         <h1 className="text-xl font-semibold text-white tracking-tight mb-1">
                             Create Account
                         </h1>
-                        
+
                     </div>
 
                     {/* General Error Message */}
@@ -103,7 +103,7 @@ export default function Signup() {
                         <div className="grid grid-cols-2 gap-4">
                             <div className="group">
                                 <label className="block text-[11px] font-medium text-gray-300 mb-1">
-                                    
+
                                 </label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -114,7 +114,7 @@ export default function Signup() {
                                         name="first_name"
                                         value={formData.first_name}
                                         onChange={handleChange}
-                                        className={`w-full pl-11 pr-4 py-1.5 md:py-2 bg-white/5 border ${errors.first_name ? 'border-red-500/50' : 'border-white/10'} rounded-sm text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-md`}
+                                        className={`w-full pl-11 pr-4 py-1.5 md:py-2 bg-white/5 border ${errors.first_name ? 'border-red-500/50' : 'border-white/10'} rounded-sm text-white placeholder-gray-600 placeholder:text-[13px] focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-md`}
                                         placeholder="First Name"
                                         required
                                     />
@@ -123,7 +123,7 @@ export default function Signup() {
                             </div>
                             <div className="group">
                                 <label className="block text-[11px] font-medium text-gray-300 mb-1">
-                                   
+
                                 </label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -134,7 +134,7 @@ export default function Signup() {
                                         name="last_name"
                                         value={formData.last_name}
                                         onChange={handleChange}
-                                        className={`w-full pl-11 pr-4 py-1.5 md:py-2 bg-white/5 border ${errors.last_name ? 'border-red-500/50' : 'border-white/10'} rounded-sm text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-md`}
+                                        className={`w-full pl-11 pr-4 py-1.5 md:py-2 bg-white/5 border ${errors.last_name ? 'border-red-500/50' : 'border-white/10'} rounded-sm text-white placeholder-gray-600 placeholder:text-[13px] focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-md`}
                                         placeholder="Last Name"
                                         required
                                     />
@@ -146,7 +146,7 @@ export default function Signup() {
                         {/* Username Field */}
                         <div className="group">
                             <label className="block text-[11px] font-medium text-gray-300 mb-1 mt-4">
-                               
+
                             </label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -157,8 +157,8 @@ export default function Signup() {
                                     name="username"
                                     value={formData.username}
                                     onChange={handleChange}
-                                    className={`w-full pl-11 pr-4 py-1.5 md:py-2 bg-white/5 border ${errors.username ? 'border-red-500/50' : 'border-white/10'} rounded-sm text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-md`}
-                                    placeholder="johndoe123"
+                                    className={`w-full pl-11 pr-4 py-1.5 md:py-2 bg-white/5 border ${errors.username ? 'border-red-500/50' : 'border-white/10'} rounded-sm text-white placeholder-gray-600 placeholder:text-[13px] focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-md`}
+                                    placeholder="Username"
                                     required
                                 />
                             </div>
@@ -168,7 +168,7 @@ export default function Signup() {
                         {/* Email Field */}
                         <div className="group">
                             <label className="block text-[11px] font-medium text-gray-300 mb-1 mt-4">
-                               
+
                             </label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -179,7 +179,7 @@ export default function Signup() {
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    className={`w-full pl-11 pr-4 py-1.5 md:py-2 bg-white/5 border ${errors.email ? 'border-red-500/50' : 'border-white/10'} rounded-sm text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-md`}
+                                    className={`w-full pl-11 pr-4 py-1.5 md:py-2 bg-white/5 border ${errors.email ? 'border-red-500/50' : 'border-white/10'} rounded-sm text-white placeholder-gray-600 placeholder:text-[13px] focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-md`}
                                     placeholder="Mail"
                                     required
                                 />
@@ -190,7 +190,7 @@ export default function Signup() {
                         {/* Password Field */}
                         <div className="group">
                             <label className="block text-[11px] font-medium text-gray-300 mb-1 mt-4">
-                              
+
                             </label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -201,7 +201,7 @@ export default function Signup() {
                                     name="password"
                                     value={formData.password}
                                     onChange={handleChange}
-                                    className={`w-full pl-11 pr-4 py-1.5 md:py-2 bg-white/5 border ${errors.password ? 'border-red-500/50' : 'border-white/10'} rounded-sm text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-md`}
+                                    className={`w-full pl-11 pr-4 py-1.5 md:py-2 bg-white/5 border ${errors.password ? 'border-red-500/50' : 'border-white/10'} rounded-sm text-white placeholder-gray-600 placeholder:text-[13px] focus:outline-none focus:border-cyan-500/40 focus:bg-white/[0.08] transition-all text-md`}
                                     placeholder="Password"
                                     required
                                 />
@@ -247,7 +247,7 @@ export default function Signup() {
                     </div>
 
                     {/* Login Link */}
-                    <div className="mt-3 md:mt-4 text-center">
+                    <div className="mt-6 text-center">
                         <p className="text-gray-400 text-sm">
                             Already have an account?{' '}
                             <Link
