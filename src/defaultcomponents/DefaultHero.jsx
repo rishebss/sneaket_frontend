@@ -5,10 +5,36 @@ import DarkVeil from "./DarkVeil";
 
 export default function Hero() {
   return (
-    <div className="w-full relative">
-      {/* Main Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center px-6 sm:px-12 lg:px-24 pt-32 pb-12">
+    <div className="w-full relative flex items-center justify-center overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-black to-gray-950" />
 
+      {/* Animated Grid Background */}
+      <div
+        className="absolute inset-0 opacity-20"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(34, 211, 238, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(34, 211, 238, 0.1) 1px, transparent 1px)
+          `,
+          backgroundSize: "50px 50px",
+          animation: "gridMove 20s linear infinite",
+        }}
+      />
+
+      {/* Floating Orbs */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full blur-3xl animate-pulse" />
+      <div
+        className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full blur-3xl animate-pulse"
+        style={{ animationDelay: "1s" }}
+      />
+      <div
+        className="absolute top-1/2 right-1/3 w-64 h-64 bg-gradient-to-r from-orange-500/15 to-yellow-500/15 rounded-full blur-2xl animate-pulse"
+        style={{ animationDelay: "2s" }}
+      />
+
+      {/* Main Content */}
+      <div className="relative mt-20 z-10 flex flex-col items-center justify-center px-6 sm:px-12 lg:px-24 py-20">
         <div className="mb-8 flex items-center justify-start gap-3">
           <span className="text-[12px] sm:text-sm text-gray-200 tracking-widest font-mono flex items-center gap-2">
             <CgOpenCollective />
@@ -65,8 +91,9 @@ export default function Hero() {
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-cyan-400 to-transparent z-20 shadow-[0_0_12px_rgba(34,211,238,0.6)]" />
 
               <div className="relative z-10 flex items-center gap-4 text-white font-mono text-base sm:text-lg tracking-[0.3em]">
-                <span className="opacity-80 group-hover:opacity-100 transition-opacity">LOGIN</span>
-
+                <span className="opacity-80 group-hover:opacity-100 transition-opacity">
+                  LOGIN
+                </span>
               </div>
             </div>
 
@@ -74,11 +101,19 @@ export default function Hero() {
             <div className="w-8 sm:w-12 h-px bg-gradient-to-l from-transparent to-cyan-400/50 group-hover:to-cyan-400 transition-all duration-300" />
           </Link>
         </div>
-
       </div>
 
-      {/* Add CSS animation for scanning line */}
+      {/* CSS Animations */}
       <style jsx>{`
+        @keyframes gridMove {
+          0% {
+            transform: translate(0, 0);
+          }
+          100% {
+            transform: translate(50px, 50px);
+          }
+        }
+
         @keyframes scan {
           0% {
             transform: translateX(-100%);

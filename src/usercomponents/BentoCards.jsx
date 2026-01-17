@@ -38,7 +38,7 @@ export default function BentoCards() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-6xl mx-auto relative">
 
                     {/* Large Card - View Store with Plasma Background */}
-                    <Link to="/products" className="md:col-span-2 md:row-span-2 group relative overflow-hidden rounded-2xl border border-white/10 backdrop-blur-xl transition-all duration-500 hover:border-cyan-500/30 hover:shadow-[0_0_40px_rgba(34,211,238,0.15)] min-h-[300px] md:min-h-0">
+                    <Link to="/products" className="md:col-span-2 md:row-span-2 group relative overflow-hidden rounded-2xl border border-white/10 backdrop-blur-xl transition-all duration-500 hover:border-cyan-500/30 hover:shadow-[0_0_40px_rgba(34,211,238,0.15)] min-h-[220px] md:min-h-0">
                         {/* Plasma Background */}
                         <div className="absolute inset-0 z-0">
                             <PixelBlast
@@ -52,13 +52,13 @@ export default function BentoCards() {
                         {/* Cyan Gradient Overlay on Hover */}
                         <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-2" />
 
-                        <div className="relative z-10 h-full flex flex-col p-8">
-                            <div className="inline-flex p-4 rounded-xl bg-gradient-to-br from-cyan-500/30 to-cyan-500/15 border border-cyan-500/40 mb-6 w-fit backdrop-blur-md">
-                                <HiShoppingBag className="w-8 h-8 text-cyan-300" />
+                        <div className="relative z-10 h-full flex flex-col p-6 md:p-8">
+                            <div className="inline-flex p-3 md:p-4 rounded-xl bg-gradient-to-br from-cyan-500/30 to-cyan-500/15 border border-cyan-500/40 mb-4 md:mb-6 w-fit backdrop-blur-md">
+                                <HiShoppingBag className="w-6 h-6 md:w-8 md:h-8 text-cyan-300" />
                             </div>
 
-                            <h3 className="text-2xl font-mono text-white mb-3">View Store</h3>
-                            <p className="text-gray-200 text-sm leading-relaxed mb-6">
+                            <h3 className="text-xl md:text-2xl font-mono text-white mb-2 md:mb-3">View Store</h3>
+                            <p className="text-gray-200 text-xs md:text-sm leading-relaxed mb-4 md:mb-6">
                                 <span className="md:hidden">Discover the hottest sneakers making waves in street culture</span>
                                 <span className="hidden md:block">Browse our complete collection of premium sneakers. From trending releases to timeless classics, explore hundreds of verified authentic styles from top brands. Filter by category, size, and price to find your perfect pair.</span>
                             </p>
@@ -135,7 +135,7 @@ export default function BentoCards() {
                     </div>
 
                     {/* Medium Card - Be a member (Hero Style) */}
-                    <div className="md:col-span-2 group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-700/80 to-black-500/80 p-5 backdrop-blur-xl transition-all duration-500 min-h-[180px] hover:border-amber-500/30 hover:shadow-[0_0_40px_rgba(245,158,11,0.15)]">
+                    <div className="md:col-span-2 group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-700/80 to-black-500/80 p-5 backdrop-blur-xl transition-all duration-500 min-h-[220px] hover:border-amber-500/30 hover:shadow-[0_0_40px_rgba(245,158,11,0.15)]">
 
                         <div className="relative z-10 h-full flex flex-col justify-between">
                             <div>

@@ -53,10 +53,10 @@ export default function Hero() {
                         <div className="flex flex-col sm:flex-row items-start justify-start gap-5">
                             <button className="group relative w-auto sm:w-auto rounded-none overflow-hidden bg-white/[0.02] px-10 py-4 text-sm font-mono text-white backdrop-blur-sm transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(34,211,238,0.2)]">
                                 {/* Corner Framework Borders */}
-                                <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/30 group-hover:border-cyan-400 transition-colors duration-300" />
-                                <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-white/30 group-hover:border-cyan-400 transition-colors duration-300" />
-                                <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-white/30 group-hover:border-cyan-400 transition-colors duration-300" />
-                                <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/30 group-hover:border-cyan-400 transition-colors duration-300" />
+                                <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-cyan-800 group-hover:border-cyan-400 transition-colors duration-300" />
+                                <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-cyan-800 group-hover:border-cyan-400 transition-colors duration-300" />
+                                <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-cyan-800 group-hover:border-cyan-400 transition-colors duration-300" />
+                                <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-cyan-800 group-hover:border-cyan-400 transition-colors duration-300" />
 
                                 <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                 <span className="relative z-10 flex items-center justify-center gap-3">
