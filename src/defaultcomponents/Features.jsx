@@ -26,7 +26,7 @@ const Features = ({
     {
       step: "03",
       title: "Chunky",
-      content: "Bold, expressive soles and retro-inspired designs for those who want to make a statement.",
+      content: "Bold, chunky and retro-inspired designs for that statement look.",
       image: "https://res.cloudinary.com/dviwae8cc/image/upload/v1767744555/Gemini_Generated_Image_47ydji47ydji47yd-Photoroom_er0kna.png"
     },
     {
@@ -77,40 +77,77 @@ const Features = ({
           Explore our diverse range of sneaker silhouettes for every occasion.
         </p>
 
-        <div className="flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-10">
-          <div className="order-2 md:order-1 space-y-8">
+        <div className="flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-10 md:mt-20 mt-0">
+          <div className="order-2 md:order-1">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
-                className="flex items-center gap-6 md:gap-8 cursor-pointer"
+                className={`relative flex gap-6 md:gap-8 cursor-pointer ${
+                  index < features.length - 1 ? "mb-8" : ""
+                }`}
                 initial={{ opacity: 0.3 }}
                 animate={{ opacity: index === currentFeature ? 1 : 0.3 }}
                 transition={{ duration: 0.5 }}
                 onClick={() => {
-                  setCurrentFeature(index)
-                  setProgress(0)
+                  setCurrentFeature(index);
+                  setProgress(0);
                 }}
               >
-                <motion.div
-                  className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center border-2 ${index === currentFeature
-                    ? "bg-cyan-500 border-cyan-500 text-white scale-110"
-                    : "bg-gray-800 border-gray-700"
-                    }`}
-                >
-                  {index <= currentFeature ? (
-                    <span className="text-lg font-bold">✓</span>
-                  ) : (
-                    <span className="text-lg font-semibold text-gray-300">{index + 1}</span>
-                  )}
-                </motion.div>
+                {index < features.length - 1 && (
+                  <div
+                    className="absolute left-[15px] md:left-[19px] top-[32px] md:top-[40px] w-0.5 bg-transparent"
+                    style={{ height: `100%` }}
+                  >
+                    <motion.div
+                      className="h-full w-full bg-cyan-500"
+                      initial={{ scaleY: 0 }}
+                      animate={{
+                        scaleY:
+                          index < currentFeature
+                            ? 1
+                            : index === currentFeature
+                            ? progress / 100
+                            : 0,
+                      }}
+                      style={{ originY: 0 }}
+                      transition={{
+                        duration: index === currentFeature ? 0.1 : 0.5,
+                        ease: "linear",
+                      }}
+                    />
+                  </div>
+                )}
+                <div className="relative z-10 flex w-full items-start gap-6 md:gap-8">
+                  <div className="flex flex-col items-center">
+                    <motion.div
+                      className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center border-2 ${
+                        index <= currentFeature // Condition for color
+                          ? "bg-cyan-500 border-cyan-500 text-white"
+                          : "bg-gray-800 border-gray-700"
+                      } ${
+                        index === currentFeature // Condition for scale
+                          ? "scale-110"
+                          : ""
+                      }`}
+                    >
+                      {index <= currentFeature ? (
+                        <span className="text-lg font-bold">✓</span>
+                      ) : (
+                        <span className="text-lg font-semibold text-gray-300">
+                          {index + 1}
+                        </span>
+                      )}
+                    </motion.div>
+                  </div>
 
-                <div className="flex-1">
-                  <h3 className="text-base font-mono text-white mb-2">
-                    {feature.title || feature.step}
-                  </h3>
-                  <p className="text-sm text-gray-400 leading-relaxed">
-                    {feature.content}
-                  </p>
+                  <div className="flex-1 pt-1">
+                    <h3 className="text-base font-mono text-white mb-2">
+                      {feature.title || feature.step}
+                    </h3>
+                    <p className="text-sm text-gray-400 leading-relaxed">
+                      {feature.content}
+                    </p>
+                  </div>
                 </div>
               </motion.div>
             ))}
