@@ -257,7 +257,7 @@ export default function Products() {
               <div className="flex items-center justify-center min-h-[300px]">
                 <Loader />
               </div>
-            ) : filteredProducts.length > 0 ? (
+            ) : filteredProducts && filteredProducts.length > 0 ? (
               <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6">
                 {filteredProducts.map((product, index) => (
                   <ProductCard
@@ -286,6 +286,7 @@ export default function Products() {
 
             {/* Pagination Controls */}
             {!loading &&
+              filteredProducts &&
               filteredProducts.length > 0 &&
               pagination.totalPages > 1 && (
                 <div className="flex items-center justify-center gap-4 mt-20">
