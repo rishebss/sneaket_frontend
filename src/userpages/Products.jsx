@@ -56,17 +56,21 @@ export default function Products() {
     hasPrevious: false,
     count: 0,
   });
+  const [pageLoading, setPageLoading] = useState(false);
 
   useEffect(() => {
-    fetchProducts(1);
+    fetchProducts(1, false);
   }, []);
 
   useEffect(() => {
     applyFilters();
   }, [products, searchQuery, selectedCategory, selectedBrand, sortBy]);
 
-  const fetchProducts = async (page = 1) => {
+  const fetchProducts = async (page = 1, isPaginationClick = false) => {
     try {
+      if (isPaginationClick) {
+        setPageLoading(true);
+      }
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/api/sneakers?page=${page}`,
       );
@@ -80,9 +84,16 @@ export default function Products() {
         count: data.count || 0,
       });
       setLoading(false);
+      setPageLoading(false);
+
+      // Scroll to top after page navigation
+      if (isPaginationClick) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
     } catch (error) {
       console.error("Error fetching products:", error);
       setLoading(false);
+      setPageLoading(false);
     }
   };
 
@@ -210,6 +221,7 @@ export default function Products() {
                           {cat.name}
                         </button>
                       ))}
+                      ))}
                     </div>
                   </div>
 
@@ -289,11 +301,13 @@ export default function Products() {
               filteredProducts &&
               filteredProducts.length > 0 &&
               pagination.totalPages > 1 && (
-                <div className="flex items-center justify-center gap-4 mt-20">
+                <div className="flex items-center justify-center gap-2 mt-20">
                   <button
-                    onClick={() => fetchProducts(pagination.currentPage - 1)}
+                    onClick={() =>
+                      fetchProducts(pagination.currentPage - 1, true)
+                    }
                     disabled={!pagination.hasPrevious}
-                    className={`flex items-center justify-center w-12 h-12 rounded-sm transition-all ${
+                    className={`flex items-center justify-center w-12 h-12 rounded-l-md transition-all ${
                       pagination.hasPrevious
                         ? "bg-white/10 text-white hover:bg-white/20 border border-white/20"
                         : "bg-white/5 text-gray-500 border border-white/10 cursor-not-allowed"
@@ -302,16 +316,22 @@ export default function Products() {
                     <MdDoubleArrow className="w-6 h-6 rotate-180" />
                   </button>
 
-                  <div className="px-4 py-2 bg-cyan-500/20 border border-cyan-500/30 rounded-sm">
-                    <span className="text-cyan-400 font-bold text-lg">
-                      {pagination.currentPage}
-                    </span>
+                  <div className="w-16 h-12 bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center">
+                    {pageLoading ? (
+                      <div className="w-5 h-5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+                    ) : (
+                      <span className="text-cyan-400 font-bold text-lg">
+                        {pagination.currentPage}
+                      </span>
+                    )}
                   </div>
 
                   <button
-                    onClick={() => fetchProducts(pagination.currentPage + 1)}
+                    onClick={() =>
+                      fetchProducts(pagination.currentPage + 1, true)
+                    }
                     disabled={!pagination.hasNext}
-                    className={`flex items-center justify-center w-12 h-12 rounded-sm transition-all ${
+                    className={`flex items-center justify-center w-12 h-12 rounded-r-md transition-all ${
                       pagination.hasNext
                         ? "bg-white/10 text-white hover:bg-white/20 border border-white/20"
                         : "bg-white/5 text-gray-500 border border-white/10 cursor-not-allowed"
