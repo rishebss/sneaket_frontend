@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import {
   FiSearch,
   FiFilter,
@@ -52,79 +53,55 @@ const FEATURES = [
   { id: "staff_pick", name: "Staff Pick" },
 ];
 
+const fetchSneakers = async (page) => {
+  const response = await fetch(
+    `${import.meta.env.VITE_API_BASE_URL}/api/sneakers?page=${page}`
+  );
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+  return response.json();
+};
+
 export default function Products() {
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedBrand, setSelectedBrand] = useState("all");
   const [selectedFeature, setSelectedFeature] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [showFilters, setShowFilters] = useState(false);
-  const [pagination, setPagination] = useState({
-    currentPage: 1,
-    totalPages: 1,
-    hasNext: false,
-    hasPrevious: false,
-    count: 0,
+
+  const {
+    data,
+    isLoading,
+    isError,
+    isPlaceholderData,
+  } = useQuery({
+    queryKey: ["sneakers", page],
+    queryFn: () => fetchSneakers(page),
+    placeholderData: keepPreviousData,
+    staleTime: 60 * 1000, // 1 minute
   });
-  const [pageLoading, setPageLoading] = useState(false);
 
-  useEffect(() => {
-    fetchProducts(1, false);
-  }, []);
+  const products = data?.results || [];
 
-  useEffect(() => {
-    applyFilters();
-  }, [
-    products,
-    searchQuery,
-    selectedCategory,
-    selectedBrand,
-    selectedFeature,
-    sortBy,
-  ]);
-
-  const fetchProducts = async (page = 1, isPaginationClick = false) => {
-    try {
-      if (isPaginationClick) {
-        setPageLoading(true);
-      }
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/sneakers?page=${page}`,
-      );
-      const data = await response.json();
-      setProducts(data.results || []);
-      setPagination({
-        currentPage: page,
-        totalPages: Math.ceil(data.count / 10),
-        hasNext: data.next !== null,
-        hasPrevious: data.previous !== null,
-        count: data.count || 0,
-      });
-      setLoading(false);
-      setPageLoading(false);
-
-      // Scroll to top after page navigation
-      if (isPaginationClick) {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      setLoading(false);
-      setPageLoading(false);
-    }
+  const pagination = {
+    currentPage: page,
+    totalPages: data ? Math.ceil(data.count / 10) : 1,
+    hasNext: data ? !!data.next : false,
+    hasPrevious: data ? !!data.previous : false,
+    count: data ? data.count : 0,
   };
 
-  const applyFilters = () => {
+  const filteredProducts = useMemo(() => {
     let result = [...products];
 
     if (searchQuery) {
       result = result.filter(
         (p) =>
           p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          p.brand.toLowerCase().includes(searchQuery.toLowerCase()),
+          p.brand.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -141,7 +118,7 @@ export default function Products() {
         (p) =>
           p.features &&
           Array.isArray(p.features) &&
-          p.features.includes(selectedFeature),
+          p.features.includes(selectedFeature)
       );
     }
 
@@ -154,8 +131,14 @@ export default function Products() {
       result.sort((a, b) => (b.rating || 0) - (a.rating || 0));
     }
 
-    setFilteredProducts(result);
-  };
+    return result;
+  }, [products, searchQuery, selectedCategory, selectedBrand, selectedFeature, sortBy]);
+
+  useEffect(() => {
+    if (page > 1) {
+       window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [page]);
 
   return (
     <>
@@ -250,7 +233,7 @@ export default function Products() {
                           {cat.name}
                         </button>
                       ))}
-                      ))}
+                      
                     </div>
                   </div>
 
@@ -317,7 +300,7 @@ export default function Products() {
         <div className="max-w-[1600px] mx-auto flex flex-col gap-8 mt-0 md:mt-20">
           {/* Products Grid */}
           <div className="w-full">
-            {loading ? (
+            {isLoading ? (
               <div className="flex items-center justify-center min-h-[300px]">
                 <Loader />
               </div>
@@ -350,15 +333,13 @@ export default function Products() {
             )}
 
             {/* Pagination Controls */}
-            {!loading &&
+            {!isLoading &&
               filteredProducts &&
               filteredProducts.length > 0 &&
               pagination.totalPages > 1 && (
                 <div className="flex items-center justify-center gap-2 mt-20">
                   <button
-                    onClick={() =>
-                      fetchProducts(pagination.currentPage - 1, true)
-                    }
+                    onClick={() => setPage(old => Math.max(old - 1, 1))}
                     disabled={!pagination.hasPrevious}
                     className={`flex items-center justify-center w-12 h-12 rounded-l-md transition-all ${
                       pagination.hasPrevious
@@ -370,7 +351,7 @@ export default function Products() {
                   </button>
 
                   <div className="w-20 h-12 bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center">
-                    {pageLoading ? (
+                    {isPlaceholderData ? (
                       <div className="w-5 h-5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
                     ) : (
                       <span className="text-cyan-400 font-bold text-sm">
@@ -380,10 +361,12 @@ export default function Products() {
                   </div>
 
                   <button
-                    onClick={() =>
-                      fetchProducts(pagination.currentPage + 1, true)
-                    }
-                    disabled={!pagination.hasNext}
+                    onClick={() => {
+                       if (!isPlaceholderData && pagination.hasNext) {
+                         setPage(old => old + 1);
+                       }
+                    }}
+                    disabled={!pagination.hasNext || isPlaceholderData}
                     className={`flex items-center justify-center w-12 h-12 rounded-r-md transition-all ${
                       pagination.hasNext
                         ? "bg-white/10 text-white hover:bg-white/20 border border-white/20"
