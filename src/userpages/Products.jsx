@@ -53,9 +53,22 @@ const FEATURES = [
   { id: "staff_pick", name: "Staff Pick" },
 ];
 
-const fetchSneakers = async (page) => {
+const fetchSneakers = async ({ page, search, category, brand, feature, sort }) => {
+  const params = new URLSearchParams({ page });
+  
+  if (search) params.append('search', search);
+  if (category && category !== 'all') params.append('category', category);
+  if (brand && brand !== 'all') params.append('brand', brand);
+  if (feature && feature !== 'all') params.append('features', feature);
+  
+  // Sort mapping
+  if (sort === 'price-low') params.append('ordering', 'price');
+  else if (sort === 'price-high') params.append('ordering', '-price');
+  else if (sort === 'rating') params.append('ordering', '-rating');
+  else params.append('ordering', '-created_at'); // Default "newest"
+
   const response = await fetch(
-    `${import.meta.env.VITE_API_BASE_URL}/api/sneakers?page=${page}`
+    `${import.meta.env.VITE_API_BASE_URL}/api/sneakers?${params.toString()}`
   );
   if (!response.ok) {
     throw new Error("Network response was not ok");
@@ -72,14 +85,26 @@ export default function Products() {
   const [sortBy, setSortBy] = useState("newest");
   const [showFilters, setShowFilters] = useState(false);
 
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery, selectedCategory, selectedBrand, selectedFeature, sortBy]);
+
   const {
     data,
     isLoading,
     isError,
     isPlaceholderData,
   } = useQuery({
-    queryKey: ["sneakers", page],
-    queryFn: () => fetchSneakers(page),
+    queryKey: ["sneakers", page, searchQuery, selectedCategory, selectedBrand, selectedFeature, sortBy],
+    queryFn: () => fetchSneakers({
+      page,
+      search: searchQuery,
+      category: selectedCategory,
+      brand: selectedBrand,
+      feature: selectedFeature,
+      sort: sortBy
+    }),
     placeholderData: keepPreviousData,
     staleTime: 60 * 1000, // 1 minute
   });
@@ -94,47 +119,8 @@ export default function Products() {
     count: data ? data.count : 0,
   };
 
-  const filteredProducts = useMemo(() => {
-    let result = [...products];
-
-    if (searchQuery) {
-      result = result.filter(
-        (p) =>
-          p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          p.brand.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    if (selectedCategory !== "all") {
-      result = result.filter((p) => p.category === selectedCategory);
-    }
-
-    if (selectedBrand !== "all") {
-      result = result.filter((p) => p.brand === selectedBrand);
-    }
-
-    if (selectedFeature !== "all") {
-      result = result.filter(
-        (p) =>
-          p.features &&
-          Array.isArray(p.features) &&
-          p.features.includes(selectedFeature)
-      );
-    }
-
-    // Sort logic
-    if (sortBy === "price-low") {
-      result.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-    } else if (sortBy === "price-high") {
-      result.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-    } else if (sortBy === "rating") {
-      result.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-    }
-
-    return result;
-  }, [products, searchQuery, selectedCategory, selectedBrand, selectedFeature, sortBy]);
-
   useEffect(() => {
+    // Only scroll if we are on a new page AND the data is actually fresh (not placeholder)
     if (page > 1 && !isPlaceholderData) {
        window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -199,7 +185,7 @@ export default function Products() {
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
                 transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                className="fixed top-0 right-0 h-full w-full max-w-sm bg-gray-950/95 backdrop-blur-2xl border-l border-white/10 z-[100] p-8 shadow-2xl overflow-y-auto"
+                className="fixed top-0 right-0 h-full w-full md:max-w-sm bg-gray-950/95 backdrop-blur-2xl border-l border-white/10 z-[100] p-8 shadow-2xl overflow-y-auto custom-scrollbar"
               >
                 <div className="flex items-center justify-between mb-10">
                   <h2 className="text-xl font-mono text-white tracking-tight">
@@ -304,9 +290,9 @@ export default function Products() {
               <div className="flex items-center justify-center min-h-[300px]">
                 <Loader />
               </div>
-            ) : filteredProducts && filteredProducts.length > 0 ? (
+            ) : products && products.length > 0 ? (
               <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6">
-                {filteredProducts.map((product, index) => (
+                {products.map((product, index) => (
                   <ProductCard
                     key={product.id}
                     product={product}
@@ -334,8 +320,8 @@ export default function Products() {
 
             {/* Pagination Controls */}
             {!isLoading &&
-              filteredProducts &&
-              filteredProducts.length > 0 &&
+              products &&
+              products.length > 0 &&
               pagination.totalPages > 1 && (
                 <div className="flex items-center justify-center gap-2 mt-20">
                   <button
