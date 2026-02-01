@@ -40,6 +40,18 @@ const BRANDS = [
   { id: "gucci", name: "Gucci" },
 ];
 
+const FEATURES = [
+  { id: "all", name: "All Features" },
+  { id: "best_seller", name: "Best Seller" },
+  { id: "featured", name: "Featured" },
+  { id: "new_arrival", name: "New Arrival" },
+  { id: "value_for_money", name: "Value for Money" },
+  { id: "limited_edition", name: "Limited Edition" },
+  { id: "ai_designed", name: "AI Designed" },
+  { id: "trending", name: "Trending" },
+  { id: "staff_pick", name: "Staff Pick" },
+];
+
 export default function Products() {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -47,6 +59,7 @@ export default function Products() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedBrand, setSelectedBrand] = useState("all");
+  const [selectedFeature, setSelectedFeature] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [showFilters, setShowFilters] = useState(false);
   const [pagination, setPagination] = useState({
@@ -64,7 +77,14 @@ export default function Products() {
 
   useEffect(() => {
     applyFilters();
-  }, [products, searchQuery, selectedCategory, selectedBrand, sortBy]);
+  }, [
+    products,
+    searchQuery,
+    selectedCategory,
+    selectedBrand,
+    selectedFeature,
+    sortBy,
+  ]);
 
   const fetchProducts = async (page = 1, isPaginationClick = false) => {
     try {
@@ -114,6 +134,15 @@ export default function Products() {
 
     if (selectedBrand !== "all") {
       result = result.filter((p) => p.brand === selectedBrand);
+    }
+
+    if (selectedFeature !== "all") {
+      result = result.filter(
+        (p) =>
+          p.features &&
+          Array.isArray(p.features) &&
+          p.features.includes(selectedFeature),
+      );
     }
 
     // Sort logic
@@ -227,7 +256,7 @@ export default function Products() {
 
                   <div>
                     <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-                      <span className="w-1 h-1 bg-purple-500 rounded-lg" />
+                      <span className="w-1 h-1 bg-blue-500 rounded-lg" />
                       Brands
                     </h3>
                     <div className="flex flex-wrap gap-2">
@@ -237,7 +266,7 @@ export default function Products() {
                           onClick={() => setSelectedBrand(brand.id)}
                           className={`px-4 py-2 rounded-lg text-sm transition-all ${
                             selectedBrand === brand.id
-                              ? "bg-purple-500/20 text-purple-400 border border-purple-500/30 font-bold"
+                              ? "bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold"
                               : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
                           }`}
                         >
@@ -247,10 +276,33 @@ export default function Products() {
                     </div>
                   </div>
 
+                  <div>
+                    <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
+                      <span className="w-1 h-1 bg-blue-500 rounded-lg" />
+                      Features
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {FEATURES.map((feature) => (
+                        <button
+                          key={feature.id}
+                          onClick={() => setSelectedFeature(feature.id)}
+                          className={`px-4 py-2 rounded-lg text-sm transition-all ${
+                            selectedFeature === feature.id
+                              ? "bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold"
+                              : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
+                          }`}
+                        >
+                          {feature.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
                   <button
                     onClick={() => {
                       setSelectedCategory("all");
                       setSelectedBrand("all");
+                      setSelectedFeature("all");
                     }}
                     className="w-full py-4 mt-8 rounded-xl border border-white/10 text-gray-400 hover:text-white hover:bg-white/5 transition-all text-sm font-mono"
                   >
@@ -288,6 +340,7 @@ export default function Products() {
                     setSearchQuery("");
                     setSelectedCategory("all");
                     setSelectedBrand("all");
+                    setSelectedFeature("all");
                   }}
                   className="mt-4 text-cyan-400 hover:underline text-sm"
                 >
@@ -316,12 +369,12 @@ export default function Products() {
                     <MdDoubleArrow className="w-6 h-6 rotate-180" />
                   </button>
 
-                  <div className="w-16 h-12 bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center">
+                  <div className="w-20 h-12 bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center">
                     {pageLoading ? (
                       <div className="w-5 h-5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
                     ) : (
-                      <span className="text-cyan-400 font-bold text-lg">
-                        {pagination.currentPage}
+                      <span className="text-cyan-400 font-bold text-sm">
+                        {pagination.currentPage} / {pagination.totalPages}
                       </span>
                     )}
                   </div>
@@ -370,11 +423,6 @@ function ProductCard({ product, index }) {
     >
       {/* Badge */}
       <div className="absolute top-2 left-2 z-20 flex flex-col gap-2">
-        {product.features?.includes("new_arrival") && (
-          <span className="bg-blue-500 text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter shadow-[0_0_10px_rgba(59,130,246,0.5)]">
-            New Drop
-          </span>
-        )}
         {hasDiscount && (
           <span className="bg-red-500 text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter">
             -
