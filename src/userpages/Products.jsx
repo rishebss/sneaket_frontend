@@ -135,10 +135,10 @@ export default function Products() {
   }, [products, searchQuery, selectedCategory, selectedBrand, selectedFeature, sortBy]);
 
   useEffect(() => {
-    if (page > 1) {
+    if (page > 1 && !isPlaceholderData) {
        window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, [page]);
+  }, [page, isPlaceholderData]);
 
   return (
     <>
