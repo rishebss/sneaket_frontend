@@ -97,7 +97,7 @@ export default function Login() {
                         {/* Username/Email Field */}
                         <div className="group">
                             <label className="block text-[11px] font-medium text-gray-300 mb-1">
-                                
+
                             </label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -119,7 +119,7 @@ export default function Login() {
                         <div className="group">
                             <div className="flex items-center justify-between mb-1">
                                 <label className="block text-[11px] font-medium text-gray-300">
-                                    
+
                                 </label>
                                 <Link
                                     to="/forgot-password"

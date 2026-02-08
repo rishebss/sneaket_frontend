@@ -81,7 +81,7 @@ export default function BentoCards() {
                     </Link>
 
                     {/* Small Card - New Arrivals */}
-                    <div className="group relative overflow-hidden rounded-2xl border border-white/10 transition-all duration-500 hover:border-purple-500/30 hover:shadow-[0_0_40px_rgba(168,85,247,0.15)] min-h-[220px]">
+                    <Link to="/products?feature=new_arrival" className="group relative overflow-hidden rounded-2xl border border-white/10 transition-all duration-500 hover:border-purple-500/30 hover:shadow-[0_0_40px_rgba(168,85,247,0.15)] min-h-[220px]">
                         {/* Background Image */}
                         <img
                             src="https://res.cloudinary.com/dviwae8cc/image/upload/v1766771666/3963741fb9717877df5396e593fc0752_2_q3iyff_11zon_i0vzfq.jpg"
@@ -108,10 +108,10 @@ export default function BentoCards() {
                         </div>
 
                         <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    </div>
+                    </Link>
 
                     {/* Small Card - Best Sellers */}
-                    <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-900/90 to-gray-950/90 p-6 backdrop-blur-xl transition-all duration-500 hover:border-green-500/30 hover:shadow-[0_0_40px_rgba(34,197,94,0.15)] min-h-[220px]">
+                    <Link to="/products?feature=best_seller" className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-900/90 to-gray-950/90 p-6 backdrop-blur-xl transition-all duration-500 hover:border-green-500/30 hover:shadow-[0_0_40px_rgba(34,197,94,0.15)] min-h-[220px]">
 
                         <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
@@ -132,7 +132,7 @@ export default function BentoCards() {
                         </div>
 
                         <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-green-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    </div>
+                    </Link>
 
                     {/* Medium Card - Be a member (Hero Style) */}
                     <div className="md:col-span-2 group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-700/80 to-black-500/80 p-5 backdrop-blur-xl transition-all duration-500 min-h-[220px] hover:border-amber-500/30 hover:shadow-[0_0_40px_rgba(245,158,11,0.15)]">

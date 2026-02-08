@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import {
   FiSearch,
@@ -55,12 +55,12 @@ const FEATURES = [
 
 const fetchSneakers = async ({ page, search, category, brand, feature, sort }) => {
   const params = new URLSearchParams({ page });
-  
+
   if (search) params.append('search', search);
   if (category && category !== 'all') params.append('category', category);
   if (brand && brand !== 'all') params.append('brand', brand);
   if (feature && feature !== 'all') params.append('features', feature);
-  
+
   // Sort mapping
   if (sort === 'price-low') params.append('ordering', 'price');
   else if (sort === 'price-high') params.append('ordering', '-price');
@@ -77,13 +77,32 @@ const fetchSneakers = async ({ page, search, category, brand, feature, sort }) =
 };
 
 export default function Products() {
+  const [searchParams] = useSearchParams();
+  const initialCategory = searchParams.get("category") || "all";
+  const initialBrand = searchParams.get("brand") || "all";
+  const initialFeature = searchParams.get("feature") || "all";
+  const initialSearch = searchParams.get("search") || "";
+
   const [page, setPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [selectedBrand, setSelectedBrand] = useState("all");
-  const [selectedFeature, setSelectedFeature] = useState("all");
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+  const [selectedBrand, setSelectedBrand] = useState(initialBrand);
+  const [selectedFeature, setSelectedFeature] = useState(initialFeature);
   const [sortBy, setSortBy] = useState("newest");
   const [showFilters, setShowFilters] = useState(false);
+
+  // Sync state with URL parameters
+  useEffect(() => {
+    const category = searchParams.get("category");
+    const brand = searchParams.get("brand");
+    const feature = searchParams.get("feature");
+    const search = searchParams.get("search");
+
+    if (category) setSelectedCategory(category);
+    if (brand) setSelectedBrand(brand);
+    if (feature) setSelectedFeature(feature);
+    if (search) setSearchQuery(search);
+  }, [searchParams]);
 
   // Reset page when filters change
   useEffect(() => {
@@ -122,7 +141,7 @@ export default function Products() {
   useEffect(() => {
     // Only scroll if we are on a new page AND the data is actually fresh (not placeholder)
     if (page > 1 && !isPlaceholderData) {
-       window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, [page, isPlaceholderData]);
 
@@ -154,11 +173,10 @@ export default function Products() {
 
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`flex items-center justify-center h-11 w-11 rounded-lg border transition-all backdrop-blur-xl ${
-                  showFilters
-                    ? "bg-cyan-500/10 border-cyan-500/50 text-cyan-400"
-                    : "bg-white/5 border-white/10 text-gray-300 hover:border-white/20"
-                }`}
+                className={`flex items-center justify-center h-11 w-11 rounded-lg border transition-all backdrop-blur-xl ${showFilters
+                  ? "bg-cyan-500/10 border-cyan-500/50 text-cyan-400"
+                  : "bg-white/5 border-white/10 text-gray-300 hover:border-white/20"
+                  }`}
               >
                 <FiFilter className="w-5 h-5" />
               </button>
@@ -210,16 +228,15 @@ export default function Products() {
                         <button
                           key={cat.id}
                           onClick={() => setSelectedCategory(cat.id)}
-                          className={`px-4 py-2 rounded-lg text-sm transition-all ${
-                            selectedCategory === cat.id
-                              ? "bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold"
-                              : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
-                          }`}
+                          className={`px-4 py-2 rounded-lg text-sm transition-all ${selectedCategory === cat.id
+                            ? "bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold"
+                            : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
+                            }`}
                         >
                           {cat.name}
                         </button>
                       ))}
-                      
+
                     </div>
                   </div>
 
@@ -233,11 +250,10 @@ export default function Products() {
                         <button
                           key={brand.id}
                           onClick={() => setSelectedBrand(brand.id)}
-                          className={`px-4 py-2 rounded-lg text-sm transition-all ${
-                            selectedBrand === brand.id
-                              ? "bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold"
-                              : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
-                          }`}
+                          className={`px-4 py-2 rounded-lg text-sm transition-all ${selectedBrand === brand.id
+                            ? "bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold"
+                            : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
+                            }`}
                         >
                           {brand.name}
                         </button>
@@ -255,11 +271,10 @@ export default function Products() {
                         <button
                           key={feature.id}
                           onClick={() => setSelectedFeature(feature.id)}
-                          className={`px-4 py-2 rounded-lg text-sm transition-all ${
-                            selectedFeature === feature.id
-                              ? "bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold"
-                              : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
-                          }`}
+                          className={`px-4 py-2 rounded-lg text-sm transition-all ${selectedFeature === feature.id
+                            ? "bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold"
+                            : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
+                            }`}
                         >
                           {feature.name}
                         </button>
@@ -327,11 +342,10 @@ export default function Products() {
                   <button
                     onClick={() => setPage(old => Math.max(old - 1, 1))}
                     disabled={!pagination.hasPrevious}
-                    className={`flex items-center justify-center w-12 h-12 rounded-l-md transition-all ${
-                      pagination.hasPrevious
-                        ? "bg-white/10 text-white hover:bg-white/20 border border-white/20"
-                        : "bg-white/5 text-gray-500 border border-white/10 cursor-not-allowed"
-                    }`}
+                    className={`flex items-center justify-center w-12 h-12 rounded-l-md transition-all ${pagination.hasPrevious
+                      ? "bg-white/10 text-white hover:bg-white/20 border border-white/20"
+                      : "bg-white/5 text-gray-500 border border-white/10 cursor-not-allowed"
+                      }`}
                   >
                     <MdDoubleArrow className="w-6 h-6 rotate-180" />
                   </button>
@@ -348,16 +362,15 @@ export default function Products() {
 
                   <button
                     onClick={() => {
-                       if (!isPlaceholderData && pagination.hasNext) {
-                         setPage(old => old + 1);
-                       }
+                      if (!isPlaceholderData && pagination.hasNext) {
+                        setPage(old => old + 1);
+                      }
                     }}
                     disabled={!pagination.hasNext || isPlaceholderData}
-                    className={`flex items-center justify-center w-12 h-12 rounded-r-md transition-all ${
-                      pagination.hasNext
-                        ? "bg-white/10 text-white hover:bg-white/20 border border-white/20"
-                        : "bg-white/5 text-gray-500 border border-white/10 cursor-not-allowed"
-                    }`}
+                    className={`flex items-center justify-center w-12 h-12 rounded-r-md transition-all ${pagination.hasNext
+                      ? "bg-white/10 text-white hover:bg-white/20 border border-white/20"
+                      : "bg-white/5 text-gray-500 border border-white/10 cursor-not-allowed"
+                      }`}
                   >
                     <MdDoubleArrow className="w-6 h-6" />
                   </button>
@@ -398,7 +411,7 @@ function ProductCard({ product, index }) {
             {Math.round(
               ((product.original_price - product.price) /
                 product.original_price) *
-                100,
+              100,
             )}
             %
           </span>
