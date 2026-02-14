@@ -1,6 +1,6 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import {
   FiSearch,
@@ -11,6 +11,7 @@ import {
   FiArrowRight,
   FiX,
 } from "react-icons/fi";
+import { AiFillHeart } from "react-icons/ai";
 import { MdDoubleArrow } from "react-icons/md";
 import Loader from "../defaultcomponents/Loader";
 import DefaultFooter from "../defaultcomponents/DefaultFooter";
@@ -68,7 +69,7 @@ const fetchSneakers = async ({ page, search, category, brand, feature, sort }) =
   else params.append('ordering', '-created_at'); // Default "newest"
 
   const response = await fetch(
-    `${import.meta.env.VITE_API_BASE_URL}/api/sneakers?${params.toString()}`
+    `${import.meta.env.VITE_API_BASE_URL}/api/sneakers/?${params.toString()}`
   );
   if (!response.ok) {
     throw new Error("Network response was not ok");
@@ -77,6 +78,7 @@ const fetchSneakers = async ({ page, search, category, brand, feature, sort }) =
 };
 
 export default function Products() {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const initialCategory = searchParams.get("category") || "all";
   const initialBrand = searchParams.get("brand") || "all";
@@ -90,6 +92,7 @@ export default function Products() {
   const [selectedFeature, setSelectedFeature] = useState(initialFeature);
   const [sortBy, setSortBy] = useState("newest");
   const [showFilters, setShowFilters] = useState(false);
+  const [favoriteSet, setFavoriteSet] = useState(new Set());
 
   // Sync state with URL parameters
   useEffect(() => {
@@ -144,6 +147,95 @@ export default function Products() {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, [page, isPlaceholderData]);
+
+  // Fetch favorite status for visible products (persist across refresh)
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token || !products || products.length === 0) return;
+    const sneaker_ids = products.map((p) => p.id);
+    const controller = new AbortController();
+    (async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/favorites/bulk_check/`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Token ${token}`,
+            },
+            body: JSON.stringify({ sneaker_ids }),
+            signal: controller.signal,
+          }
+        );
+        if (!res.ok) return;
+        const result = await res.json();
+        const next = new Set();
+        for (const [key, val] of Object.entries(result)) {
+          if (val) next.add(Number(key));
+        }
+        setFavoriteSet(next);
+      } catch {
+        // ignore
+      }
+    })();
+    return () => controller.abort();
+  }, [products]);
+
+  // Toggle favorite handler
+  const handleToggleFavorite = async (sneakerId) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+    // Optimistic UI update
+    setFavoriteSet((prev) => {
+      const next = new Set(prev);
+      if (next.has(sneakerId)) next.delete(sneakerId);
+      else next.add(sneakerId);
+      return next;
+    });
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/favorites/toggle/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${token}`,
+          },
+          body: JSON.stringify({ sneaker_id: sneakerId }),
+        }
+      );
+      if (!res.ok) {
+        // Revert optimistic change on error
+        setFavoriteSet((prev) => {
+          const next = new Set(prev);
+          if (next.has(sneakerId)) next.delete(sneakerId);
+          else next.add(sneakerId);
+          return next;
+        });
+        return;
+      }
+      const resp = await res.json();
+      // Ensure consistency with server response
+      setFavoriteSet((prev) => {
+        const next = new Set(prev);
+        if (resp.is_favorited) next.add(sneakerId);
+        else next.delete(sneakerId);
+        return next;
+      });
+    } catch {
+      // Revert on network error
+      setFavoriteSet((prev) => {
+        const next = new Set(prev);
+        if (next.has(sneakerId)) next.delete(sneakerId);
+        else next.add(sneakerId);
+        return next;
+      });
+    }
+  };
 
   return (
     <>
@@ -312,6 +404,8 @@ export default function Products() {
                     key={product.id}
                     product={product}
                     index={index}
+                    isFavorited={favoriteSet.has(product.id)}
+                    onToggle={() => handleToggleFavorite(product.id)}
                   />
                 ))}
               </div>
@@ -384,7 +478,7 @@ export default function Products() {
   );
 }
 
-function ProductCard({ product, index }) {
+function ProductCard({ product, index, isFavorited = false, onToggle }) {
   const [hovered, setHovered] = useState(false);
 
   // Parse price
@@ -421,10 +515,18 @@ function ProductCard({ product, index }) {
       <button
         onClick={(e) => {
           e.preventDefault();
+          e.stopPropagation();
+          onToggle && onToggle();
         }}
-        className="absolute top-2 right-2 z-20 w-8 h-8 rounded-full bg-blue-600 border border-white/10 flex items-center justify-center text-white hover:bg-blue-500 hover:text-white hover:scale-110 transition-all shadow-lg"
+        aria-pressed={isFavorited}
+        title={isFavorited ? "Remove from favorites" : "Add to favorites"}
+        className={isFavorited ? "absolute top-2 right-2 z-20 w-8 h-8 rounded-full border border-white/10 flex items-center justify-center hover:scale-110 transition-all shadow-lg bg-red-200 text-white hover:bg-red-200" : "absolute top-2 right-2 z-20 w-8 h-8 rounded-full border border-white/10 flex items-center justify-center hover:scale-110 transition-all shadow-lg bg-blue-300 text-white hover:bg-blue-300"}
       >
-        <FiHeart className="w-4 h-4" />
+        {isFavorited ? (
+          <AiFillHeart className="w-4 h-4 text-red-500" />
+        ) : (
+          <FiHeart className="w-4 h-4 text-white/80" />
+        )}
       </button>
 
       {/* Image Container */}
