@@ -188,6 +188,24 @@ export default function BentoCards() {
 
                     {/* Medium Card - Account */}
                     <div className="md:col-span-3 group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-700/80 to-black-500/80 p-5 backdrop-blur-xl transition-all duration-500 min-h-[220px] hover:border-amber-500/30 hover:shadow-[0_0_40px_rgba(245,158,11,0.15)]">
+                        {/* Top Right Grid Pattern */}
+                        <div
+                            className="absolute top-0 right-0 z-0 opacity-40 pointer-events-none"
+                            style={{
+                                backgroundImage: `linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px)`,
+                                backgroundSize: '25px 25px',
+                                width: '250px',
+                                height: '250px',
+                                maskImage: 'radial-gradient(circle at top right, black, transparent 80%)',
+                                WebkitMaskImage: 'radial-gradient(circle at top right, black, transparent 80%)'
+                            }}
+                        >
+                            {/* Decorative Randomly Filled Squares */}
+                            <div className="absolute top-[25px] right-[50px] w-[25px] h-[25px] bg-white/10" />
+                            <div className="absolute top-[75px] right-[125px] w-[25px] h-[25px] bg-white/5" />
+                            <div className="absolute top-[125px] right-[75px] w-[25px] h-[25px] bg-white/10" />
+                            <div className="absolute top-[150px] right-[25px] w-[25px] h-[25px] bg-white/5" />
+                        </div>
 
                         <div className="relative z-10 h-full flex flex-col justify-between">
                             <div>
