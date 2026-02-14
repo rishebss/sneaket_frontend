@@ -2,7 +2,6 @@ import { FiTrendingUp, FiStar, FiShield, FiHeart } from 'react-icons/fi';
 import { HiShoppingBag } from "react-icons/hi2";
 import { MdDoubleArrow } from "react-icons/md";
 import { LuDroplets } from "react-icons/lu";
-import DarkVeil from '../defaultcomponents/DarkVeil';
 import PixelBlast from "../usercomponents/PixelBlast";
 import { motion } from "framer-motion";
 
@@ -68,8 +67,24 @@ export default function BentoCards() {
                     </Link>
 
                     {/* Small Card - Best Sellers */}
-                    <Link to="/products?feature=best_seller" className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-900/90 to-gray-950/90 p-6 backdrop-blur-xl transition-all duration-500 hover:border-green-500/30 hover:shadow-[0_0_40px_rgba(34,197,94,0.15)] min-h-[220px] md:col-span-2">
-                        <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <Link to="/products?feature=best_seller" className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gray-900/40 p-6 backdrop-blur-xl transition-all duration-500 hover:border-green-500/30 hover:shadow-[0_0_40px_rgba(34,197,94,0.15)] min-h-[220px] md:col-span-2">
+                        {/* Grid Pattern Background */}
+                        <div className="absolute inset-0 z-0 opacity-40 group-hover:opacity-60 transition-opacity duration-500"
+                            style={{
+                                backgroundImage: `linear-gradient(to right, rgba(255, 255, 255, 0.3) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.3) 1px, transparent 1px)`,
+                                backgroundSize: '24px 24px',
+                                maskImage: 'linear-gradient(to right, transparent 40%, black 100%)',
+                                WebkitMaskImage: 'linear-gradient(to right, transparent 40%, black 100%)'
+                            }}
+                        >
+                            {/* Decorative Randomly Filled Squares */}
+                            <div className="absolute top-[24px] right-[48px] w-[24px] h-[24px] bg-white/10" />
+                            <div className="absolute top-[72px] right-[120px] w-[24px] h-[24px] bg-white/5" />
+                            <div className="absolute top-[144px] right-[24px] w-[24px] h-[24px] bg-white/10" />
+                            <div className="absolute top-[120px] right-[96px] w-[24px] h-[24px] bg-white/5" />
+                        </div>
+
+                        <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-1" />
 
                         <div className="relative z-10 h-full flex flex-col justify-between">
                             <div>
@@ -90,14 +105,21 @@ export default function BentoCards() {
                     </Link>
 
                     {/* Small Card - Favorites */}
-                    <Link to="/favorites" className="group relative overflow-hidden rounded-2xl border border-white/10 transition-all duration-500 hover:border-pink-500/30 hover:shadow-[0_0_40px_rgba(236,72,153,0.15)] min-h-[220px] md:col-span-2">
-                        {/* DarkVeil Background */}
-                        <div className="absolute inset-0 z-0 opacity-50 group-hover:opacity-100 transition-all duration-700">
-                            <DarkVeil
-                                hueShift={320}
-                                speed={1.2}
-                                warpAmount={0.3}
-                            />
+                    <Link to="/favorites" className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gray-900/40 transition-all duration-500 hover:border-pink-500/30 hover:shadow-[0_0_40px_rgba(236,72,153,0.15)] min-h-[220px] md:col-span-2">
+                        {/* Grid Pattern Background */}
+                        <div className="absolute inset-0 z-0 opacity-40 group-hover:opacity-60 transition-opacity duration-500"
+                            style={{
+                                backgroundImage: `linear-gradient(to right, rgba(255, 255, 255, 0.3) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.3) 1px, transparent 1px)`,
+                                backgroundSize: '24px 24px',
+                                maskImage: 'linear-gradient(to right, transparent 30%, black 100%)',
+                                WebkitMaskImage: 'linear-gradient(to right, transparent 40%, black 100%)'
+                            }}
+                        >
+                            {/* Decorative Randomly Filled Squares */}
+                            <div className="absolute top-[48px] right-[72px] w-[24px] h-[24px] bg-white/10" />
+                            <div className="absolute top-[120px] right-[144px] w-[24px] h-[24px] bg-white/5" />
+                            <div className="absolute top-[96px] right-[24px] w-[24px] h-[24px] bg-white/10" />
+                            <div className="absolute top-[168px] right-[96px] w-[24px] h-[24px] bg-white/5" />
                         </div>
 
                         {/* Pink Glow Overlay */}
