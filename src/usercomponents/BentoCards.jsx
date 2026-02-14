@@ -90,12 +90,22 @@ export default function BentoCards() {
                     </Link>
 
                     {/* Small Card - Favorites */}
-                    <Link to="/favorites" className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-900/90 to-gray-950/90 p-6 backdrop-blur-xl transition-all duration-500 hover:border-pink-500/30 hover:shadow-[0_0_40px_rgba(236,72,153,0.15)] min-h-[220px] md:col-span-2">
-                        <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <Link to="/favorites" className="group relative overflow-hidden rounded-2xl border border-white/10 transition-all duration-500 hover:border-pink-500/30 hover:shadow-[0_0_40px_rgba(236,72,153,0.15)] min-h-[220px] md:col-span-2">
+                        {/* DarkVeil Background */}
+                        <div className="absolute inset-0 z-0 opacity-50 group-hover:opacity-100 transition-all duration-700">
+                            <DarkVeil
+                                hueShift={320}
+                                speed={1.2}
+                                warpAmount={0.3}
+                            />
+                        </div>
 
-                        <div className="relative z-10 h-full flex flex-col justify-between">
+                        {/* Pink Glow Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-pink-600/10 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500 z-1" />
+
+                        <div className="relative z-10 p-6 h-full flex flex-col justify-between">
                             <div>
-                                <div className="inline-flex p-3 rounded-xl bg-gradient-to-br from-pink-500/10 to-pink-500/5 border border-pink-500/20 mb-4">
+                                <div className="inline-flex p-3 rounded-xl bg-gradient-to-br from-pink-500/20 to-pink-500/5 border border-pink-500/20 mb-4 backdrop-blur-md">
                                     <FiHeart className="w-6 h-6 text-pink-400" />
                                 </div>
                                 <h3 className="text-lg font-mono text-white mb-2">Favorites</h3>
@@ -108,7 +118,7 @@ export default function BentoCards() {
                             </div>
                         </div>
 
-                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-pink-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-pink-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" />
                     </Link>
 
                     {/* Large Card - View Store */}
