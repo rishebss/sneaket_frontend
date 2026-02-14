@@ -1,4 +1,4 @@
-import { FiTrendingUp, FiStar, FiShield } from 'react-icons/fi';
+import { FiTrendingUp, FiStar, FiShield, FiHeart } from 'react-icons/fi';
 import { HiShoppingBag } from "react-icons/hi2";
 import { MdDoubleArrow } from "react-icons/md";
 import { LuDroplets } from "react-icons/lu";
@@ -35,53 +35,10 @@ export default function BentoCards() {
                 </div>
 
                 {/* Bento Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-6xl mx-auto relative">
-
-                    {/* Large Card - View Store with Plasma Background */}
-                    <Link to="/products" className="md:col-span-2 md:row-span-2 group relative overflow-hidden rounded-2xl border border-white/10 backdrop-blur-xl transition-all duration-500 hover:border-cyan-500/30 hover:shadow-[0_0_40px_rgba(34,211,238,0.15)] min-h-[220px] md:min-h-0">
-                        {/* Plasma Background */}
-                        <div className="absolute inset-0 z-0">
-                            <PixelBlast
-                                color="#8299d2"
-                            />
-                        </div>
-
-                        {/* Dark Overlay for Better Text Readability */}
-                        <div className="absolute inset-0 z-1 bg-gray-900/70 rounded-2xl" />
-
-                        {/* Cyan Gradient Overlay on Hover */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-2" />
-
-                        <div className="relative z-10 h-full flex flex-col p-6 md:p-8">
-                            <div className="inline-flex p-3 md:p-4 rounded-xl bg-gradient-to-br from-cyan-500/30 to-cyan-500/15 border border-cyan-500/40 mb-4 md:mb-6 w-fit backdrop-blur-md">
-                                <HiShoppingBag className="w-6 h-6 md:w-8 md:h-8 text-cyan-300" />
-                            </div>
-
-                            <h3 className="text-xl md:text-2xl font-mono text-white mb-2 md:mb-3">View Store</h3>
-                            <p className="text-gray-200 text-xs md:text-sm leading-relaxed mb-4 md:mb-6">
-                                <span className="md:hidden">Discover the hottest sneakers making waves in street culture</span>
-                                <span className="hidden md:block">Browse our complete collection of premium sneakers. From trending releases to timeless classics, explore hundreds of verified authentic styles from top brands. Filter by category, size, and price to find your perfect pair.</span>
-                            </p>
-
-                            <div className="mt-auto">
-                                <div className="flex items-center gap-2 mb-4">
-                                    <div className="h-1 flex-1 rounded-full bg-white/15 overflow-hidden">
-                                        <div className="h-full w-3/4 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full" />
-                                    </div>
-                                    <span className="text-cyan-300 text-xs font-mono">75%</span>
-                                </div>
-                                <div className="flex items-center justify-between text-xs text-gray-300">
-                                    <span>120+ Styles</span>
-                                    <span>Updated Daily</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cyan-500/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" />
-                    </Link>
+                <div className="grid grid-cols-1 md:grid-cols-6 gap-4 max-w-6xl mx-auto relative">
 
                     {/* Small Card - New Arrivals */}
-                    <Link to="/products?feature=new_arrival" className="group relative overflow-hidden rounded-2xl border border-white/10 transition-all duration-500 hover:border-purple-500/30 hover:shadow-[0_0_40px_rgba(168,85,247,0.15)] min-h-[220px]">
+                    <Link to="/products?feature=new_arrival" className="group relative overflow-hidden rounded-2xl border border-white/10 transition-all duration-500 hover:border-purple-500/30 hover:shadow-[0_0_40px_rgba(168,85,247,0.15)] min-h-[220px] md:col-span-2">
                         {/* Background Image */}
                         <img
                             src="https://res.cloudinary.com/dviwae8cc/image/upload/v1766771666/3963741fb9717877df5396e593fc0752_2_q3iyff_11zon_i0vzfq.jpg"
@@ -111,8 +68,7 @@ export default function BentoCards() {
                     </Link>
 
                     {/* Small Card - Best Sellers */}
-                    <Link to="/products?feature=best_seller" className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-900/90 to-gray-950/90 p-6 backdrop-blur-xl transition-all duration-500 hover:border-green-500/30 hover:shadow-[0_0_40px_rgba(34,197,94,0.15)] min-h-[220px]">
-
+                    <Link to="/products?feature=best_seller" className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-900/90 to-gray-950/90 p-6 backdrop-blur-xl transition-all duration-500 hover:border-green-500/30 hover:shadow-[0_0_40px_rgba(34,197,94,0.15)] min-h-[220px] md:col-span-2">
                         <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                         <div className="relative z-10 h-full flex flex-col justify-between">
@@ -126,7 +82,6 @@ export default function BentoCards() {
                                 </p>
                             </div>
                             <div className="flex items-center gap-2">
-
                                 <span className="text-green-400 text-xs font-mono">50+ Picks</span>
                             </div>
                         </div>
@@ -134,8 +89,73 @@ export default function BentoCards() {
                         <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-green-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     </Link>
 
-                    {/* Medium Card - Be a member (Hero Style) */}
-                    <div className="md:col-span-2 group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-700/80 to-black-500/80 p-5 backdrop-blur-xl transition-all duration-500 min-h-[220px] hover:border-amber-500/30 hover:shadow-[0_0_40px_rgba(245,158,11,0.15)]">
+                    {/* Small Card - Favorites */}
+                    <Link to="/favorites" className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-900/90 to-gray-950/90 p-6 backdrop-blur-xl transition-all duration-500 hover:border-pink-500/30 hover:shadow-[0_0_40px_rgba(236,72,153,0.15)] min-h-[220px] md:col-span-2">
+                        <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                        <div className="relative z-10 h-full flex flex-col justify-between">
+                            <div>
+                                <div className="inline-flex p-3 rounded-xl bg-gradient-to-br from-pink-500/10 to-pink-500/5 border border-pink-500/20 mb-4">
+                                    <FiHeart className="w-6 h-6 text-pink-400" />
+                                </div>
+                                <h3 className="text-lg font-mono text-white mb-2">Favorites</h3>
+                                <p className="text-gray-400 text-xs mb-4 font-mono tracking-wider">
+                                    Your personal picks
+                                </p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="text-pink-400 text-xs font-mono">SAVED</span>
+                            </div>
+                        </div>
+
+                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-pink-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    </Link>
+
+                    {/* Large Card - View Store */}
+                    <Link to="/products" className="md:col-span-3 group relative overflow-hidden rounded-2xl border border-white/10 backdrop-blur-xl transition-all duration-500 hover:border-cyan-500/30 hover:shadow-[0_0_40px_rgba(34,211,238,0.15)] min-h-[220px]">
+                        {/* Plasma Background */}
+                        <div className="absolute inset-0 z-0">
+                            <PixelBlast
+                                color="#8299d2"
+                            />
+                        </div>
+
+                        {/* Dark Overlay for Better Text Readability */}
+                        <div className="absolute inset-0 z-1 bg-gray-900/70 rounded-2xl" />
+
+                        {/* Cyan Gradient Overlay on Hover */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-2" />
+
+                        <div className="relative z-10 h-full flex flex-col p-6 md:p-8">
+                            <div className="inline-flex p-3 md:p-4 rounded-xl bg-gradient-to-br from-cyan-500/30 to-cyan-500/15 border border-cyan-500/40 mb-4 md:mb-6 w-fit backdrop-blur-md">
+                                <HiShoppingBag className="w-6 h-6 md:w-8 md:h-8 text-cyan-300" />
+                            </div>
+
+                            <h3 className="text-xl md:text-2xl font-mono text-white mb-2 md:mb-3">View Store</h3>
+                            <p className="text-gray-200 text-xs md:text-sm leading-relaxed mb-4 md:mb-6">
+                                <span className="md:hidden">Discover the hottest sneakers making waves in street culture</span>
+                                <span className="hidden md:block">Browse our complete collection of premium sneakers. From trending releases to timeless classics, explore hundreds of verified authentic styles.</span>
+                            </p>
+
+                            <div className="mt-auto">
+                                <div className="flex items-center gap-2 mb-4">
+                                    <div className="h-1 flex-1 rounded-full bg-white/15 overflow-hidden">
+                                        <div className="h-full w-3/4 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full" />
+                                    </div>
+                                    <span className="text-cyan-300 text-xs font-mono">75%</span>
+                                </div>
+                                <div className="flex items-center justify-between text-xs text-gray-300">
+                                    <span>120+ Styles</span>
+                                    <span>Updated Daily</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cyan-500/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" />
+                    </Link>
+
+                    {/* Medium Card - Account */}
+                    <div className="md:col-span-3 group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-700/80 to-black-500/80 p-5 backdrop-blur-xl transition-all duration-500 min-h-[220px] hover:border-amber-500/30 hover:shadow-[0_0_40px_rgba(245,158,11,0.15)]">
 
                         <div className="relative z-10 h-full flex flex-col justify-between">
                             <div>
