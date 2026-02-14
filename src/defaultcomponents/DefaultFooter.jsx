@@ -63,7 +63,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="mt-10 md:mt-20 md:rounded-t-[4rem] relative w-full max-w-6xl mx-auto flex flex-col items-center justify-center rounded-t-[3rem] border-t border-white/30 bg-black/70 px-6 py-12 lg:py-16">
+    <footer className="mt-10 md:mt-20 md:rounded-t-[4rem] relative w-full max-w-7xl mx-auto flex flex-col items-center justify-center rounded-t-[3rem] border-t border-white/30 bg-black/70 px-6 py-12 lg:py-16">
       {/* Expansive Ambient Glow (Behind) */}
       <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-full h-64 bg-cyan-500/15 blur-[120px] rounded-full pointer-events-none z-0" />
       <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-purple-500/20 blur-[100px] rounded-full pointer-events-none z-0" />

@@ -4,7 +4,7 @@ import { Shield, Truck, Star } from "lucide-react";
 export default function AboutSection() {
   return (
     <section className="bg-transparent py-16 md:py-32">
-      <div className="@container mx-auto max-w-6xl px-6">
+      <div className="@container mx-auto max-w-7xl px-6">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 mb-4">
             <div className="h-px w-8 bg-gradient-to-r from-transparent to-blue-500/50" />

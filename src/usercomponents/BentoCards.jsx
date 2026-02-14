@@ -34,7 +34,7 @@ export default function BentoCards() {
                 </div>
 
                 {/* Bento Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-6 gap-4 max-w-6xl mx-auto relative">
+                <div className="grid grid-cols-1 md:grid-cols-6 gap-4 max-w-7xl mx-auto relative">
 
                     {/* Small Card - New Arrivals */}
                     <Link to="/products?feature=new_arrival" className="group relative overflow-hidden rounded-2xl border border-white/10 transition-all duration-500 hover:border-purple-500/30 hover:shadow-[0_0_40px_rgba(168,85,247,0.15)] min-h-[220px] md:col-span-2">
