@@ -10,7 +10,7 @@ export default function Hero() {
       <div className="relative z-10 flex flex-col items-center justify-center px-6 sm:px-12 lg:px-24 pt-32 pb-12">
 
         <div className="mb-8 flex items-center justify-start gap-3">
-          <span className="text-[12px] sm:text-sm text-gray-200 tracking-widest font-mono flex items-center gap-2">
+          <span className="text-[12px] sm:text-sm text-gray-500 tracking-widest font-mono flex items-center gap-2">
             <CgOpenCollective />
             The Sneaker Market
           </span>
@@ -22,12 +22,10 @@ export default function Hero() {
             <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-7xl font-sneaket text-white mb-2 leading-tight">
               <span className="block">Redefine</span>
               <span className="relative inline-block">
-                <span className="bg-gradient-to-r from-cyan-400 via-white to-blue-400 bg-clip-text text-transparent">
+                <span className="bg-white bg-clip-text text-transparent">
                   YOUR <span className="font-black">KICKS</span>
                 </span>
-                <span className="absolute -top-1 left-0 bg-gradient-to-r from-cyan-400 via-white to-blue-400 bg-clip-text text-transparent opacity-20 blur-sm">
-                  YOUR <span className="font-black">KICKS</span>
-                </span>
+                
               </span>
             </h1>
           </div>
@@ -54,38 +52,61 @@ export default function Hero() {
         <div className="flex items-center justify-center">
           <Link to="/login" className="group relative flex items-center">
             {/* Left Connecting Line */}
-            <div className="w-8 sm:w-12 h-px bg-gradient-to-r from-transparent to-cyan-400/50 group-hover:to-cyan-400 transition-all duration-300" />
+            <div className="w-6 sm:w-12 h-px bg-gradient-to-r from-transparent to-cyan-400/50 group-hover:to-cyan-400 transition-all duration-300" />
 
-            {/* Main Button Body */}
-            <div
-              className="relative px-12 py-4 bg-gradient-to-br from-purple-500/15 via-transparent to-cyan-500/15 backdrop-blur-3xl transition-all duration-500 hover:bg-white/[0.05] min-w-[200px] text-center overflow-hidden"
-              style={{ clipPath: 'polygon(0% 0%, calc(100% - 20px) 0%, 100% 20px, 100% 100%, 20px 100%, 0% calc(100% - 20px))' }}
-            >
-              {/* SVG Border Overlay to follow the clipped path */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 200 60" preserveAspectRatio="none">
+            {/* Main Button Container */}
+            <div className="relative group transition-all duration-500 hover:scale-[1.02]">
+              {/* Clipped Background */}
+              <div
+                className="relative px-8 py-3 sm:px-12 sm:py-4 bg-gradient-to-br from-purple-500/15 via-transparent to-cyan-500/15 backdrop-blur-3xl min-w-[160px] sm:min-w-[200px] text-center overflow-hidden"
+                style={{ clipPath: 'polygon(0% 0%, calc(100% - 15px) 0%, 100% 15px, 100% 100%, 15px 100%, 0% calc(100% - 15px))' }}
+              >
+                {/* Background Glow (Inside) */}
+                <div className="absolute inset-0 bg-cyan-500/0 group-hover:bg-cyan-500/5 transition-colors duration-700" />
+
+                {/* Content */}
+                <span className="relative z-10 text-white font-mono text-sm sm:text-base tracking-[0.4em] uppercase">
+                  Login
+                </span>
+              </div>
+
+              {/* SVG Border Overlay (Outside clip-path to remain visible) */}
+              <svg
+                className="absolute inset-0 w-full h-full pointer-events-none overflow-visible"
+                viewBox="0 0 200 60"
+                preserveAspectRatio="none"
+              >
                 <path
-                  d="M 1,1 L 180,1 L 199,20 L 199,59 L 20,59 L 1,40 Z"
+                  d="M 1,1 L 185,1 L 199,15 L 199,59 L 15,59 L 1,45 Z"
                   fill="none"
-                  className="stroke-white/10 group-hover:stroke-cyan-500/40 transition-colors duration-500"
+                  className="stroke-white/20 group-hover:stroke-cyan-500/50 transition-colors duration-500"
                   strokeWidth="2"
+                  vectorEffect="non-scaling-stroke"
+                />
+
+                {/* Enhanced Corner Highlights */}
+                <path
+                  d="M 185,1 L 199,15"
+                  fill="none"
+                  className="stroke-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  strokeWidth="3"
+                  vectorEffect="non-scaling-stroke"
+                />
+                <path
+                  d="M 1,45 L 15,59"
+                  fill="none"
+                  className="stroke-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  strokeWidth="3"
                   vectorEffect="non-scaling-stroke"
                 />
               </svg>
 
-
               {/* Top Edge Highlight */}
               <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent" />
-
-              <span className="relative z-10 text-white font-mono text-sm sm:text-base tracking-[0.4em] uppercase">
-                Login
-              </span>
-
-              {/* Background Glow (Inside) */}
-              <div className="absolute inset-0 bg-cyan-500/0 group-hover:bg-cyan-500/5 transition-colors duration-700 -z-10" />
             </div>
 
             {/* Right Connecting Line */}
-            <div className="w-8 sm:w-12 h-px bg-gradient-to-l from-transparent to-cyan-400/50 group-hover:to-cyan-400 transition-all duration-300" />
+            <div className="w-6 sm:w-12 h-px bg-gradient-to-l from-transparent to-cyan-400/50 group-hover:to-cyan-400 transition-all duration-300" />
           </Link>
         </div>
 
