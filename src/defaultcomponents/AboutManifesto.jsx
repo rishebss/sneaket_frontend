@@ -5,7 +5,7 @@ export default function AboutManifesto({ variants }) {
     return (
         <motion.section
             variants={variants}
-            className="mb-32 p-10 bg-gray-900/40 border border-white/5 rounded-sm font-mono overflow-hidden relative"
+            className="mb-32 p-10 bg-black/40 border border-white/5 rounded-lg font-mono overflow-hidden relative"
         >
             <div className="absolute top-0 right-0 p-4 opacity-10">
 

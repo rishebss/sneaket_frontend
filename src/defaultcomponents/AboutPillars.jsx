@@ -27,7 +27,7 @@ export default function AboutPillars({ variants }) {
                         <span className="text-[8px] font-mono text-gray-600 uppercase tracking-widest">{pillar.title}</span>
                     </div>
 
-                    <h3 className="font-sneaket text-sm tracking-widest mb-3">{pillar.label}</h3>
+                    <h3 className="font-lemon text-sm tracking-widest mb-3">{pillar.label}</h3>
                     <p className="text-gray-500 text-sm leading-relaxed font-light">{pillar.desc}</p>
                 </motion.div>
             ))}

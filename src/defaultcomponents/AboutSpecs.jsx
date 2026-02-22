@@ -37,7 +37,7 @@ export default function AboutSpecs({ variants }) {
 
                 <h2 className="text-2xl md:text-4xl font-lemon tracking-tight">
                     Curated for
-                    <span className="text-transparent stroke-text"> Modern Sneakerheads</span>
+                    Modern Sneakerheads
                 </h2>
 
                 <div className="space-y-6 text-gray-400 font-light leading-relaxed">
@@ -54,7 +54,7 @@ export default function AboutSpecs({ variants }) {
             {/* Brand Grid Section */}
             <motion.div
                 variants={variants}
-                className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4 gap-4"
+                className="hidden md:grid md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4 gap-4"
             >
                 {brands.map((brand, i) => (
                     <div

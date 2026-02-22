@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import AboutHeader from "../defaultcomponents/AboutHeader";
 import AboutPillars from "../defaultcomponents/AboutPillars";
 import AboutSpecs from "../defaultcomponents/AboutSpecs";
-import AboutManifesto from "../defaultcomponents/AboutManifesto";
+import AboutBento from "../defaultcomponents/AboutBento";
 
 
 export default function About() {
@@ -35,7 +35,7 @@ export default function About() {
           <AboutHeader variants={itemVariants} />
           <AboutPillars variants={itemVariants} />
           <AboutSpecs variants={itemVariants} />
-          <AboutManifesto variants={itemVariants} />
+          <AboutBento variants={itemVariants} />
 
         </motion.div>
       </main>
