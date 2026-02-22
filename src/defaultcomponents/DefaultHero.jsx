@@ -35,7 +35,7 @@ export default function Hero() {
           {/* Animated Subtitle */}
           <div className="flex items-center justify-center gap-4 mb-6">
             <div className="h-px w-8 sm:w-12 bg-gradient-to-r from-cyan-500/50 to-transparent" />
-            <p className="font-mono text-xs sm:text-sm text-cyan-300 tracking-[0.3em] animate-pulse">
+            <p className="font-mono text-xs sm:text-sm text-cyan-300 animate-pulse">
               // NEXT-GEN FOOTWEAR
             </p>
             <div className="h-px w-8 sm:w-12 bg-gradient-to-l from-cyan-500/50 to-transparent" />
@@ -50,24 +50,38 @@ export default function Hero() {
           </p>
         </div>
 
-        {/* Login Button with Cyberpunk Style */}
+        {/* Login Button - Bento Style */}
         <div className="flex items-center justify-center">
           <Link to="/login" className="group relative flex items-center">
             {/* Left Connecting Line */}
             <div className="w-8 sm:w-12 h-px bg-gradient-to-r from-transparent to-cyan-400/50 group-hover:to-cyan-400 transition-all duration-300" />
 
-            {/* Button Main Body */}
-            <div className="relative px-8 py-3 sm:px-12 sm:py-4 rounded-full border border-cyan-500/20 group-hover:border-cyan-400/50 bg-white/[0.03] backdrop-blur-md transition-all duration-300 mx-[-1px] overflow-hidden">
-              {/* Ambient Background Glow (Inside) */}
-              <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-full h-20 bg-cyan-500/10 blur-2xl pointer-events-none" />
+            {/* Main Button Body */}
+            <div
+              className="relative px-12 py-4 bg-gradient-to-br from-purple-500/15 via-transparent to-cyan-500/15 backdrop-blur-3xl transition-all duration-500 hover:bg-white/[0.05] min-w-[200px] text-center overflow-hidden"
+              style={{ clipPath: 'polygon(0% 0%, calc(100% - 20px) 0%, 100% 20px, 100% 100%, 20px 100%, 0% calc(100% - 20px))' }}
+            >
+              {/* SVG Border Overlay to follow the clipped path */}
+              <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 200 60" preserveAspectRatio="none">
+                <path
+                  d="M 1,1 L 180,1 L 199,20 L 199,59 L 20,59 L 1,40 Z"
+                  fill="none"
+                  className="stroke-white/10 group-hover:stroke-cyan-500/40 transition-colors duration-500"
+                  strokeWidth="2"
+                  vectorEffect="non-scaling-stroke"
+                />
+              </svg>
 
-              {/* Sharp Top-Edge Highlight */}
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-cyan-400 to-transparent z-20 shadow-[0_0_12px_rgba(34,211,238,0.6)]" />
 
-              <div className="relative z-10 flex items-center gap-4 text-white font-mono text-base sm:text-lg tracking-[0.3em]">
-                <span className="opacity-80 group-hover:opacity-100 transition-opacity">LOGIN</span>
+              {/* Top Edge Highlight */}
+              <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent" />
 
-              </div>
+              <span className="relative z-10 text-white font-mono text-sm sm:text-base tracking-[0.4em] uppercase">
+                Login
+              </span>
+
+              {/* Background Glow (Inside) */}
+              <div className="absolute inset-0 bg-cyan-500/0 group-hover:bg-cyan-500/5 transition-colors duration-700 -z-10" />
             </div>
 
             {/* Right Connecting Line */}

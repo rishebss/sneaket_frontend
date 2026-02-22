@@ -72,19 +72,22 @@ export default function Signup() {
     return (
         <div className="min-h-screen w-full relative flex items-center justify-center px-4 py-12">
             {/* Main Card */}
-            <div className="relative z-10 w-full max-w-md mt-0 md:mt-10">
+            <div className="relative z-10 w-full max-w-md mt-0 md:mt-10 group">
                 {/* Expansive Ambient Glow (Behind) */}
                 <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-full h-64 bg-cyan-500/15 blur-[120px] rounded-full pointer-events-none -z-10" />
                 <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-purple-500/20 blur-[100px] rounded-full pointer-events-none -z-10" />
 
                 {/* Glass Card */}
-                <div className="relative bg-gray-900/50 backdrop-blur-2xl rounded-2xl border border-white/10 p-5 md:p-7 shadow-2xl">
+                <div className="relative bg-white/[0.03] backdrop-blur-3xl border border-white/10 p-5 md:p-7 shadow-2xl transition-all duration-500 hover:bg-white/[0.05]">
+                    {/* Tech Corner Accents */}
+                    <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/20 transition-all duration-500 group-hover:w-6 group-hover:h-6 group-hover:border-cyan-500" />
+                    <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/20 transition-all duration-500 group-hover:w-6 group-hover:h-6 group-hover:border-purple-500" />
+
                     {/* Sharp Top-Edge Highlight */}
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-px w-1/2 h-px bg-gradient-to-r from-transparent via-cyan-400 to-transparent z-10 shadow-[0_0_15px_rgba(34,211,238,0.8)]" />
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-px w-1/3 h-[2px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent blur-[2px] z-10" />
                     {/* Header */}
                     <div className="text-center mb-4 md:mb-6">
-                        <h1 className="text-xl font-semibold text-white tracking-tight mb-1">
+                        <h1 className="text-xl font-lemon text-white tracking-tight mb-1">
                             Create Account
                         </h1>
 

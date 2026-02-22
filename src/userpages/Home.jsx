@@ -1,5 +1,5 @@
 import Hero from "../usercomponents/Hero";
-import AboutSection from "../defaultcomponents/AboutSection";
+import FeatureSection from "../usercomponents/FeatureSection";
 import BentoCards from "../usercomponents/BentoCards";
 import DefaultFooter from "../defaultcomponents/DefaultFooter";
 
@@ -8,7 +8,7 @@ export default function Home() {
         <>
             <Hero />
             <BentoCards />
-            <AboutSection />
+            <FeatureSection />
             <DefaultFooter />
         </>
     );

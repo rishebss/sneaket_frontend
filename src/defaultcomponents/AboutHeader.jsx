@@ -8,7 +8,7 @@ export default function AboutHeader({ variants }) {
                 <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.5em]">
                     Sneaket // About
                 </span>
-                <div className="h-px w-8 bg-cyan-500/50" />
+                
             </motion.div>
 
             <motion.h1 variants={variants} className="text-3xl md:text-6xl font-sneaket leading-none mb-8 tracking-tighter">

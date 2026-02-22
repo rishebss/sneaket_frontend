@@ -89,36 +89,35 @@ const TestimonialsColumn = ({ className, testimonials, duration }) => {
                   aria-hidden={index === 1 ? "true" : "false"}
                   tabIndex={index === 1 ? -1 : 0}
                   whileHover={{
-                    scale: 1.03,
-                    y: -8,
-                    boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 10px 10px -5px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.05)",
+                    scale: 1.02,
                     transition: { type: "spring", stiffness: 400, damping: 17 }
                   }}
-                  whileFocus={{
-                    scale: 1.03,
-                    y: -8,
-                    boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 10px 10px -5px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.05)",
-                    transition: { type: "spring", stiffness: 400, damping: 17 }
-                  }}
-                  className="p-10 rounded-3xl border border-neutral-800 shadow-lg shadow-black/10 max-w-xs w-full bg-gradient-to-br from-gray-900/50 to-gray-950/50 p-8 backdrop-blur-xl cursor-default select-none group focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  className="relative p-7 border border-white/10 bg-gradient-to-br from-transparent to-gray-500/15 backdrop-blur-3xl transition-all duration-700 hover:bg-white/[0.03] hover:border-white/20 cursor-default select-none group focus:outline-none overflow-hidden max-w-xs w-full"
                 >
-                  <blockquote className="m-0 p-0">
-                    <p className="text-gray-400 text-sm leading-relaxed font-normal m-0">
+                  {/* Tech Corner Accents */}
+                  <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/20 transition-all duration-500 group-hover:w-6 group-hover:h-6 group-hover:border-cyan-500" />
+                  <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/20 transition-all duration-500 group-hover:w-6 group-hover:h-6 group-hover:border-purple-500" />
+
+                  <blockquote className="m-0 p-0 relative z-10">
+                    <p className="text-gray-400 text-sm leading-relaxed font-mono uppercase tracking-wider m-0 group-hover:text-gray-300 transition-colors">
                       {text}
                     </p>
-                    <footer className="flex items-center gap-3 mt-6">
-                      <img
-                        width={40}
-                        height={40}
-                        src={image}
-                        alt={`Avatar of ${name}`}
-                        className="h-10 w-10 rounded-full object-cover ring-2 ring-neutral-800 group-hover:ring-primary/30 transition-all duration-300 ease-in-out"
-                      />
+                    <footer className="flex items-center gap-4 mt-8 pt-6 border-t border-white/5">
+                      <div className="relative">
+                        <img
+                          width={40}
+                          height={40}
+                          src={image}
+                          alt={`Avatar of ${name}`}
+                          className="h-10 w-10 rounded-none object-cover grayscale group-hover:grayscale-0 transition-all duration-500 border border-white/10"
+                        />
+                        <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-cyan-500" />
+                      </div>
                       <div className="flex flex-col">
-                        <cite className="font-mono font-semibold not-italic tracking-tight leading-5 text-white">
+                        <cite className="font-mono font-bold not-italic tracking-tighter text-white uppercase text-sm">
                           {name}
                         </cite>
-                        <span className="text-sm leading-5 tracking-tight text-gray-400 mt-0.5">
+                        <span className="text-[10px] uppercase font-mono tracking-[0.2em] text-cyan-400/60 mt-0.5">
                           {role}
                         </span>
                       </div>
