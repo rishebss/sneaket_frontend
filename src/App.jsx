@@ -12,6 +12,7 @@ import Home from "./userpages/Home";
 import Landing from "./defaultpages/Landing";
 import Login from "./defaultpages/Login";
 import Signup from "./defaultpages/Signup";
+import About from "./defaultpages/About";
 import Products from "./userpages/Products";
 import Favorites from "./userpages/Favorites";
 import PageTransition from "./components/PageTransition";
@@ -76,7 +77,11 @@ function App() {
                 path="/favorites"
                 element={
                   <PageTransition>
-                    {isLoggedIn ? <Favorites /> : <Navigate to="/login" replace />}
+                    {isLoggedIn ? (
+                      <Favorites />
+                    ) : (
+                      <Navigate to="/login" replace />
+                    )}
                   </PageTransition>
                 }
               />
@@ -93,6 +98,14 @@ function App() {
                 element={
                   <PageTransition>
                     {isLoggedIn ? <Navigate to="/" replace /> : <Signup />}
+                  </PageTransition>
+                }
+              />
+              <Route
+                path="/about"
+                element={
+                  <PageTransition>
+                    <About />
                   </PageTransition>
                 }
               />
