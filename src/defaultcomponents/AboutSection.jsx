@@ -33,22 +33,27 @@ export default function AboutSection() {
   ];
 
   return (
-    <section className="bg-transparent py-20 md:py-40 relative overflow-hidden">
-      <div className="container mx-auto max-w-7xl px-6 relative z-10">
+    <section className="bg-transparent py-15 md:py-25 relative overflow-hidden">
+      <motion.div
+        initial={{ opacity: 0, y: 50, rotate: -2 }}
+        whileInView={{ opacity: 1, y: 0, rotate: 0 }}
+        viewport={{ once: true, amount: 0.15 }}
+        transition={{
+          duration: 1.2,
+          ease: [0.16, 1, 0.3, 1],
+          opacity: { duration: 0.8 }
+        }}
+        className="container mx-auto max-w-7xl px-6 relative z-10"
+      >
         {/* Header */}
         <div className="text-center mb-20">
-          <div className="inline-flex items-center gap-3 mb-6">
+          <div className="inline-flex items-center gap-3 mb-0">
             <div className="h-px w-8 bg-gradient-to-r from-transparent to-blue-500/50" />
             <span className="text-sm md:text-xl font-mono text-cyan-400 uppercase tracking-[0.3em] whitespace-nowrap">
               Why sneaket
             </span>
             <div className="h-px w-8 bg-gradient-to-l from-transparent to-blue-500/50" />
           </div>
-
-
-          <p className="text-center mt-0 text-gray-400 max-w-2xl mx-auto text-sm md:text-base leading-relaxed mb-12">
-            Advanced Authentication and in Demand Sneaker Collections
-          </p>
         </div>
 
         {/* Bento Cards Grid */}
@@ -91,7 +96,7 @@ export default function AboutSection() {
             </div>
           ))}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }
