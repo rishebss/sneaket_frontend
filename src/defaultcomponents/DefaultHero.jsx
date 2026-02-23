@@ -97,13 +97,16 @@ export default function Hero() {
                   </filter>
                 </defs>
 
-                {/* Background Path (Subtle) */}
-                <path
+                {/* Background Path (Subtle) - Reveal after build */}
+                <motion.path
                   d="M 1,1 L 185,1 L 199,15 L 199,59 L 15,59 L 1,45 Z"
                   fill="none"
-                  className="stroke-white/10"
+                  stroke="rgba(255, 255, 255, 0.1)"
                   strokeWidth="1"
                   vectorEffect="non-scaling-stroke"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.8 }}
                 />
 
                 {/* The Beam Trace */}
@@ -111,7 +114,7 @@ export default function Hero() {
                   d="M 1,1 L 185,1 L 199,15 L 199,59 L 15,59 L 1,45 Z"
                   fill="none"
                   stroke="#06b6d4"
-                  strokeWidth="1.5"
+                  strokeWidth="0.5"
                   vectorEffect="non-scaling-stroke"
                   initial={{ pathLength: 0, opacity: 0 }}
                   animate={{ pathLength: 1, opacity: [0, 1, 1, 0] }}
@@ -126,7 +129,7 @@ export default function Hero() {
                   d="M 1,1 L 185,1 L 199,15 L 199,59 L 15,59 L 1,45 Z"
                   fill="none"
                   stroke="#22d3ee"
-                  strokeWidth="2.5"
+                  strokeWidth="1"
                   strokeDasharray="20 1000"
                   filter="url(#glow-login)"
                   vectorEffect="non-scaling-stroke"
@@ -139,8 +142,13 @@ export default function Hero() {
                 />
               </svg>
 
-              {/* Top Edge Highlight */}
-              <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent" />
+              {/* Top Edge Highlight - Fade in after build */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 1.4 }}
+                className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent"
+              />
             </div>
 
             {/* Right Connecting Line */}
