@@ -70,9 +70,9 @@ export default function AboutBento({ variants }) {
             </div>
 
             {/* Login/Account Card */}
-            <div className="md:col-span-2 h-80 group relative overflow-hidden border border-white/10 bg-white/[0.03] backdrop-blur-3xl transition-all duration-500">
+            <div className="md:col-span-2 h-80 group relative overflow-hidden border border-white/10 bg-black/40 backdrop-blur-3xl transition-all duration-500">
                 <div className="absolute inset-0 z-0 overflow-hidden">
-                    <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-gradient-to-br from-gray-500/40 to-transparent blur-3xl opacity-100 transition-opacity duration-700" />
+                    <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full blur-3xl opacity-100 transition-opacity duration-700" />
                 </div>
 
                 <div className={`absolute top-0 left-0 w-3 h-3 border-t border-l border-white/20 transition-all duration-500 group-hover:w-6 group-hover:h-6 ${isLoggedIn ? 'group-hover:border-blue-500' : 'group-hover:border-cyan-500'}`} />
