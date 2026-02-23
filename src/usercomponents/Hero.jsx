@@ -77,32 +77,108 @@ export default function Hero() {
             {/* Mobile View: Stack vertically */}
 
             {/* Desktop View: Grid Layout */}
-            <div className="hidden lg:grid grid-cols-2 gap-4 h-[480px] perspective-[1000px]">
+            <div className="hidden lg:grid grid-cols-2 gap-4 h-[480px]">
               {/* LATEST Button - Desktop */}
               <motion.div
-                initial={{ opacity: 0, y: 80, rotateX: 35, scale: 0.9, filter: "blur(10px) brightness(2)" }}
-                animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1, filter: "blur(0px) brightness(1)" }}
-                transition={{
-                  type: "spring",
-                  stiffness: 100,
-                  damping: 15,
-                  delay: 0.1,
-                  filter: { duration: 0.8 }
-                }}
-                className="group relative overflow-hidden border border-white/10 bg-gradient-to-br from-gray-700/80 to-black-500/80 p-5 backdrop-blur-xl"
+                initial="initial"
+                animate="animate"
+                className="group relative overflow-hidden p-5 transition-colors duration-1000"
               >
-                {/* Animated gradient background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                {/* Delayed Background Reveal */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.8, delay: 1.1 }}
+                  className="absolute inset-0 bg-gradient-to-br from-gray-700/80 to-black-500/80 backdrop-blur-xl border border-white/10 z-0"
+                />
 
-                {/* Animated border */}
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-20 blur group-hover:blur-sm transition-all duration-500" />
+                {/* Border Drawing Animation Overlay (The Beam with Sparkling Head) */}
+                <svg className="absolute inset-0 w-full h-full pointer-events-none z-20">
+                  <defs>
+                    <filter id="glow-cyan" x="-20%" y="-20%" width="140%" height="140%">
+                      <feGaussianBlur stdDeviation="3" result="blur" />
+                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                  </defs>
 
-                {/* Tech Corner Accents */}
-                <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-cyan-500" />
-                <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-cyan-500" />
+                  {/* The Main Trace Line */}
+                  <motion.rect
+                    x="0"
+                    y="0"
+                    width="100%"
+                    height="100%"
+                    fill="none"
+                    stroke="#22d3ee"
+                    strokeWidth="1"
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={{ pathLength: 1, opacity: [0, 1, 1, 0] }}
+                    transition={{
+                      pathLength: { duration: 1, ease: "easeInOut", delay: 0.1 },
+                      opacity: { duration: 1.5, times: [0, 0.1, 0.8, 1], delay: 0.1 }
+                    }}
+                  />
 
-                {/* Content */}
-                <div className="relative z-10 h-full flex flex-col justify-between">
+                  {/* The Sparkling Head */}
+                  <motion.rect
+                    x="0"
+                    y="0"
+                    width="100%"
+                    height="100%"
+                    fill="none"
+                    stroke="#fff"
+                    strokeWidth="2"
+                    strokeDasharray="40 1000"
+                    filter="url(#glow-cyan)"
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={{ pathLength: 1, opacity: [0, 1, 0] }}
+                    transition={{
+                      pathLength: { duration: 1, ease: "easeInOut", delay: 0.1 },
+                      opacity: { duration: 1, times: [0, 0.5, 1], delay: 0.1 }
+                    }}
+                  />
+
+                  {/* Corner Sparkle Points */}
+                  <motion.circle
+                    cx="0" cy="0" r="2" fill="#fff"
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: [0, 1, 0], scale: [0, 2, 0] }}
+                    transition={{ delay: 0.1, duration: 0.4 }}
+                  />
+                  <motion.circle
+                    cx="100%" cy="100%" r="2" fill="#fff"
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: [0, 1, 0], scale: [0, 2, 0] }}
+                    transition={{ delay: 1.1, duration: 0.4 }}
+                  />
+                </svg>
+
+                {/* Tech Corners - Reveal with flicker */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.1, duration: 0.1 }}
+                  className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-cyan-500 z-30"
+                />
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.2, duration: 0.1 }}
+                  className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-cyan-500 z-30"
+                />
+
+                {/* Animated gradient background (Static on hover) */}
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-[1]" />
+
+                {/* Animated border pulse (Hover) */}
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-20 blur group-hover:blur-sm transition-all duration-500 z-0" />
+
+                {/* Content Overlay */}
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, delay: 1.2, ease: "easeOut" }}
+                  className="relative z-10 h-full flex flex-col justify-between"
+                >
                   <div>
                     <div className="flex items-center gap-2 mb-3">
                       <div className="w-2 h-2 rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 animate-pulse" />
@@ -145,95 +221,277 @@ export default function Hero() {
                       </span>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               </motion.div>
 
               {/* Main Sneaker - Right Column (Tall) */}
               <motion.div
-                initial={{ opacity: 0, y: 80, rotateX: 35, scale: 0.9, filter: "blur(10px) brightness(2)" }}
-                animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1, filter: "blur(0px) brightness(1)" }}
-                transition={{
-                  type: "spring",
-                  stiffness: 100,
-                  damping: 15,
-                  delay: 0.3,
-                  filter: { duration: 0.8 }
-                }}
-                className="group relative row-span-2 overflow-hidden border border-white/10 bg-black shadow-2xl"
+                initial="initial"
+                animate="animate"
+                className="group relative row-span-2 overflow-hidden bg-transparent z-10"
               >
-                <img
-                  src="https://res.cloudinary.com/dviwae8cc/image/upload/v1766753393/ChatGPT_Image_Dec_26_2025_06_17_30_PM_zz8am5.jpg"
-                  alt="AI-Designed Quantum Sneaker"
-                  className="h-full w-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:rotate-2"
+                {/* Delayed Background Reveal */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.8, delay: 1.0 }}
+                  className="absolute inset-0 bg-black backdrop-blur-xl border border-white/10 z-0"
                 />
 
-                {/* Tech Corner Accents */}
-                <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-white/50" />
-                <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-white/50" />
+                {/* Border Drawing Animation Overlay (The White Sparkling Beam) */}
+                <svg className="absolute inset-0 w-full h-full pointer-events-none z-20">
+                  <defs>
+                    <filter id="glow-white" x="-20%" y="-20%" width="140%" height="140%">
+                      <feGaussianBlur stdDeviation="3" result="blur" />
+                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                  </defs>
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/60 to-transparent text-right">
-                  <span className="text-[12px] font-mono text-white/90 uppercase">
-                    C U S T O M S
-                  </span>
-                </div>
+                  <motion.rect
+                    x="0"
+                    y="0"
+                    width="100%"
+                    height="100%"
+                    fill="none"
+                    stroke="#ffffff"
+                    strokeWidth="1"
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={{ pathLength: 1, opacity: [0, 0.4, 0.4, 0] }}
+                    transition={{
+                      pathLength: { duration: 0.8, ease: "easeInOut", delay: 0.25 },
+                      opacity: { duration: 1.2, times: [0, 0.1, 0.8, 1], delay: 0.25 }
+                    }}
+                  />
+
+                  <motion.rect
+                    x="0"
+                    y="0"
+                    width="100%"
+                    height="100%"
+                    fill="none"
+                    stroke="#fff"
+                    strokeWidth="2"
+                    strokeDasharray="60 1000"
+                    filter="url(#glow-white)"
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={{ pathLength: 1, opacity: [0, 0.8, 0] }}
+                    transition={{
+                      pathLength: { duration: 0.8, ease: "easeInOut", delay: 0.25 },
+                      opacity: { duration: 0.8, times: [0, 0.5, 1], delay: 0.25 }
+                    }}
+                  />
+                </svg>
+
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.0, duration: 0.1 }}
+                  className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-white/50 z-30"
+                />
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.1, duration: 0.1 }}
+                  className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-white/50 z-30"
+                />
+
+                <motion.div
+                  initial={{ opacity: 0, scale: 1.05 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.8, delay: 1.1, ease: "easeOut" }}
+                  className="h-full w-full relative z-[1]"
+                >
+                  <img
+                    src="https://res.cloudinary.com/dviwae8cc/image/upload/v1766753393/ChatGPT_Image_Dec_26_2025_06_17_30_PM_zz8am5.jpg"
+                    alt="AI-Designed Quantum Sneaker"
+                    className="h-full w-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:rotate-2"
+                  />
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/60 to-transparent text-right">
+                    <span className="text-[12px] font-mono text-white/90 uppercase">
+                      C U S T O M S
+                    </span>
+                  </div>
+                </motion.div>
               </motion.div>
 
               {/* Sneaker Detail - Left Column (Tall) */}
               <motion.div
-                initial={{ opacity: 0, y: 80, rotateX: 35, scale: 0.9, filter: "blur(10px) brightness(2)" }}
-                animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1, filter: "blur(0px) brightness(1)" }}
-                transition={{
-                  type: "spring",
-                  stiffness: 100,
-                  damping: 15,
-                  delay: 0.5,
-                  filter: { duration: 0.8 }
-                }}
-                className="group relative row-span-2 overflow-hidden border border-white/10 bg-gray-900"
+                initial="initial"
+                animate="animate"
+                className="group relative row-span-2 overflow-hidden bg-transparent z-10"
               >
-                <img
-                  src="https://i.pinimg.com/1200x/64/5f/38/645f38c362cf5a87877f555cde3e0787.jpg"
-                  alt="Quantum React Technology"
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                {/* Delayed Background Reveal */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.8, delay: 1.25 }}
+                  className="absolute inset-0 bg-gray-900 border border-white/10 z-0"
                 />
 
-                {/* Tech Corner Accents */}
-                <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-white/50" />
-                <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-white/50" />
+                {/* Border Drawing Animation Overlay (The White Sparkling Beam) */}
+                <svg className="absolute inset-0 w-full h-full pointer-events-none z-20">
+                  <defs>
+                    <filter id="glow-white-2" x="-20%" y="-20%" width="140%" height="140%">
+                      <feGaussianBlur stdDeviation="3" result="blur" />
+                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                  </defs>
 
-                <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/60 to-transparent">
-                  <span className="text-[12px] font-mono text-white/90 uppercase">
-                    S P O R T S
-                  </span>
-                </div>
+                  <motion.rect
+                    x="0"
+                    y="0"
+                    width="100%"
+                    height="100%"
+                    fill="none"
+                    stroke="#ffffff"
+                    strokeWidth="1"
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={{ pathLength: 1, opacity: [0, 0.4, 0.4, 0] }}
+                    transition={{
+                      pathLength: { duration: 0.8, ease: "easeInOut", delay: 0.45 },
+                      opacity: { duration: 1.2, times: [0, 0.1, 0.8, 1], delay: 0.45 }
+                    }}
+                  />
+
+                  <motion.rect
+                    x="0"
+                    y="0"
+                    width="100%"
+                    height="100%"
+                    fill="none"
+                    stroke="#fff"
+                    strokeWidth="2"
+                    strokeDasharray="60 1000"
+                    filter="url(#glow-white-2)"
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={{ pathLength: 1, opacity: [0, 0.8, 0] }}
+                    transition={{
+                      pathLength: { duration: 0.8, ease: "easeInOut", delay: 0.45 },
+                      opacity: { duration: 0.8, times: [0, 0.5, 1], delay: 0.45 }
+                    }}
+                  />
+                </svg>
+
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.25, duration: 0.1 }}
+                  className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-white/50 z-30"
+                />
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.35, duration: 0.1 }}
+                  className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-white/50 z-30"
+                />
+
+                <motion.div
+                  initial={{ opacity: 0, scale: 1.05 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.8, delay: 1.35, ease: "easeOut" }}
+                  className="h-full w-full relative z-[1]"
+                >
+                  <img
+                    src="https://i.pinimg.com/1200x/64/5f/38/645f38c362cf5a87877f555cde3e0787.jpg"
+                    alt="Quantum React Technology"
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+
+                  <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/60 to-transparent">
+                    <span className="text-[12px] font-mono text-white/90 uppercase">
+                      S P O R T S
+                    </span>
+                  </div>
+                </motion.div>
               </motion.div>
 
               {/* MAGAZINE Button - Desktop */}
               <motion.div
-                initial={{ opacity: 0, y: 80, rotateX: 35, scale: 0.9, filter: "blur(10px) brightness(2)" }}
-                animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1, filter: "blur(0px) brightness(1)" }}
-                transition={{
-                  type: "spring",
-                  stiffness: 100,
-                  damping: 15,
-                  delay: 0.7,
-                  filter: { duration: 0.8 }
-                }}
-                className="group relative overflow-hidden border border-white/10 bg-gradient-to-br from-gray-700/80 to-black-500/80 p-5 backdrop-blur-xl"
+                initial="initial"
+                animate="animate"
+                className="group relative overflow-hidden p-5 transition-colors duration-1000"
               >
-                {/* Animated gradient background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                {/* Delayed Background Reveal */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.8, delay: 1.55 }}
+                  className="absolute inset-0 bg-gradient-to-br from-gray-700/80 to-black-500/80 backdrop-blur-xl border border-white/10 z-0"
+                />
 
-                {/* Animated border */}
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 opacity-0 group-hover:opacity-20 blur group-hover:blur-sm transition-all duration-500" />
+                {/* Border Drawing Animation Overlay (The Pink Sparkling Beam) */}
+                <svg className="absolute inset-0 w-full h-full pointer-events-none z-20">
+                  <defs>
+                    <filter id="glow-magenta" x="-20%" y="-20%" width="140%" height="140%">
+                      <feGaussianBlur stdDeviation="3" result="blur" />
+                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                  </defs>
 
-                {/* Tech Corner Accents */}
-                <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-purple-500" />
-                <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-purple-500" />
+                  <motion.rect
+                    x="0"
+                    y="0"
+                    width="100%"
+                    height="100%"
+                    fill="none"
+                    stroke="#d946ef"
+                    strokeWidth="1"
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={{ pathLength: 1, opacity: [0, 1, 1, 0] }}
+                    transition={{
+                      pathLength: { duration: 1, ease: "easeInOut", delay: 0.55 },
+                      opacity: { duration: 1.5, times: [0, 0.1, 0.8, 1], delay: 0.55 }
+                    }}
+                  />
 
-                {/* Content */}
-                <div className="relative z-10 h-full flex flex-col justify-between">
+                  <motion.rect
+                    x="0"
+                    y="0"
+                    width="100%"
+                    height="100%"
+                    fill="none"
+                    stroke="#fff"
+                    strokeWidth="2"
+                    strokeDasharray="40 1000"
+                    filter="url(#glow-magenta)"
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={{ pathLength: 1, opacity: [0, 1, 0] }}
+                    transition={{
+                      pathLength: { duration: 1, ease: "easeInOut", delay: 0.55 },
+                      opacity: { duration: 1, times: [0, 0.5, 1], delay: 0.55 }
+                    }}
+                  />
+                </svg>
+
+                {/* Tech Corners - Reveal with flicker */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.55, duration: 0.1 }}
+                  className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-purple-500 z-30"
+                />
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.65, duration: 0.1 }}
+                  className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-purple-500 z-30"
+                />
+
+                {/* Animated gradient background (Static on hover) */}
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-[1]" />
+
+                {/* Animated border pulse (Hover) */}
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 opacity-0 group-hover:opacity-20 blur group-hover:blur-sm transition-all duration-500 z-0" />
+
+                {/* Content Overlay */}
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, delay: 1.65, ease: "easeOut" }}
+                  className="relative z-10 h-full flex flex-col justify-between"
+                >
                   <div>
                     <div className="flex items-center gap-2 mb-3">
                       <FiBookOpen className="w-4 h-4 text-purple-300" />
@@ -273,7 +531,7 @@ export default function Hero() {
                       </span>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               </motion.div>
 
               {/* Floating AI Elements */}
