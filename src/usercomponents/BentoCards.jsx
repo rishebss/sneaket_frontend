@@ -1,4 +1,4 @@
-import { FiTrendingUp, FiStar, FiShield, FiHeart } from 'react-icons/fi';
+import { FiTrendingUp, FiStar, FiShield, FiHeart, FiUser } from 'react-icons/fi';
 import { HiShoppingBag } from "react-icons/hi2";
 import { MdDoubleArrow } from "react-icons/md";
 import { LuDroplets } from "react-icons/lu";
@@ -37,7 +37,7 @@ export default function BentoCards() {
                 <div className="grid grid-cols-1 md:grid-cols-6 gap-4 max-w-7xl mx-auto relative">
 
                     {/* Small Card - New Arrivals */}
-                    <Link to="/products?feature=new_arrival" className="group relative overflow-hidden rounded-2xl border border-white/10 transition-all duration-500 hover:border-purple-500/30 hover:shadow-[0_0_40px_rgba(168,85,247,0.15)] min-h-[220px] md:col-span-2">
+                    <Link to="/products?feature=new_arrival" className="group relative overflow-hidden border border-white/10 bg-white/[0.01] backdrop-blur-3xl transition-all duration-500 hover:bg-white/[0.03] min-h-[220px] md:col-span-2">
                         {/* Background Image */}
                         <img
                             src="https://res.cloudinary.com/dviwae8cc/image/upload/v1766771666/3963741fb9717877df5396e593fc0752_2_q3iyff_11zon_i0vzfq.jpg"
@@ -47,6 +47,10 @@ export default function BentoCards() {
                         {/* Overlay */}
                         <div className="absolute inset-0 bg-black/30" />
                         <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                        {/* Tech Corner Accents */}
+                        <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-purple-500" />
+                        <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-purple-500" />
 
                         <div className="relative z-10 p-6 h-full flex flex-col justify-between">
                             <div>
@@ -67,7 +71,7 @@ export default function BentoCards() {
                     </Link>
 
                     {/* Small Card - Best Sellers */}
-                    <Link to="/products?feature=best_seller" className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gray-900/40 p-6 backdrop-blur-xl transition-all duration-500 hover:border-green-500/30 hover:shadow-[0_0_40px_rgba(34,197,94,0.15)] min-h-[220px] md:col-span-2">
+                    <Link to="/products?feature=best_seller" className="group relative overflow-hidden border border-white/10 bg-gray-900/40 p-6 backdrop-blur-xl transition-all duration-500 hover:border-green-500/30 hover:shadow-[0_0_40px_rgba(34,197,94,0.15)] min-h-[220px] md:col-span-2">
                         {/* Grid Pattern Background */}
                         <div className="absolute inset-0 z-0 opacity-40 group-hover:opacity-60 transition-opacity duration-500"
                             style={{
@@ -85,6 +89,10 @@ export default function BentoCards() {
                         </div>
 
                         <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-1" />
+
+                        {/* Tech Corner Accents */}
+                        <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-green-500" />
+                        <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-green-500" />
 
                         <div className="relative z-10 h-full flex flex-col justify-between">
                             <div>
@@ -105,7 +113,7 @@ export default function BentoCards() {
                     </Link>
 
                     {/* Small Card - Favorites */}
-                    <Link to="/favorites" className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gray-900/40 transition-all duration-500 hover:border-pink-500/30 hover:shadow-[0_0_40px_rgba(236,72,153,0.15)] min-h-[220px] md:col-span-2">
+                    <Link to="/favorites" className="group relative overflow-hidden border border-white/10 bg-gray-900/40 transition-all duration-500 hover:border-pink-500/30 hover:shadow-[0_0_40px_rgba(236,72,153,0.15)] min-h-[220px] md:col-span-2">
                         {/* Grid Pattern Background */}
                         <div className="absolute inset-0 z-0 opacity-40 group-hover:opacity-60 transition-opacity duration-500"
                             style={{
@@ -124,6 +132,10 @@ export default function BentoCards() {
 
                         {/* Pink Glow Overlay */}
                         <div className="absolute inset-0 bg-gradient-to-br from-pink-600/10 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500 z-1" />
+
+                        {/* Tech Corner Accents */}
+                        <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-pink-500" />
+                        <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-pink-500" />
 
                         <div className="relative z-10 p-6 h-full flex flex-col justify-between">
                             <div>
@@ -144,7 +156,7 @@ export default function BentoCards() {
                     </Link>
 
                     {/* Large Card - View Store */}
-                    <Link to="/products" className="md:col-span-3 group relative overflow-hidden rounded-2xl border border-white/10 backdrop-blur-xl transition-all duration-500 hover:border-cyan-500/30 hover:shadow-[0_0_40px_rgba(34,211,238,0.15)] min-h-[220px]">
+                    <Link to="/products" className="md:col-span-3 group relative overflow-hidden border border-white/10 backdrop-blur-xl transition-all duration-500 hover:border-cyan-500/30 hover:shadow-[0_0_40px_rgba(34,211,238,0.15)] min-h-[220px]">
                         {/* Plasma Background */}
                         <div className="absolute inset-0 z-0">
                             <PixelBlast
@@ -153,10 +165,14 @@ export default function BentoCards() {
                         </div>
 
                         {/* Dark Overlay for Better Text Readability */}
-                        <div className="absolute inset-0 z-1 bg-gray-900/70 rounded-2xl" />
+                        <div className="absolute inset-0 z-1 bg-gray-900/70" />
 
                         {/* Cyan Gradient Overlay on Hover */}
                         <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-2" />
+
+                        {/* Tech Corner Accents */}
+                        <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-cyan-500" />
+                        <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-cyan-500" />
 
                         <div className="relative z-10 h-full flex flex-col p-6 md:p-8">
                             <div className="inline-flex p-3 md:p-4 rounded-xl bg-gradient-to-br from-cyan-500/30 to-cyan-500/15 border border-cyan-500/40 mb-4 md:mb-6 w-fit backdrop-blur-md">
@@ -187,7 +203,7 @@ export default function BentoCards() {
                     </Link>
 
                     {/* Medium Card - Account */}
-                    <div className="md:col-span-3 group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-700/80 to-black-500/80 p-5 backdrop-blur-xl transition-all duration-500 min-h-[220px] hover:border-amber-500/30 hover:shadow-[0_0_40px_rgba(245,158,11,0.15)]">
+                    <div className="md:col-span-3 group relative overflow-hidden border border-white/10 bg-gradient-to-br from-gray-700/80 to-black-500/80 p-5 backdrop-blur-xl transition-all duration-500 min-h-[220px] hover:border-amber-500/30 hover:shadow-[0_0_40px_rgba(245,158,11,0.15)]">
                         {/* Top Right Grid Pattern */}
                         <div
                             className="absolute top-0 right-0 z-0 opacity-40 pointer-events-none"
@@ -207,17 +223,25 @@ export default function BentoCards() {
                             <div className="absolute top-[150px] right-[25px] w-[25px] h-[25px] bg-white/5" />
                         </div>
 
-                        <div className="relative z-10 h-full flex flex-col justify-between">
-                            <div>
-                                <h3 className="text-2xl text-white mb-2 flex items-center gap-4">
-                                    <span className="font-mono tracking-tight">
-                                        Account
-                                    </span>
+                        {/* Tech Corner Accents */}
+                        <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-amber-500" />
+                        <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-amber-500" />
 
-                                </h3>
-                                <p className="text-gray-400 font-mono text-sm">
-                                    View profile details
-                                </p>
+                        <div className="relative z-10 h-full flex flex-col justify-between">
+                            <div className="flex items-start justify-between">
+                                <div>
+                                    <h3 className="text-2xl text-white mb-2 flex items-center gap-4">
+                                        <span className="font-mono tracking-tight">
+                                            Account
+                                        </span>
+                                    </h3>
+                                    <p className="text-gray-400 font-mono text-sm">
+                                        View profile details
+                                    </p>
+                                </div>
+                                <div className="p-3 border border-white/5 bg-black/40 backdrop-blur-xl text-amber-500">
+                                    <FiUser className="size-6" />
+                                </div>
                             </div>
 
                             {/* Stats & Progress section at bottom */}
@@ -236,9 +260,9 @@ export default function BentoCards() {
 
                                 {/* Login button - integrated into the flow to prevent overlap */}
                                 <div className="z-20 mb-1">
-                                    <div className="px-4 py-2 rounded-lg bg-amber-500/10 border border-amber-500/20 backdrop-blur-md group-hover:bg-amber-500/20 transition-all duration-300 cursor-pointer">
-                                        <span className="text-amber-400 text-sm font-mono">VIEW</span>
-                                    </div>
+                                    <Link to="/login" className="px-4 py-2 rounded-none border border-amber-500/20 bg-amber-500/10 backdrop-blur-md group-hover:bg-amber-500/20 transition-all duration-300 cursor-pointer block">
+                                        <span className="text-amber-400 text-sm font-mono uppercase tracking-widest">VIEW</span>
+                                    </Link>
                                 </div>
                             </div>
                         </div>

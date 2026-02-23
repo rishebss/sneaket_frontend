@@ -3,6 +3,7 @@ import { HiOutlineArrowNarrowRight } from "react-icons/hi";
 import { FiBookOpen } from "react-icons/fi";
 import { CgOpenCollective } from "react-icons/cg";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export default function Hero() {
   return (
@@ -76,14 +77,29 @@ export default function Hero() {
             {/* Mobile View: Stack vertically */}
 
             {/* Desktop View: Grid Layout */}
-            <div className="hidden lg:grid grid-cols-2 gap-4 h-[480px]">
+            <div className="hidden lg:grid grid-cols-2 gap-4 h-[480px] perspective-[1000px]">
               {/* LATEST Button - Desktop */}
-              <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-700/80 to-black-500/80 p-5 backdrop-blur-xl">
+              <motion.div
+                initial={{ opacity: 0, y: 80, rotateX: 35, scale: 0.9, filter: "blur(10px) brightness(2)" }}
+                animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1, filter: "blur(0px) brightness(1)" }}
+                transition={{
+                  type: "spring",
+                  stiffness: 100,
+                  damping: 15,
+                  delay: 0.1,
+                  filter: { duration: 0.8 }
+                }}
+                className="group relative overflow-hidden border border-white/10 bg-gradient-to-br from-gray-700/80 to-black-500/80 p-5 backdrop-blur-xl"
+              >
                 {/* Animated gradient background */}
                 <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                 {/* Animated border */}
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-2xl opacity-0 group-hover:opacity-20 blur group-hover:blur-sm transition-all duration-500" />
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-20 blur group-hover:blur-sm transition-all duration-500" />
+
+                {/* Tech Corner Accents */}
+                <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-cyan-500" />
+                <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-cyan-500" />
 
                 {/* Content */}
                 <div className="relative z-10 h-full flex flex-col justify-between">
@@ -130,44 +146,91 @@ export default function Hero() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Main Sneaker - Right Column (Tall) */}
-              <div className="group relative row-span-2 overflow-hidden rounded-2xl border border-white/10 bg-black shadow-2xl">
+              <motion.div
+                initial={{ opacity: 0, y: 80, rotateX: 35, scale: 0.9, filter: "blur(10px) brightness(2)" }}
+                animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1, filter: "blur(0px) brightness(1)" }}
+                transition={{
+                  type: "spring",
+                  stiffness: 100,
+                  damping: 15,
+                  delay: 0.3,
+                  filter: { duration: 0.8 }
+                }}
+                className="group relative row-span-2 overflow-hidden border border-white/10 bg-black shadow-2xl"
+              >
                 <img
                   src="https://res.cloudinary.com/dviwae8cc/image/upload/v1766753393/ChatGPT_Image_Dec_26_2025_06_17_30_PM_zz8am5.jpg"
                   alt="AI-Designed Quantum Sneaker"
                   className="h-full w-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:rotate-2"
                 />
+
+                {/* Tech Corner Accents */}
+                <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-white/50" />
+                <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-white/50" />
+
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/60 to-transparent text-right">
                   <span className="text-[12px] font-mono text-white/90 uppercase">
                     C U S T O M S
                   </span>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Sneaker Detail - Left Column (Tall) */}
-              <div className="group relative row-span-2 overflow-hidden rounded-2xl border border-white/10 bg-gray-900">
+              <motion.div
+                initial={{ opacity: 0, y: 80, rotateX: 35, scale: 0.9, filter: "blur(10px) brightness(2)" }}
+                animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1, filter: "blur(0px) brightness(1)" }}
+                transition={{
+                  type: "spring",
+                  stiffness: 100,
+                  damping: 15,
+                  delay: 0.5,
+                  filter: { duration: 0.8 }
+                }}
+                className="group relative row-span-2 overflow-hidden border border-white/10 bg-gray-900"
+              >
                 <img
                   src="https://i.pinimg.com/1200x/64/5f/38/645f38c362cf5a87877f555cde3e0787.jpg"
                   alt="Quantum React Technology"
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
+
+                {/* Tech Corner Accents */}
+                <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-white/50" />
+                <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-white/50" />
+
                 <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/60 to-transparent">
                   <span className="text-[12px] font-mono text-white/90 uppercase">
                     S P O R T S
                   </span>
                 </div>
-              </div>
+              </motion.div>
 
               {/* MAGAZINE Button - Desktop */}
-              <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-700/80 to-black-500/80 p-5 backdrop-blur-xl">
+              <motion.div
+                initial={{ opacity: 0, y: 80, rotateX: 35, scale: 0.9, filter: "blur(10px) brightness(2)" }}
+                animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1, filter: "blur(0px) brightness(1)" }}
+                transition={{
+                  type: "spring",
+                  stiffness: 100,
+                  damping: 15,
+                  delay: 0.7,
+                  filter: { duration: 0.8 }
+                }}
+                className="group relative overflow-hidden border border-white/10 bg-gradient-to-br from-gray-700/80 to-black-500/80 p-5 backdrop-blur-xl"
+              >
                 {/* Animated gradient background */}
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                 {/* Animated border */}
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 rounded-2xl opacity-0 group-hover:opacity-20 blur group-hover:blur-sm transition-all duration-500" />
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 opacity-0 group-hover:opacity-20 blur group-hover:blur-sm transition-all duration-500" />
+
+                {/* Tech Corner Accents */}
+                <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-purple-500" />
+                <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/20 transition-all duration-500 group-hover:w-8 group-hover:h-8 group-hover:border-purple-500" />
 
                 {/* Content */}
                 <div className="relative z-10 h-full flex flex-col justify-between">
@@ -211,7 +274,7 @@ export default function Hero() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Floating AI Elements */}
               <div className="absolute -top-10 -right-10 h-32 w-32 animate-pulse rounded-full bg-cyan-500/10 blur-[60px] pointer-events-none" />

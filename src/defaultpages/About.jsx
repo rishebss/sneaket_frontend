@@ -4,6 +4,7 @@ import AboutPillars from "../defaultcomponents/AboutPillars";
 import AboutSpecs from "../defaultcomponents/AboutSpecs";
 import AboutContents from "../defaultcomponents/AboutContents";
 import AboutBento from "../defaultcomponents/AboutBento";
+import Footer from "../defaultcomponents/DefaultFooter";
 
 
 export default function About() {
@@ -38,6 +39,7 @@ export default function About() {
           <AboutSpecs variants={itemVariants} />
           <AboutBento variants={itemVariants} />
           <AboutContents variants={itemVariants} />
+          <Footer />
           
 
         </motion.div>

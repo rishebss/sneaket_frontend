@@ -51,7 +51,7 @@ export default function AboutContents({ variants }) {
     ];
 
     return (
-        <motion.div variants={variants} className="space-y-22 mt-[-70px] mb-24 pt-10">
+        <motion.div variants={variants} className="space-y-22 mt-[-70px] md:mb-64 mb-32 pt-10">
             {sections.map((section, idx) => (
                 <div key={section.id} className={`flex flex-col ${idx % 2 === 1 ? 'md:flex-row-reverse' : 'md:flex-row'} gap-12 items-center`}>
                     {/* Visual Side */}
