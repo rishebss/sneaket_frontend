@@ -431,7 +431,7 @@ export default function Hero() {
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
 
-                  <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/60 to-transparent">
+                  <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/60 to-transparent text-right">
                     <span className="text-[12px] font-mono text-white/90 uppercase">
                       S P O R T S
                     </span>
