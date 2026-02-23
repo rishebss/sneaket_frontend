@@ -109,7 +109,7 @@ export default function Hero() {
                     height="100%"
                     fill="none"
                     stroke="#22d3ee"
-                    strokeWidth="1"
+                    strokeWidth="0.5"
                     initial={{ pathLength: 0, opacity: 0 }}
                     animate={{ pathLength: 1, opacity: [0, 1, 1, 0] }}
                     transition={{
@@ -125,8 +125,8 @@ export default function Hero() {
                     width="100%"
                     height="100%"
                     fill="none"
-                    stroke="#fff"
-                    strokeWidth="2"
+                    stroke="#2cc1e6ff"
+                    strokeWidth="1"
                     strokeDasharray="40 1000"
                     filter="url(#glow-cyan)"
                     initial={{ pathLength: 0, opacity: 0 }}
@@ -139,7 +139,7 @@ export default function Hero() {
 
                   {/* Corner Sparkle Points */}
                   <motion.circle
-                    cx="0" cy="0" r="2" fill="#fff"
+                    cx="0" cy="0" r="2" fill="#188edcff"
                     initial={{ opacity: 0, scale: 0 }}
                     animate={{ opacity: [0, 1, 0], scale: [0, 2, 0] }}
                     transition={{ delay: 0.1, duration: 0.4 }}
@@ -195,7 +195,7 @@ export default function Hero() {
                       </span>
                     </h3>
                     <p className="text-xs text-gray-400 font-mono mb-4">
-                      LATEST & MOST RECENT DROPS
+
                     </p>
                   </div>
 
@@ -235,26 +235,42 @@ export default function Hero() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.8, delay: 1.0 }}
-                  className="absolute inset-0 bg-black backdrop-blur-xl border border-white/10 z-0"
+                  className="absolute inset-0 bg-black backdrop-blur-xl z-0"
+                  style={{ clipPath: 'polygon(0% 0%, 88% 0%, 100% 12%, 100% 100%, 12% 100%, 0% 88%)' }}
                 />
 
-                {/* Border Drawing Animation Overlay (The White Sparkling Beam) */}
-                <svg className="absolute inset-0 w-full h-full pointer-events-none z-20">
+                {/* Sparkling Beam SVG Border (Double Clipped Shape) */}
+                <svg
+                  className="absolute inset-0 w-full h-full pointer-events-none z-20 overflow-visible"
+                  viewBox="0 0 100 100"
+                  preserveAspectRatio="none"
+                >
                   <defs>
-                    <filter id="glow-white" x="-20%" y="-20%" width="140%" height="140%">
+                    <filter id="glow-customs" x="-20%" y="-20%" width="140%" height="140%">
                       <feGaussianBlur stdDeviation="3" result="blur" />
                       <feComposite in="SourceGraphic" in2="blur" operator="over" />
                     </filter>
                   </defs>
 
-                  <motion.rect
-                    x="0"
-                    y="0"
-                    width="100%"
-                    height="100%"
+                  {/* Permanent Subtle Border */}
+                  <motion.path
+                    d="M 0.5,0.5 H 88 L 99.5,12 V 99.5 H 12 L 0.5,88 Z"
                     fill="none"
-                    stroke="#ffffff"
+                    stroke="rgba(255, 255, 255, 0.1)"
                     strokeWidth="1"
+                    vectorEffect="non-scaling-stroke"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.8, delay: 1.0 }}
+                  />
+
+                  {/* The Trace Line */}
+                  <motion.path
+                    d="M 0.5,0.5 H 88 L 99.5,12 V 99.5 H 12 L 0.5,88 Z"
+                    fill="none"
+                    stroke="#1282d2ff"
+                    strokeWidth="0.5"
+                    vectorEffect="non-scaling-stroke"
                     initial={{ pathLength: 0, opacity: 0 }}
                     animate={{ pathLength: 1, opacity: [0, 0.4, 0.4, 0] }}
                     transition={{
@@ -263,16 +279,15 @@ export default function Hero() {
                     }}
                   />
 
-                  <motion.rect
-                    x="0"
-                    y="0"
-                    width="100%"
-                    height="100%"
+                  {/* The Sparkle Head */}
+                  <motion.path
+                    d="M 0.5,0.5 H 88 L 99.5,12 V 99.5 H 12 L 0.5,88 Z"
                     fill="none"
-                    stroke="#fff"
-                    strokeWidth="2"
-                    strokeDasharray="60 1000"
-                    filter="url(#glow-white)"
+                    stroke="#3c12d2ff"
+                    strokeWidth="1.2"
+                    strokeDasharray="10 200"
+                    filter="url(#glow-customs)"
+                    vectorEffect="non-scaling-stroke"
                     initial={{ pathLength: 0, opacity: 0 }}
                     animate={{ pathLength: 1, opacity: [0, 0.8, 0] }}
                     transition={{
@@ -300,6 +315,7 @@ export default function Hero() {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.8, delay: 1.1, ease: "easeOut" }}
                   className="h-full w-full relative z-[1]"
+                  style={{ clipPath: 'polygon(0% 0%, 88% 0%, 100% 12%, 100% 100%, 12% 100%, 0% 88%)' }}
                 >
                   <img
                     src="https://res.cloudinary.com/dviwae8cc/image/upload/v1766753393/ChatGPT_Image_Dec_26_2025_06_17_30_PM_zz8am5.jpg"
@@ -327,26 +343,42 @@ export default function Hero() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.8, delay: 1.25 }}
-                  className="absolute inset-0 bg-gray-900 border border-white/10 z-0"
+                  className="absolute inset-0 bg-gray-900 backdrop-blur-xl z-0"
+                  style={{ clipPath: 'polygon(0% 0%, 88% 0%, 100% 12%, 100% 100%, 12% 100%, 0% 88%)' }}
                 />
 
-                {/* Border Drawing Animation Overlay (The White Sparkling Beam) */}
-                <svg className="absolute inset-0 w-full h-full pointer-events-none z-20">
+                {/* Sparkling Beam SVG Border (Double Clipped Shape) */}
+                <svg
+                  className="absolute inset-0 w-full h-full pointer-events-none z-20 overflow-visible"
+                  viewBox="0 0 100 100"
+                  preserveAspectRatio="none"
+                >
                   <defs>
-                    <filter id="glow-white-2" x="-20%" y="-20%" width="140%" height="140%">
+                    <filter id="glow-sports" x="-20%" y="-20%" width="140%" height="140%">
                       <feGaussianBlur stdDeviation="3" result="blur" />
                       <feComposite in="SourceGraphic" in2="blur" operator="over" />
                     </filter>
                   </defs>
 
-                  <motion.rect
-                    x="0"
-                    y="0"
-                    width="100%"
-                    height="100%"
+                  {/* Permanent Subtle Border */}
+                  <motion.path
+                    d="M 0.5,0.5 H 88 L 99.5,12 V 99.5 H 12 L 0.5,88 Z"
                     fill="none"
-                    stroke="#ffffff"
+                    stroke="rgba(255, 255, 255, 0.1)"
                     strokeWidth="1"
+                    vectorEffect="non-scaling-stroke"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.8, delay: 1.25 }}
+                  />
+
+                  {/* The Main Trace Line */}
+                  <motion.path
+                    d="M 0.5,0.5 H 88 L 99.5,12 V 99.5 H 12 L 0.5,88 Z"
+                    fill="none"
+                    stroke="#188dc8ff"
+                    strokeWidth="0.5"
+                    vectorEffect="non-scaling-stroke"
                     initial={{ pathLength: 0, opacity: 0 }}
                     animate={{ pathLength: 1, opacity: [0, 0.4, 0.4, 0] }}
                     transition={{
@@ -355,16 +387,15 @@ export default function Hero() {
                     }}
                   />
 
-                  <motion.rect
-                    x="0"
-                    y="0"
-                    width="100%"
-                    height="100%"
+                  {/* The Sparkle Head */}
+                  <motion.path
+                    d="M 0.5,0.5 H 88 L 99.5,12 V 99.5 H 12 L 0.5,88 Z"
                     fill="none"
-                    stroke="#fff"
-                    strokeWidth="2"
-                    strokeDasharray="60 1000"
-                    filter="url(#glow-white-2)"
+                    stroke="#a518c8ff"
+                    strokeWidth="1.2"
+                    strokeDasharray="10 200"
+                    filter="url(#glow-sports)"
+                    vectorEffect="non-scaling-stroke"
                     initial={{ pathLength: 0, opacity: 0 }}
                     animate={{ pathLength: 1, opacity: [0, 0.8, 0] }}
                     transition={{
@@ -392,6 +423,7 @@ export default function Hero() {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.8, delay: 1.35, ease: "easeOut" }}
                   className="h-full w-full relative z-[1]"
+                  style={{ clipPath: 'polygon(0% 0%, 88% 0%, 100% 12%, 100% 100%, 12% 100%, 0% 88%)' }}
                 >
                   <img
                     src="https://i.pinimg.com/1200x/64/5f/38/645f38c362cf5a87877f555cde3e0787.jpg"
@@ -452,7 +484,7 @@ export default function Hero() {
                     width="100%"
                     height="100%"
                     fill="none"
-                    stroke="#fff"
+                    stroke="#168843ff"
                     strokeWidth="2"
                     strokeDasharray="40 1000"
                     filter="url(#glow-magenta)"
