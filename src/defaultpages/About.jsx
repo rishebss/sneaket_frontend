@@ -6,14 +6,13 @@ import AboutContents from "../defaultcomponents/AboutContents";
 import AboutBento from "../defaultcomponents/AboutBento";
 import Footer from "../defaultcomponents/DefaultFooter";
 
-
 export default function About() {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.1, delayChildren: 0.2 }
-    }
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+    },
   };
 
   const itemVariants = {
@@ -21,13 +20,13 @@ export default function About() {
     visible: {
       y: 0,
       opacity: 1,
-      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
-    }
+      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+    },
   };
 
   return (
     <div className="w-full bg-transparent text-white selection:bg-cyan-500/30 overflow-x-hidden font-sans">
-      <main className="relative z-10 pt-32 pb-20 px-6">
+      <main className="relative z-10 pt-32 px-6">
         <motion.div
           initial="hidden"
           animate="visible"
@@ -39,11 +38,11 @@ export default function About() {
           <AboutSpecs variants={itemVariants} />
           <AboutBento variants={itemVariants} />
           <AboutContents variants={itemVariants} />
-          <Footer />
           
-
         </motion.div>
+        <Footer />
       </main>
+      
 
       <style>{`
         .stroke-text {
