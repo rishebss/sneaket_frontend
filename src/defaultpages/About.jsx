@@ -38,11 +38,9 @@ export default function About() {
           <AboutSpecs variants={itemVariants} />
           <AboutBento variants={itemVariants} />
           <AboutContents variants={itemVariants} />
-          
         </motion.div>
-        <Footer />
       </main>
-      
+      <Footer />
 
       <style>{`
         .stroke-text {
