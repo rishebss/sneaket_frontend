@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   FiSearch,
   FiFilter,
@@ -95,6 +95,7 @@ export default function Products() {
   const [sortBy, setSortBy] = useState("newest");
   const [showFilters, setShowFilters] = useState(false);
   const [favoriteSet, setFavoriteSet] = useState(new Set());
+  const [cartSizesMap, setCartSizesMap] = useState({});
   const [selectedProduct, setSelectedProduct] = useState(null);
   const drawerOpen = !!selectedProduct;
   const filterDrawerOpen = showFilters;
@@ -145,8 +146,8 @@ export default function Products() {
   const {
     data,
     isLoading,
+    isFetching,
     isError,
-    isPlaceholderData,
   } = useQuery({
     queryKey: ["sneakers", page, searchQuery, selectedCategory, selectedBrand, selectedFeature, sortBy],
     queryFn: () => fetchSneakers({
@@ -157,8 +158,7 @@ export default function Products() {
       feature: selectedFeature,
       sort: sortBy
     }),
-    placeholderData: keepPreviousData,
-    staleTime: 60 * 1000, // 1 minute
+    staleTime: 0,
   });
 
   const products = data?.results || [];
@@ -172,11 +172,10 @@ export default function Products() {
   };
 
   useEffect(() => {
-    // Only scroll if we are on a new page AND the data is actually fresh (not placeholder)
-    if (page > 1 && !isPlaceholderData) {
+    if (page > 1) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, [page, isPlaceholderData]);
+  }, [page]);
 
   // Fetch favorite status for visible products (persist across refresh)
   useEffect(() => {
@@ -211,6 +210,37 @@ export default function Products() {
     })();
     return () => controller.abort();
   }, [products]);
+
+  // Fetch cart membership whenever the detail drawer opens for a product
+  // (mirrors how favorites are checked) so the drawer can show IN CART.
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    const controller = new AbortController();
+    (async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/cart/`,
+          {
+            headers: { Authorization: `Token ${token}` },
+            signal: controller.signal,
+          }
+        );
+        if (!res.ok) return;
+        const json = await res.json();
+        const items = Array.isArray(json) ? json : json.results || [];
+        const map = {};
+        items.forEach((it) => {
+          const sid = it.sneaker;
+          (map[sid] = map[sid] || []).push(it.size ?? null);
+        });
+        setCartSizesMap(map);
+      } catch {
+        // ignore
+      }
+    })();
+    return () => controller.abort();
+  }, [selectedProduct]);
 
   // Toggle favorite handler
   const handleToggleFavorite = async (sneakerId) => {
@@ -264,6 +294,48 @@ export default function Products() {
         else next.add(sneakerId);
         return next;
       });
+    }
+  };
+
+  // Add to cart handler
+  const handleAddToCart = async (sneakerId, size) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return false;
+    }
+    // Optimistically reflect the new line in the membership map
+    setCartSizesMap((prev) => {
+      const next = { ...prev };
+      const sid = String(sneakerId);
+      const existing = next[sid] || [];
+      if (!existing.some((s) => String(s) === String(size))) {
+        next[sid] = [...existing, size ?? null];
+      }
+      return next;
+    });
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/cart/add/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${token}`,
+          },
+          body: JSON.stringify({ sneaker_id: sneakerId, size }),
+        }
+      );
+      if (!res.ok) return false;
+      const data = await res.json();
+      window.dispatchEvent(
+        new CustomEvent("cart-change", {
+          detail: { count: data.cart_count },
+        })
+      );
+      return true;
+    } catch {
+      return false;
     }
   };
 
@@ -383,7 +455,7 @@ export default function Products() {
                   </button>
 
                   <div className="w-20 h-12 bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center">
-                    {isPlaceholderData ? (
+                    {isFetching ? (
                       <div className="w-5 h-5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
                     ) : (
                       <span className="text-cyan-400 font-bold text-sm">
@@ -394,11 +466,11 @@ export default function Products() {
 
                   <button
                     onClick={() => {
-                      if (!isPlaceholderData && pagination.hasNext) {
+                      if (!isFetching && pagination.hasNext) {
                         setPage(old => old + 1);
                       }
                     }}
-                    disabled={!pagination.hasNext || isPlaceholderData}
+                    disabled={!pagination.hasNext || isFetching}
                     className={`flex items-center justify-center w-12 h-12 rounded-r-md transition-all ${pagination.hasNext
                       ? "bg-white/10 text-white hover:bg-white/20 border border-white/20"
                       : "bg-white/5 text-gray-500 border border-white/10 cursor-not-allowed"
@@ -417,6 +489,8 @@ export default function Products() {
         onClose={() => setSelectedProduct(null)}
         isFavorited={selectedProduct ? favoriteSet.has(selectedProduct.id) : false}
         onToggleFavorite={() => selectedProduct && handleToggleFavorite(selectedProduct.id)}
+        onAddToCart={(size) => selectedProduct && handleAddToCart(selectedProduct.id, size)}
+        inCartSizes={selectedProduct ? cartSizesMap[selectedProduct.id] || [] : []}
       />
       <DefaultFooter />
     </>

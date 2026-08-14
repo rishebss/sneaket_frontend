@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiX, FiHeart, FiStar, FiShoppingBag } from "react-icons/fi";
+import { FiX, FiHeart, FiStar, FiShoppingBag, FiCheck } from "react-icons/fi";
 import { AiFillHeart } from "react-icons/ai";
 import GradientDrawerBg from "../usercomponents/GradientDrawerBg";
 
@@ -10,8 +10,56 @@ export default function ProductDetailDrawer({
   onClose,
   isFavorited,
   onToggleFavorite,
+  onAddToCart,
+  inCartSizes = [],
 }) {
   const [selectedImage, setSelectedImage] = useState(0);
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [added, setAdded] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [sizeError, setSizeError] = useState(false);
+
+  const availableSizes = Array.isArray(product?.available_sizes)
+    ? product.available_sizes
+    : [];
+
+  // Reset transient UI state whenever a new product is opened
+  useEffect(() => {
+    if (isOpen) {
+      setAdded(false);
+      setLoading(false);
+      setSizeError(false);
+    }
+  }, [isOpen, product?.id]);
+
+  // Auto-select the size already in cart when drawer opens if available
+  useEffect(() => {
+    if (isOpen && inCartSizes.length > 0) {
+      const matchingSize = availableSizes.find((size) =>
+        inCartSizes.some((s) => String(s) === String(size))
+      );
+      if (matchingSize != null) {
+        setSelectedSize(matchingSize);
+      } else if (inCartSizes[0] != null) {
+        setSelectedSize(inCartSizes[0]);
+      }
+    } else if (isOpen && inCartSizes.length === 0) {
+      setSelectedSize(null);
+    }
+  }, [isOpen, product?.id, inCartSizes]);
+
+  // Cart membership (which sizes of this product are already in the cart) is
+  // owned by Products.jsx and passed in as inCartSizes - same pattern as
+  // favorites. Derive the in-cart status for the currently selected size.
+  const isSelectedSizeInCart =
+    availableSizes.length === 0
+      ? inCartSizes.some((s) => s === null || s === undefined)
+      : selectedSize != null &&
+        inCartSizes.some((s) => String(s) === String(selectedSize));
+
+  const hasAnySizeInCart = inCartSizes.length > 0;
+
+  const inCart = selectedSize != null ? isSelectedSizeInCart : hasAnySizeInCart;
 
   if (!product) return null;
 
@@ -145,6 +193,52 @@ export default function ProductDetailDrawer({
                     Category: {product.category}
                   </div>
                 )}
+
+                {availableSizes.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-gray-400 font-mono uppercase tracking-widest">
+                        Select Size (US)
+                      </span>
+                      {sizeError && (
+                        <span className="text-xs text-red-400 font-mono">
+                          Please select a size
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {availableSizes.map((size) => {
+                        const isSizeInCart = inCartSizes.some(
+                          (s) => String(s) === String(size)
+                        );
+                        return (
+                          <button
+                            key={size}
+                            onClick={() => {
+                              setSelectedSize(size);
+                              setSizeError(false);
+                            }}
+                            className={`relative min-w-[3rem] px-3 py-2 rounded-md border text-sm font-mono transition-all ${
+                              selectedSize === size
+                                ? "border-blue-500 bg-blue-500/20 text-white"
+                                : isSizeInCart
+                                  ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-300 hover:border-emerald-500"
+                                  : "border-white/10 bg-white/5 text-gray-300 hover:border-white/30 hover:bg-white/10"
+                            }`}
+                          >
+                            {size}
+                            {isSizeInCart && (
+                              <span className="absolute -top-1 -right-1 flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -174,7 +268,35 @@ export default function ProductDetailDrawer({
                   </span>
                 </span>
               </button>
-              <button className="group relative w-full overflow-hidden bg-blue-500/30 px-6 py-3 text-sm font-mono text-white transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(34,211,238,0.2)] cursor-pointer">
+              <button
+                onClick={async () => {
+                  if (added || loading) return;
+                  if (availableSizes.length > 0 && selectedSize == null) {
+                    setSizeError(true);
+                    return;
+                  }
+                  setLoading(true);
+                  try {
+                    const success = onAddToCart
+                      ? await onAddToCart(selectedSize)
+                      : false;
+                    if (success !== false) {
+                      setAdded(true);
+                      setTimeout(() => setAdded(false), 1800);
+                    }
+                  } catch {
+                    // ignore errors
+                  } finally {
+                    setLoading(false);
+                  }
+                }}
+                disabled={added || loading}
+                className={`group relative w-full overflow-hidden px-6 py-3 text-sm font-mono transition-all duration-500 cursor-pointer ${
+                  added || inCart
+                    ? "bg-emerald-500/20 text-white hover:scale-[1.02]"
+                    : "bg-blue-500/30 text-white hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(34,211,238,0.2)]"
+                } ${loading ? "opacity-80 cursor-wait" : ""}`}
+              >
                 <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-white/20 group-hover:border-white group-hover:shadow-[0_0_8px_rgba(34,211,238,0.3)] transition-all duration-300" />
                 <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-white/20 group-hover:border-white group-hover:shadow-[0_0_8px_rgba(34,211,238,0.3)] transition-all duration-300" />
                 <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-white/20 group-hover:border-white group-hover:shadow-[0_0_8px_rgba(34,211,238,0.3)] transition-all duration-300" />
@@ -182,9 +304,23 @@ export default function ProductDetailDrawer({
 
                 <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <span className="relative z-10 flex items-center justify-center gap-3">
-                  <FiShoppingBag className="w-5 h-5" />
+                  {loading ? (
+                    <div className="w-5 h-5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+                  ) : added ? (
+                    <FiCheck className="w-5 h-5 text-emerald-400" />
+                  ) : inCart ? (
+                    <FiCheck className="w-5 h-5 text-emerald-400" />
+                  ) : (
+                    <FiShoppingBag className="w-5 h-5" />
+                  )}
                   <span className="tracking-[0.2em] font-bold">
-                    ADD TO CART
+                    {loading
+                      ? "ADDING..."
+                      : added
+                        ? "ADDED TO CART"
+                        : inCart
+                          ? "IN CART"
+                          : "ADD TO CART"}
                   </span>
                 </span>
               </button>

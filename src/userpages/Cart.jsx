@@ -1,0 +1,430 @@
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Link, useNavigate } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+    FiShoppingBag,
+    FiMinus,
+    FiPlus,
+    FiTrash2,
+    FiChevronUp,
+    FiChevronDown,
+} from "react-icons/fi";
+import Loader from "../defaultcomponents/Loader";
+import ConfirmRemoveModal from "../usercomponents/ConfirmRemoveModal";
+
+const fetchCart = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return { results: [], count: 0 };
+
+    const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/cart/`,
+        {
+            headers: {
+                Authorization: `Token ${token}`,
+            },
+        }
+    );
+    if (!response.ok) {
+        throw new Error("Network response was not ok");
+    }
+    const json = await response.json();
+    if (Array.isArray(json)) {
+        return { results: json, count: json.length };
+    }
+    return json;
+};
+
+export default function Cart() {
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
+    const [itemToRemove, setItemToRemove] = useState(null);
+    const [isMobileSummaryExpanded, setIsMobileSummaryExpanded] = useState(false);
+
+    const {
+        data,
+        isLoading,
+        refetch,
+    } = useQuery({
+        queryKey: ["cart"],
+        queryFn: fetchCart,
+        staleTime: 30 * 1000,
+    });
+
+    const items = data?.results || [];
+    const cartCount = data?.count || 0;
+
+    const subtotal = items.reduce(
+        (sum, item) =>
+            sum + parseFloat(item.sneaker_price) * item.quantity,
+        0
+    );
+
+    // Update quantity of a line (optimistic)
+    const handleUpdateQuantity = async (item, delta) => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login");
+            return;
+        }
+        const newQuantity = Math.max(1, item.quantity + delta);
+
+        // Optimistic patch in cache
+        queryClient.setQueryData(["cart"], (old) => {
+            if (!old) return old;
+            return {
+                ...old,
+                results: old.results.map((it) =>
+                    it.id === item.id
+                        ? { ...it, quantity: newQuantity }
+                        : it
+                ),
+            };
+        });
+
+        try {
+            const res = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/api/cart/${item.id}/`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Token ${token}`,
+                    },
+                    body: JSON.stringify({ quantity: newQuantity }),
+                }
+            );
+            if (!res.ok) {
+                refetch();
+                return;
+            }
+            // Keep navbar badge in sync
+            const countRes = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/api/cart/count/`,
+                { headers: { Authorization: `Token ${token}` } }
+            );
+            if (countRes.ok) {
+                const { count } = await countRes.json();
+                window.dispatchEvent(
+                    new CustomEvent("cart-change", { detail: { count } })
+                );
+            }
+        } catch {
+            refetch();
+        }
+    };
+
+    // Remove a line (optimistic)
+    const handleRemove = async (item) => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login");
+            return;
+        }
+
+        queryClient.setQueryData(["cart"], (old) => {
+            if (!old) return old;
+            return {
+                ...old,
+                results: old.results.filter((it) => it.id !== item.id),
+            };
+        });
+
+        try {
+            const res = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/api/cart/${item.id}/`,
+                {
+                    method: "DELETE",
+                    headers: { Authorization: `Token ${token}` },
+                }
+            );
+            if (!res.ok) {
+                refetch();
+                return;
+            }
+            const countRes = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/api/cart/count/`,
+                { headers: { Authorization: `Token ${token}` } }
+            );
+            if (countRes.ok) {
+                const { count } = await countRes.json();
+                window.dispatchEvent(
+                    new CustomEvent("cart-change", { detail: { count } })
+                );
+            }
+            refetch();
+        } catch {
+            refetch();
+        }
+    };
+
+    return (
+        <>
+            <div className="pb-6 px-4 md:px-8 lg:px-12 relative mt-20 md:mt-28">
+                <div className="max-w-[1600px] mx-auto flex items-center justify-between">
+                    
+                </div>
+
+                <div className="max-w-[1600px] mx-auto flex flex-col gap-6 mt-2">
+                    {isLoading ? (
+                        <div className="flex items-center justify-center min-h-[400px]">
+                            <Loader />
+                        </div>
+                    ) : items.length > 0 ? (
+                        <>
+                        <div className="relative">
+                            {/* Top full-screen-width horizontal divider line */}
+                            <div className="w-screen relative left-1/2 -translate-x-1/2 h-px bg-white/10 hidden lg:block" />
+
+                            {/* Vertical divider line extending all the way to screen bottom */}
+                            <div className="hidden lg:block absolute top-0 bottom-[-100vh] left-[calc(66.666667%)] w-px bg-white/10 pointer-events-none" />
+
+                            <div className="grid grid-cols-1 lg:grid-cols-12 relative pt-4 lg:pt-6">
+                                {/* Scrollable Cart Items list */}
+                                <div className="lg:col-span-8 space-y-4 lg:max-h-[calc(100vh-11rem)] lg:overflow-y-auto pr-3 lg:pr-8 custom-scrollbar pb-28 lg:pb-0">
+                                    {items.map((item, index) => (
+                                        <CartRow
+                                            key={item.id}
+                                            item={item}
+                                            index={index}
+                                            onUpdate={(delta) =>
+                                                handleUpdateQuantity(item, delta)
+                                            }
+                                            onRemove={() => setItemToRemove(item)}
+                                        />
+                                    ))}
+                                </div>
+
+                                {/* Order Summary Checkout Card (desktop only) */}
+                                <div className="hidden lg:block lg:col-span-4 lg:pl-8">
+                                    <div className="sticky top-32 p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
+                                        <h3 className="text-white font-mono font-bold tracking-widest uppercase text-sm mb-6">
+                                            Order Summary
+                                        </h3>
+                                        <div className="flex items-center justify-between text-gray-300 text-sm mb-3">
+                                            <span>Subtotal</span>
+                                            <span className="font-mono text-white">
+                                                ₹{subtotal.toLocaleString()}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center justify-between text-gray-400 text-xs mb-4">
+                                            <span>Shipping</span>
+                                            <span className="font-mono">
+                                                Calculated at checkout
+                                            </span>
+                                        </div>
+                                        <div className="border-t border-white/10 pt-4 flex items-center justify-between">
+                                            <span className="text-white font-mono font-bold">
+                                                Total
+                                            </span>
+                                            <span className="text-white font-mono font-bold text-lg">
+                                                ₹{subtotal.toLocaleString()}
+                                            </span>
+                                        </div>
+                                        <button className="group relative w-full mt-6 overflow-hidden bg-blue-500/30 px-6 py-3 text-sm font-mono text-white transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(34,211,238,0.2)] cursor-pointer">
+                                            <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-white/20 group-hover:border-white group-hover:shadow-[0_0_8px_rgba(34,211,238,0.3)] transition-all duration-300" />
+                                            <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-white/20 group-hover:border-white group-hover:shadow-[0_0_8px_rgba(34,211,238,0.3)] transition-all duration-300" />
+                                            <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-white/20 group-hover:border-white group-hover:shadow-[0_0_8px_rgba(34,211,238,0.3)] transition-all duration-300" />
+                                            <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-white/20 group-hover:border-white group-hover:shadow-[0_0_8px_rgba(34,211,238,0.3)] transition-all duration-300" />
+                                            <span className="relative z-10 flex items-center justify-center gap-3">
+                                                <FiShoppingBag className="w-5 h-5" />
+                                                <span className="tracking-[0.2em] font-bold">
+                                                    CHECKOUT
+                                                </span>
+                                            </span>
+                                        </button>
+                                        <Link
+                                            to="/products"
+                                            className="block text-center mt-4 text-cyan-400 hover:underline text-xs font-mono"
+                                        >
+                                            CONTINUE SHOPPING
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {/* Mobile fixed checkout footer */}
+                    <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white/5 backdrop-blur-xl border-t border-white/10">
+                        {isMobileSummaryExpanded && (
+                            <div className="px-4 py-4 space-y-3 border-b border-white/10 bg-transparent">
+                                <div className="flex items-center justify-between text-gray-300 text-sm">
+                                    <span>Subtotal</span>
+                                    <span className="font-mono text-white">
+                                        ₹{subtotal.toLocaleString()}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between text-gray-400 text-xs">
+                                    <span>Shipping</span>
+                                    <span className="font-mono">
+                                        Calculated at checkout
+                                    </span>
+                                </div>
+                                <div className="border-t border-white/10 pt-3 flex items-center justify-between">
+                                    <span className="text-white font-mono font-bold">
+                                        Total
+                                    </span>
+                                    <span className="text-white font-mono font-bold text-lg">
+                                        ₹{subtotal.toLocaleString()}
+                                    </span>
+                                </div>
+                            </div>
+                        )}
+                        <div className="px-4 py-3 flex items-center justify-between gap-3">
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    setIsMobileSummaryExpanded((v) => !v)
+                                }
+                                className="flex items-center gap-2 text-left"
+                                aria-label="Toggle order summary"
+                            >
+                                <span className="text-white font-mono font-bold">
+                                    ₹{subtotal.toLocaleString()}
+                                </span>
+                                <FiChevronUp
+                                    className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${
+                                        isMobileSummaryExpanded ? "rotate-180" : ""
+                                    }`}
+                                />
+                            </button>
+                            <button className="group relative flex-1 max-w-[55%] overflow-hidden bg-blue-500/30 px-6 py-3 text-sm font-mono text-white transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(34,211,238,0.2)] cursor-pointer">
+                                <span className="relative z-10 flex items-center justify-center gap-3">
+                                    <FiShoppingBag className="w-5 h-5" />
+                                    <span className="tracking-[0.2em] font-bold">
+                                        CHECKOUT
+                                    </span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                    </>
+
+                    ) : (
+                        <div className="flex flex-col items-center justify-center py-32 bg-white/5 rounded-2xl border border-dashed border-white/10">
+                            <FiShoppingBag className="text-5xl text-gray-600 mb-6 opacity-20" />
+                            <h3 className="text-xl font-mono text-white mb-2">
+                                Your cart is empty
+                            </h3>
+                            <p className="text-gray-400 font-mono text-sm max-w-md text-center px-4">
+                                Add some kicks to your cart and they'll show up here
+                                for checkout.
+                            </p>
+                            <Link
+                                to="/products"
+                                className="mt-8 px-8 py-3 bg-white text-black font-mono text-sm rounded-full hover:bg-cyan-400 hover:text-black transition-all shadow-xl shadow-white/5"
+                            >
+                                EXPLORE PRODUCTS
+                            </Link>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            <ConfirmRemoveModal
+                isOpen={!!itemToRemove}
+                onClose={() => setItemToRemove(null)}
+                onConfirm={() => itemToRemove && handleRemove(itemToRemove)}
+                item={itemToRemove}
+            />
+        </>
+    );
+}
+
+function CartRow({ item, index, onUpdate, onRemove }) {
+    const displayPrice = parseFloat(item.sneaker_price).toLocaleString();
+    const hasDiscount =
+        item.sneaker_original_price &&
+        parseFloat(item.sneaker_original_price) > parseFloat(item.sneaker_price);
+    const lineTotal = parseFloat(item.sneaker_price) * item.quantity;
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.05 }}
+            whileHover={{ y: -2 }}
+            className="group relative bg-white/5 backdrop-blur-xl rounded-lg border border-white/10 overflow-hidden hover:border-blue-500/50 transition-all duration-500 flex flex-col sm:flex-row gap-4 p-4 shadow-2xl"
+        >
+            <Link
+                to={`/products/${item.sneaker}`}
+                className="w-full sm:w-32 aspect-square rounded-md overflow-hidden bg-gradient-to-b from-[#1a2333]/50 to-transparent border border-white/10 shrink-0"
+            >
+                <img
+                    src={item.sneaker_image}
+                    alt={item.sneaker_name}
+                    className="w-full h-full object-contain"
+                />
+            </Link>
+
+            <div className="flex-1 flex flex-col">
+                <div className="flex items-start justify-between gap-3">
+                    <div>
+                        <span className="text-gray-500 text-[10px] font-mono uppercase tracking-[0.15em]">
+                            {item.sneaker_brand}
+                        </span>
+                        <Link
+                            to={`/products/${item.sneaker}`}
+                            className="block text-white/90 hover:text-blue-400 transition-colors font-medium"
+                        >
+                            {item.sneaker_name}
+                        </Link>
+                        {item.size && (
+                            <span className="inline-block mt-1 text-xs font-mono text-gray-400 bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
+                                US {item.size}
+                            </span>
+                        )}
+                    </div>
+                    <button
+                        onClick={onRemove}
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:border-red-500/50 text-xs font-mono font-bold tracking-wider uppercase transition-all cursor-pointer hover:scale-105"
+                    >
+                        <FiTrash2 className="w-4 h-4" />
+                        <span>REMOVE</span>
+                    </button>
+                </div>
+
+                <div className="mt-auto pt-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => onUpdate(-1)}
+                            disabled={item.quantity <= 1}
+                            aria-label="Decrease quantity"
+                            className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                            <FiMinus className="w-4 h-4" />
+                        </button>
+                        <span className="w-8 text-center font-mono text-white">
+                            {item.quantity}
+                        </span>
+                        <button
+                            onClick={() => onUpdate(1)}
+                            aria-label="Increase quantity"
+                            className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all"
+                        >
+                            <FiPlus className="w-4 h-4" />
+                        </button>
+                    </div>
+
+                    <div className="text-right">
+                        <div className="flex items-baseline gap-2 justify-end">
+                            {hasDiscount && (
+                                <span className="text-xs text-gray-500 line-through font-mono opacity-70">
+                                    ₹
+                                    {parseFloat(
+                                        item.sneaker_original_price
+                                    ).toLocaleString()}
+                                </span>
+                            )}
+                            <span className="text-sm font-mono font-bold text-white">
+                                ₹{lineTotal.toLocaleString()}
+                            </span>
+                        </div>
+                        <span className="text-[10px] text-gray-500 font-mono">
+                            ₹{displayPrice} each
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </motion.div>
+    );
+}

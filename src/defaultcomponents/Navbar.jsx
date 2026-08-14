@@ -1,9 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar({ isLoggedIn }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
   const navigate = useNavigate();
+
+  // Keep cart badge in sync
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setCartCount(0);
+      return;
+    }
+    const fetchCount = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/cart/count/`,
+          { headers: { Authorization: `Token ${token}` } }
+        );
+        if (res.ok) {
+          const data = await res.json();
+          setCartCount(data.count || 0);
+        }
+      } catch {
+        // ignore
+      }
+    };
+    fetchCount();
+    const onCartChange = (e) =>
+      setCartCount((c) => e.detail?.count ?? c + 1);
+    window.addEventListener("cart-change", onCartChange);
+    window.addEventListener("auth-change", fetchCount);
+    return () => {
+      window.removeEventListener("cart-change", onCartChange);
+      window.removeEventListener("auth-change", fetchCount);
+    };
+  }, [isLoggedIn]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -13,13 +47,13 @@ export default function Navbar({ isLoggedIn }) {
   };
 
   const navItems = isLoggedIn
-    ? ["Products", "About Us", "Profile", "Logout"]
+    ? ["Products", "Cart", "About Us", "Profile", "Logout"]
     : ["About Us", "Login", "Signup", "Github"];
 
   return (
     <>
       <div className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 sm:px-12 pointer-events-none">
-        <nav className="w-full max-w-2xl transition-all duration-500 rounded-[2.5rem] border border-white/10 bg-white/5 backdrop-blur-xl py-4 shadow-[0_8px_32px_rgba(0,0,0,0.2)] pointer-events-auto">
+        <nav className="w-full max-w-2xl md:max-w-3xl transition-all duration-500 rounded-[2.5rem] border border-white/10 bg-white/5 backdrop-blur-xl py-4 shadow-[0_8px_32px_rgba(0,0,0,0.2)] pointer-events-auto">
           <div className="px-6 sm:px-10 flex items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2">
@@ -40,6 +74,20 @@ export default function Navbar({ isLoggedIn }) {
                     <span className="absolute -bottom-1 left-0 w-0 h-px bg-red-500 transition-all duration-300 group-hover:w-full" />
                     {item}
                   </button>
+                ) : item === "Cart" ? (
+                  <Link
+                    key={item}
+                    to="/cart"
+                    className="text-[10px] font-semibold text-gray-400 hover:text-white transition-all tracking-[0.2em] uppercase font-mono relative group flex items-center gap-1"
+                  >
+                    <span className="absolute -bottom-1 left-0 w-0 h-px bg-cyan-500 transition-all duration-300 group-hover:w-full" />
+                    {item}
+                    {cartCount > 0 && (
+                      <span className="min-w-[16px] h-4 px-1 flex items-center justify-center rounded-full bg-cyan-500 text-white text-[10px] font-mono leading-none">
+                        {cartCount > 99 ? "99+" : cartCount}
+                      </span>
+                    )}
+                  </Link>
                 ) : item === "Login" ||
                   item === "Signup" ||
                   item === "Products" ||
@@ -178,6 +226,28 @@ export default function Navbar({ isLoggedIn }) {
                     {item}
                   </span>
                 </button>
+              ) : item === "Cart" ? (
+                <Link
+                  key={item}
+                  to="/cart"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="group relative text-sm text-white/60 hover:text-cyan-400 transition-all duration-300 flex items-center gap-2"
+                  style={{
+                    animation: isMenuOpen
+                      ? `slideInRight 0.3s ease-out ${index * 0.1}s both`
+                      : "none",
+                  }}
+                >
+                  <span className="flex items-center gap-3">
+                    <span className="w-0 h-px bg-gradient-to-r from-cyan-500 to-purple-500 transition-all duration-300 group-hover:w-8" />
+                    {item}
+                  </span>
+                  {cartCount > 0 && (
+                    <span className="min-w-[16px] h-4 px-1 flex items-center justify-center rounded-full bg-cyan-500 text-white text-[10px] font-mono leading-none">
+                      {cartCount > 99 ? "99+" : cartCount}
+                    </span>
+                  )}
+                </Link>
               ) : item === "Login" ||
                 item === "Signup" ||
                 item === "Products" ||

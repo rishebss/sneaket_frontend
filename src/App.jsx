@@ -15,6 +15,7 @@ import Signup from "./defaultpages/Signup";
 import About from "./defaultpages/About";
 import Products from "./userpages/Products";
 import Favorites from "./userpages/Favorites";
+import Cart from "./userpages/Cart";
 import PageTransition from "./components/PageTransition";
 
 function App() {
@@ -79,6 +80,18 @@ function App() {
                   <PageTransition>
                     {isLoggedIn ? (
                       <Favorites />
+                    ) : (
+                      <Navigate to="/login" replace />
+                    )}
+                  </PageTransition>
+                }
+              />
+              <Route
+                path="/cart"
+                element={
+                  <PageTransition>
+                    {isLoggedIn ? (
+                      <Cart />
                     ) : (
                       <Navigate to="/login" replace />
                     )}
