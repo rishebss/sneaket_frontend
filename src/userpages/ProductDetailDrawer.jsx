@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiX, FiHeart, FiStar, FiShoppingBag, FiCheck } from "react-icons/fi";
 import { AiFillHeart } from "react-icons/ai";
@@ -18,6 +18,7 @@ export default function ProductDetailDrawer({
   const [added, setAdded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sizeError, setSizeError] = useState(false);
+  const sizeSelectRef = useRef(null);
 
   const availableSizes = Array.isArray(product?.available_sizes)
     ? product.available_sizes
@@ -195,16 +196,15 @@ export default function ProductDetailDrawer({
                 )}
 
                 {availableSizes.length > 0 && (
-                  <div className="space-y-2">
+                  <div className="space-y-2" ref={sizeSelectRef}>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-400 font-mono uppercase tracking-widest">
+                      <span
+                        className={`text-xs font-mono uppercase tracking-widest transition-colors ${
+                          sizeError ? "text-red-400" : "text-gray-400"
+                        }`}
+                      >
                         Select Size (US)
                       </span>
-                      {sizeError && (
-                        <span className="text-xs text-red-400 font-mono">
-                          Please select a size
-                        </span>
-                      )}
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {availableSizes.map((size) => {
@@ -269,14 +269,15 @@ export default function ProductDetailDrawer({
                 </span>
               </button>
               <button
-                onClick={async () => {
-                  if (added || loading) return;
-                  if (availableSizes.length > 0 && selectedSize == null) {
-                    setSizeError(true);
-                    return;
-                  }
-                  setLoading(true);
-                  try {
+onClick={async () => {
+                   if (added || loading) return;
+                   if (availableSizes.length > 0 && selectedSize == null) {
+                     setSizeError(true);
+                     sizeSelectRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                     return;
+                   }
+                   setLoading(true);
+                   try {
                     const success = onAddToCart
                       ? await onAddToCart(selectedSize)
                       : false;

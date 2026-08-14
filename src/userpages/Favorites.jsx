@@ -14,6 +14,7 @@ import { AiFillHeart } from "react-icons/ai";
 import { MdDoubleArrow } from "react-icons/md";
 import Loader from "../defaultcomponents/Loader";
 import DefaultFooter from "../defaultcomponents/DefaultFooter";
+import ProductDetailDrawer from "./ProductDetailDrawer";
 
 const CATEGORIES = [
     { id: "all", name: "All" },
@@ -79,6 +80,8 @@ export default function Favorites() {
     const [sortBy, setSortBy] = useState("newest");
     const [showFilters, setShowFilters] = useState(false);
     const [favoriteSet, setFavoriteSet] = useState(new Set());
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [cartSizesMap, setCartSizesMap] = useState({});
 
     const {
         data: products = [],
@@ -142,6 +145,78 @@ export default function Favorites() {
             refetch();
         }
     };
+
+    // Add to cart handler
+    const handleAddToCart = async (sneakerId, size) => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login");
+            return false;
+        }
+        // Optimistically reflect the new line in the membership map
+        setCartSizesMap((prev) => {
+            const next = { ...prev };
+            const sid = String(sneakerId);
+            const existing = next[sid] || [];
+            if (!existing.some((s) => String(s) === String(size))) {
+                next[sid] = [...existing, size ?? null];
+            }
+            return next;
+        });
+        try {
+            const res = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/api/cart/add/`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Token ${token}`,
+                    },
+                    body: JSON.stringify({ sneaker_id: sneakerId, size }),
+                }
+            );
+            if (!res.ok) return false;
+            const data = await res.json();
+            window.dispatchEvent(
+                new CustomEvent("cart-change", {
+                    detail: { count: data.cart_count },
+                })
+            );
+            return true;
+        } catch {
+            return false;
+        }
+    };
+
+    // Fetch cart membership whenever the detail drawer opens for a product
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+        const controller = new AbortController();
+        (async () => {
+            try {
+                const res = await fetch(
+                    `${import.meta.env.VITE_API_BASE_URL}/api/cart/`,
+                    {
+                        headers: { Authorization: `Token ${token}` },
+                        signal: controller.signal,
+                    }
+                );
+                if (!res.ok) return;
+                const json = await res.json();
+                const items = Array.isArray(json) ? json : json.results || [];
+                const map = {};
+                items.forEach((it) => {
+                    const sid = it.sneaker;
+                    (map[sid] = map[sid] || []).push(it.size ?? null);
+                });
+                setCartSizesMap(map);
+            } catch {
+                // ignore
+            }
+        })();
+        return () => controller.abort();
+    }, [selectedProduct]);
 
     return (
         <>
@@ -279,6 +354,7 @@ export default function Favorites() {
                                     index={index}
                                     isFavorited={favoriteSet.has(product.id)}
                                     onToggle={() => handleToggleFavorite(product.id)}
+                                    onProductClick={setSelectedProduct}
                                 />
                             ))}
                         </div>
@@ -300,11 +376,20 @@ export default function Favorites() {
                 </div>
             </div>
             <DefaultFooter />
+            <ProductDetailDrawer
+                product={selectedProduct}
+                isOpen={!!selectedProduct}
+                onClose={() => setSelectedProduct(null)}
+                isFavorited={selectedProduct ? favoriteSet.has(selectedProduct.id) : false}
+                onToggleFavorite={() => selectedProduct && handleToggleFavorite(selectedProduct.id)}
+                onAddToCart={(size) => selectedProduct && handleAddToCart(selectedProduct.id, size)}
+                inCartSizes={selectedProduct ? cartSizesMap[selectedProduct.id] || [] : []}
+            />
         </>
     );
 }
 
-function ProductCard({ product, index, isFavorited = false, onToggle }) {
+function ProductCard({ product, index, isFavorited = false, onToggle, onProductClick }) {
     const [hovered, setHovered] = useState(false);
     const displayPrice = parseFloat(product.price).toLocaleString();
     const hasDiscount =
@@ -347,9 +432,9 @@ function ProductCard({ product, index, isFavorited = false, onToggle }) {
                 </AnimatePresence>
             </div>
 
-            <Link
-                to={`/products/${product.id}`}
-                className="p-4 flex flex-col flex-1"
+            <div
+                className="p-4 flex flex-col flex-1 cursor-pointer"
+                onClick={() => onProductClick && onProductClick(product)}
             >
                 <div className="flex justify-between items-center mb-1.5">
                     <span className="text-gray-500 text-[10px] font-mono uppercase tracking-[0.15em]">
@@ -383,7 +468,7 @@ function ProductCard({ product, index, isFavorited = false, onToggle }) {
                         <MdDoubleArrow className="w-8 h-8 -ml-3" />
                     </div>
                 </div>
-            </Link>
+            </div>
         </motion.div>
     );
 }

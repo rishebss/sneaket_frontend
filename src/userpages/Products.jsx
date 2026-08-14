@@ -10,6 +10,7 @@ import {
   FiHeart,
   FiArrowRight,
   FiX,
+  FiShoppingBag,
 } from "react-icons/fi";
 import { AiFillHeart } from "react-icons/ai";
 import { MdDoubleArrow } from "react-icons/md";
@@ -96,6 +97,7 @@ export default function Products() {
   const [showFilters, setShowFilters] = useState(false);
   const [favoriteSet, setFavoriteSet] = useState(new Set());
   const [cartSizesMap, setCartSizesMap] = useState({});
+  const [cartCount, setCartCount] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const drawerOpen = !!selectedProduct;
   const filterDrawerOpen = showFilters;
@@ -242,6 +244,37 @@ export default function Products() {
     return () => controller.abort();
   }, [selectedProduct]);
 
+  // Track cart count (initial fetch + live updates from cart-change events)
+  useEffect(() => {
+    const updateCount = (count) => setCartCount(count);
+
+    const token = localStorage.getItem("token");
+    if (token) {
+      const controller = new AbortController();
+      (async () => {
+        try {
+          const res = await fetch(
+            `${import.meta.env.VITE_API_BASE_URL}/api/cart/count/`,
+            {
+              headers: { Authorization: `Token ${token}` },
+              signal: controller.signal,
+            }
+          );
+          if (!res.ok) return;
+          const data = await res.json();
+          updateCount(data.count || 0);
+        } catch {
+          // ignore
+        }
+      })();
+      return () => controller.abort();
+    }
+
+    const onCartChange = (e) => updateCount(e.detail?.count ?? 0);
+    window.addEventListener("cart-change", onCartChange);
+    return () => window.removeEventListener("cart-change", onCartChange);
+  }, []);
+
   // Toggle favorite handler
   const handleToggleFavorite = async (sneakerId) => {
     const token = localStorage.getItem("token");
@@ -364,6 +397,19 @@ export default function Products() {
                   className="w-full h-11 bg-white/5 border border-white/10 rounded-lg pl-12 pr-4 text-white focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 transition-all backdrop-blur-xl"
                 />
               </div>
+
+              <button
+                onClick={() => navigate("/cart")}
+                className="relative flex items-center justify-center h-11 w-11 rounded-lg border border-white/10 bg-white/5 text-gray-300 hover:border-white/20 backdrop-blur-xl transition-all"
+                aria-label="Cart"
+              >
+                <FiShoppingBag className="w-5 h-5" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full bg-blue-800 text-white text-[10px] font-bold font-mono">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
 
               <button
                 onClick={() => setShowFilters(!showFilters)}

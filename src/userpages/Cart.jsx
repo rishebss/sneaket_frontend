@@ -10,6 +10,7 @@ import {
     FiChevronUp,
     FiChevronDown,
 } from "react-icons/fi";
+import { RiArrowUpDoubleLine } from "react-icons/ri";
 import Loader from "../defaultcomponents/Loader";
 import ConfirmRemoveModal from "../usercomponents/ConfirmRemoveModal";
 
@@ -209,8 +210,8 @@ export default function Cart() {
                                         </div>
                                         <div className="flex items-center justify-between text-gray-400 text-xs mb-4">
                                             <span>Shipping</span>
-                                            <span className="font-mono">
-                                                Calculated at checkout
+                                            <span className="font-mono text-green-400">
+                                                FREE
                                             </span>
                                         </div>
                                         <div className="border-t border-white/10 pt-4 flex items-center justify-between">
@@ -255,8 +256,8 @@ export default function Cart() {
                                 </div>
                                 <div className="flex items-center justify-between text-gray-400 text-xs">
                                     <span>Shipping</span>
-                                    <span className="font-mono">
-                                        Calculated at checkout
+                                    <span className="font-mono text-green-400">
+                                        FREE
                                     </span>
                                 </div>
                                 <div className="border-t border-white/10 pt-3 flex items-center justify-between">
@@ -269,29 +270,29 @@ export default function Cart() {
                                 </div>
                             </div>
                         )}
-                        <div className="px-4 py-3 flex items-center justify-between gap-3">
+                        <div className="px-4 py-3 flex items-center gap-3">
                             <button
                                 type="button"
                                 onClick={() =>
                                     setIsMobileSummaryExpanded((v) => !v)
                                 }
-                                className="flex items-center gap-2 text-left"
+                                className="group relative flex items-center justify-center h-12 w-12 shrink-0 overflow-hidden bg-blue-500/30 text-white transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(34,211,238,0.2)] cursor-pointer"
                                 aria-label="Toggle order summary"
                             >
-                                <span className="text-white font-mono font-bold">
-                                    ₹{subtotal.toLocaleString()}
-                                </span>
-                                <FiChevronUp
-                                    className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${
+                                <RiArrowUpDoubleLine
+                                    className={`w-5 h-5 text-white transition-transform duration-300 ${
                                         isMobileSummaryExpanded ? "rotate-180" : ""
                                     }`}
                                 />
-                            </button>
-                            <button className="group relative flex-1 max-w-[55%] overflow-hidden bg-blue-500/30 px-6 py-3 text-sm font-mono text-white transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(34,211,238,0.2)] cursor-pointer">
-                                <span className="relative z-10 flex items-center justify-center gap-3">
+                                </button>
+                            <button className="group relative flex-1 h-12 overflow-hidden bg-blue-500/30 px-6 text-sm font-mono text-white transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(34,211,238,0.2)] cursor-pointer">
+                                <span className="relative z-10 flex items-center justify-center gap-2">
                                     <FiShoppingBag className="w-5 h-5" />
                                     <span className="tracking-[0.2em] font-bold">
                                         CHECKOUT
+                                    </span>
+                                    <span className="font-mono font-bold">
+                                        ₹{subtotal.toLocaleString()}
                                     </span>
                                 </span>
                             </button>

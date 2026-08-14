@@ -83,7 +83,7 @@ export default function Navbar({ isLoggedIn }) {
                     <span className="absolute -bottom-1 left-0 w-0 h-px bg-cyan-500 transition-all duration-300 group-hover:w-full" />
                     {item}
                     {cartCount > 0 && (
-                      <span className="min-w-[16px] h-4 px-1 flex items-center justify-center rounded-full bg-cyan-500 text-white text-[10px] font-mono leading-none">
+                      <span className="min-w-[16px] h-4 px-1 flex items-center justify-center rounded-full bg-blue-500/20 border border-blue-500/50 text-blue-400 text-[10px] font-mono leading-none">
                         {cartCount > 99 ? "99+" : cartCount}
                       </span>
                     )}
@@ -243,7 +243,7 @@ export default function Navbar({ isLoggedIn }) {
                     {item}
                   </span>
                   {cartCount > 0 && (
-                    <span className="min-w-[16px] h-4 px-1 flex items-center justify-center rounded-full bg-cyan-500 text-white text-[10px] font-mono leading-none">
+                    <span className="min-w-[16px] h-4 px-1 flex items-center justify-center rounded-full bg-blue-500/20 border border-blue-500/50 text-blue-400 text-[10px] font-mono leading-none">
                       {cartCount > 99 ? "99+" : cartCount}
                     </span>
                   )}
