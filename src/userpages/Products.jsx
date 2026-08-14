@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link, useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import {
   FiSearch,
@@ -15,6 +15,8 @@ import { AiFillHeart } from "react-icons/ai";
 import { MdDoubleArrow } from "react-icons/md";
 import Loader from "../defaultcomponents/Loader";
 import DefaultFooter from "../defaultcomponents/DefaultFooter";
+import ProductDetailDrawer from "./ProductDetailDrawer";
+import ProductFilterDrawer from "../usercomponents/ProductFilterDrawer";
 
 const CATEGORIES = [
   { id: "all", name: "All" },
@@ -93,6 +95,34 @@ export default function Products() {
   const [sortBy, setSortBy] = useState("newest");
   const [showFilters, setShowFilters] = useState(false);
   const [favoriteSet, setFavoriteSet] = useState(new Set());
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const drawerOpen = !!selectedProduct;
+  const filterDrawerOpen = showFilters;
+
+  useEffect(() => {
+    const handlePopState = () => {
+      if (selectedProduct) {
+        setSelectedProduct(null);
+      }
+      if (showFilters) {
+        setShowFilters(false);
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [selectedProduct, showFilters]);
+
+  useEffect(() => {
+    if (drawerOpen || filterDrawerOpen) {
+      history.pushState({ drawerOpen: true }, "");
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [drawerOpen, filterDrawerOpen]);
 
   // Sync state with URL parameters
   useEffect(() => {
@@ -277,118 +307,25 @@ export default function Products() {
         </div>
 
         {/* Filters Sidebar Overlay */}
-        <AnimatePresence>
-          {showFilters && (
-            <>
-              {/* Backdrop */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setShowFilters(false)}
-                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[90]"
-              />
-
-              {/* Sidebar */}
-              <motion.div
-                initial={{ x: "100%" }}
-                animate={{ x: 0 }}
-                exit={{ x: "100%" }}
-                transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                className="fixed top-0 right-0 h-full w-full md:max-w-sm bg-gray-950/95 backdrop-blur-2xl border-l border-white/10 z-[100] p-8 shadow-2xl overflow-y-auto custom-scrollbar"
-              >
-                <div className="flex items-center justify-between mb-10">
-                  <h2 className="text-xl font-mono text-white tracking-tight">
-                    Filters
-                  </h2>
-                  <button
-                    onClick={() => setShowFilters(false)}
-                    className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-white transition-all"
-                  >
-                    <FiX className="w-6 h-6" />
-                  </button>
-                </div>
-
-                <div className="space-y-10">
-                  <div>
-                    <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-                      <span className="w-1 h-1 bg-cyan-500 rounded-lg" />
-                      Categories
-                    </h3>
-                    <div className="flex flex-wrap gap-2">
-                      {CATEGORIES.map((cat) => (
-                        <button
-                          key={cat.id}
-                          onClick={() => setSelectedCategory(cat.id)}
-                          className={`px-4 py-2 rounded-lg text-sm transition-all ${selectedCategory === cat.id
-                            ? "bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold"
-                            : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
-                            }`}
-                        >
-                          {cat.name}
-                        </button>
-                      ))}
-
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-                      <span className="w-1 h-1 bg-blue-500 rounded-lg" />
-                      Brands
-                    </h3>
-                    <div className="flex flex-wrap gap-2">
-                      {BRANDS.map((brand) => (
-                        <button
-                          key={brand.id}
-                          onClick={() => setSelectedBrand(brand.id)}
-                          className={`px-4 py-2 rounded-lg text-sm transition-all ${selectedBrand === brand.id
-                            ? "bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold"
-                            : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
-                            }`}
-                        >
-                          {brand.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-                      <span className="w-1 h-1 bg-blue-500 rounded-lg" />
-                      Features
-                    </h3>
-                    <div className="flex flex-wrap gap-2">
-                      {FEATURES.map((feature) => (
-                        <button
-                          key={feature.id}
-                          onClick={() => setSelectedFeature(feature.id)}
-                          className={`px-4 py-2 rounded-lg text-sm transition-all ${selectedFeature === feature.id
-                            ? "bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold"
-                            : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
-                            }`}
-                        >
-                          {feature.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => {
-                      setSelectedCategory("all");
-                      setSelectedBrand("all");
-                      setSelectedFeature("all");
-                    }}
-                    className="w-full py-4 mt-8 rounded-xl border border-white/10 text-gray-400 hover:text-white hover:bg-white/5 transition-all text-sm font-mono"
-                  >
-                    RESET FILTERS
-                  </button>
-                </div>
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
+        <ProductFilterDrawer
+          isOpen={showFilters}
+          onClose={() => setShowFilters(false)}
+          onPopStateClose={() => setShowFilters(false)}
+          categories={CATEGORIES}
+          brands={BRANDS}
+          features={FEATURES}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          selectedBrand={selectedBrand}
+          setSelectedBrand={setSelectedBrand}
+          selectedFeature={selectedFeature}
+          setSelectedFeature={setSelectedFeature}
+          onReset={() => {
+            setSelectedCategory("all");
+            setSelectedBrand("all");
+            setSelectedFeature("all");
+          }}
+        />
 
         <div className="max-w-[1600px] mx-auto flex flex-col gap-8 mt-0 md:mt-20">
           {/* Products Grid */}
@@ -406,6 +343,7 @@ export default function Products() {
                     index={index}
                     isFavorited={favoriteSet.has(product.id)}
                     onToggle={() => handleToggleFavorite(product.id)}
+                    onProductClick={setSelectedProduct}
                   />
                 ))}
               </div>
@@ -473,12 +411,19 @@ export default function Products() {
           </div>
         </div>
       </div>
+      <ProductDetailDrawer
+        product={selectedProduct}
+        isOpen={drawerOpen}
+        onClose={() => setSelectedProduct(null)}
+        isFavorited={selectedProduct ? favoriteSet.has(selectedProduct.id) : false}
+        onToggleFavorite={() => selectedProduct && handleToggleFavorite(selectedProduct.id)}
+      />
       <DefaultFooter />
     </>
   );
 }
 
-function ProductCard({ product, index, isFavorited = false, onToggle }) {
+function ProductCard({ product, index, isFavorited = false, onToggle, onProductClick }) {
   const [hovered, setHovered] = useState(false);
 
   // Parse price
@@ -547,9 +492,9 @@ function ProductCard({ product, index, isFavorited = false, onToggle }) {
       </div>
 
       {/* Content Link Section */}
-      <Link
-        to={`/products/${product.id}`}
-        className="p-4 flex flex-col flex-1 group/content"
+      <div
+        onClick={() => onProductClick && onProductClick(product)}
+        className="p-4 flex flex-col flex-1 group/content cursor-pointer"
       >
         <div className="flex justify-between items-center mb-1.5">
           <span className="text-gray-500 text-[10px] font-mono uppercase tracking-[0.15em]">
@@ -588,7 +533,7 @@ function ProductCard({ product, index, isFavorited = false, onToggle }) {
             <MdDoubleArrow className="w-8 h-8 -ml-3" />
           </div>
         </div>
-      </Link>
+      </div>
     </motion.div>
   );
 }
