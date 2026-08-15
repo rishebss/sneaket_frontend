@@ -7,6 +7,7 @@ import {
     FiMinus,
     FiPlus,
     FiTrash2,
+    FiCheck,
     FiChevronUp,
     FiChevronDown,
 } from "react-icons/fi";
@@ -59,13 +60,18 @@ export default function Cart() {
     const items = data?.results || [];
     const cartCount = data?.count || 0;
 
-    const subtotal = items.reduce(
+    const selectedItems = items.filter((i) => i.is_selected);
+
+    const subtotal = selectedItems.reduce(
         (sum, item) =>
             sum + parseFloat(item.sneaker_price) * item.quantity,
         0
     );
 
-    const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+    const totalItems = selectedItems.reduce(
+        (sum, item) => sum + item.quantity,
+        0
+    );
 
     // Update quantity of a line (optimistic)
     const handleUpdateQuantity = async (item, delta) => {
@@ -160,6 +166,47 @@ export default function Cart() {
                 );
             }
             refetch();
+        } catch {
+            refetch();
+        }
+    };
+
+    // Toggle the per-line checkout selection (persisted via PATCH)
+    const handleToggleSelect = async (item) => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login");
+            return;
+        }
+        const newVal = !item.is_selected;
+
+        queryClient.setQueryData(["cart"], (old) => {
+            if (!old) return old;
+            return {
+                ...old,
+                results: old.results.map((it) =>
+                    it.id === item.id
+                        ? { ...it, is_selected: newVal }
+                        : it
+                ),
+            };
+        });
+
+        try {
+            const res = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/api/cart/${item.id}/`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Token ${token}`,
+                    },
+                    body: JSON.stringify({ is_selected: newVal }),
+                }
+            );
+            if (!res.ok) {
+                refetch();
+            }
         } catch {
             refetch();
         }
@@ -297,6 +344,8 @@ export default function Cart() {
                                             key={item.id}
                                             item={item}
                                             index={index}
+                                            selected={!!item.is_selected}
+                                            onToggleSelect={handleToggleSelect}
                                             onUpdate={(delta) =>
                                                 handleUpdateQuantity(item, delta)
                                             }
@@ -483,13 +532,28 @@ export default function Cart() {
     );
 }
 
-function CartRow({ item, index, onUpdate, onRemove, onView }) {
+function CartRow({ item, index, selected, onToggleSelect, onUpdate, onRemove, onView }) {
     const displayPrice = parseFloat(item.sneaker_price).toLocaleString();
     const hasDiscount =
         item.sneaker_original_price &&
         parseFloat(item.sneaker_original_price) > parseFloat(item.sneaker_price);
     const lineTotal = parseFloat(item.sneaker_price) * item.quantity;
     const [expanded, setExpanded] = useState(false);
+
+    const selectBox = (
+        <button
+            type="button"
+            onClick={() => onToggleSelect(item)}
+            aria-label="Toggle selection"
+            className={`w-5 h-5 shrink-0 rounded border flex items-center justify-center transition-all cursor-pointer ${
+                selected
+                    ? "bg-cyan-400/20 border-cyan-400 text-cyan-300"
+                    : "border-white/20 text-transparent hover:border-white/40"
+            }`}
+        >
+            <FiCheck className="w-3.5 h-3.5" />
+        </button>
+    );
 
     return (
         <motion.div
@@ -525,7 +589,8 @@ function CartRow({ item, index, onUpdate, onRemove, onView }) {
                                     {item.sneaker_name}
                                 </Link>
                             </div>
-                    </div>
+                            {selectBox}
+                        </div>
 
                     <div className="mt-auto pt-3 flex items-center justify-between">
                         <div className="text-left">
@@ -583,6 +648,7 @@ function CartRow({ item, index, onUpdate, onRemove, onView }) {
 
             {/* Mobile layout: banner with collapsible details */}
             <div className="lg:hidden p-3">
+                <div className="absolute top-2 right-2 z-10">{selectBox}</div>
                 <div className="flex items-start gap-3">
                     <Link
                         to={`/products/${item.sneaker}`}
@@ -648,6 +714,12 @@ function CartRow({ item, index, onUpdate, onRemove, onView }) {
                             className="overflow-hidden"
                         >
                             <div className="pt-3 mt-3 border-t border-white/10 space-y-3">
+                                <div className="flex items-center justify-between text-xs font-mono">
+                                    <span className="text-gray-400">Item</span>
+                                    <span className="text-white text-right max-w-[60%] truncate">
+                                        {item.sneaker_name}
+                                    </span>
+                                </div>
                                 <div className="flex items-center justify-between text-xs font-mono">
                                     <span className="text-gray-400">Brand</span>
                                     <span className="text-white">
