@@ -386,11 +386,6 @@ function CartRow({ item, index, onUpdate, onRemove }) {
                                 >
                                     {item.sneaker_name}
                                 </Link>
-                                {item.size && (
-                                    <span className="inline-block mt-1 text-xs font-mono text-gray-400 bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
-                                        US {item.size}
-                                    </span>
-                                )}
                             </div>
                         <button
                             onClick={onRemove}
@@ -402,29 +397,8 @@ function CartRow({ item, index, onUpdate, onRemove }) {
                     </div>
 
                     <div className="mt-auto pt-3 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <button
-                                onClick={() => onUpdate(-1)}
-                                disabled={item.quantity <= 1}
-                                aria-label="Decrease quantity"
-                                className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                            >
-                                <FiMinus className="w-4 h-4" />
-                            </button>
-                            <span className="w-8 text-center font-mono text-white">
-                                {item.quantity}
-                            </span>
-                            <button
-                                onClick={() => onUpdate(1)}
-                                aria-label="Increase quantity"
-                                className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all"
-                            >
-                                <FiPlus className="w-4 h-4" />
-                            </button>
-                        </div>
-
-                        <div className="text-right">
-                            <div className="flex items-baseline gap-2 justify-end">
+                        <div className="text-left">
+                            <div className="flex items-baseline gap-2 justify-start">
                                 {hasDiscount && (
                                     <span className="text-xs text-gray-500 line-through font-mono opacity-70">
                                         ₹
@@ -440,6 +414,18 @@ function CartRow({ item, index, onUpdate, onRemove }) {
                             <span className="text-[10px] text-gray-500 font-mono">
                                 ₹{displayPrice} each
                             </span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            {item.size && (
+                                <span className="h-8 px-3 flex items-center justify-center font-mono text-xs text-cyan-400 bg-white/5 border border-white/10 rounded-lg whitespace-nowrap">
+                                    US {item.size}
+                                </span>
+                            )}
+                            <QuantityStepper
+                                quantity={item.quantity}
+                                onUpdate={onUpdate}
+                            />
                         </div>
                     </div>
                 </div>
@@ -535,26 +521,11 @@ function CartRow({ item, index, onUpdate, onRemove }) {
                                     <span className="text-xs font-mono text-gray-400">
                                         Quantity
                                     </span>
-                                    <div className="flex items-center gap-3">
-                                        <button
-                                            onClick={() => onUpdate(-1)}
-                                            disabled={item.quantity <= 1}
-                                            aria-label="Decrease quantity"
-                                            className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                                        >
-                                            <FiMinus className="w-4 h-4" />
-                                        </button>
-                                        <span className="w-8 text-center font-mono text-white">
-                                            {item.quantity}
-                                        </span>
-                                        <button
-                                            onClick={() => onUpdate(1)}
-                                            aria-label="Increase quantity"
-                                            className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all"
-                                        >
-                                            <FiPlus className="w-4 h-4" />
-                                        </button>
-                                    </div>
+                                    <QuantityStepper
+                                        quantity={item.quantity}
+                                        onUpdate={onUpdate}
+                                        compact
+                                    />
                                 </div>
                             </div>
                         </motion.div>
@@ -562,5 +533,33 @@ function CartRow({ item, index, onUpdate, onRemove }) {
                 </AnimatePresence>
             </div>
         </motion.div>
+    );
+}
+
+function QuantityStepper({ quantity, onUpdate, compact = false }) {
+    const boxClass = compact ? "w-7 h-7" : "w-8 h-8";
+    const iconClass = compact ? "w-3.5 h-3.5" : "w-4 h-4";
+    const countClass = compact ? "text-xs" : "text-sm";
+    return (
+        <div className="flex items-stretch border border-white/10 rounded-lg overflow-hidden divide-x divide-white/10 bg-white/5">
+            <button
+                onClick={() => onUpdate(-1)}
+                disabled={quantity <= 1}
+                aria-label="Decrease quantity"
+                className={`${boxClass} flex items-center justify-center text-white hover:bg-white/10 transition-all disabled:opacity-40 disabled:cursor-not-allowed`}
+            >
+                <FiMinus className={iconClass} />
+            </button>
+            <span className={`${boxClass} flex items-center justify-center font-mono text-white ${countClass}`}>
+                {quantity}
+            </span>
+            <button
+                onClick={() => onUpdate(1)}
+                aria-label="Increase quantity"
+                className={`${boxClass} flex items-center justify-center text-white hover:bg-white/10 transition-all`}
+            >
+                <FiPlus className={iconClass} />
+            </button>
+        </div>
     );
 }
