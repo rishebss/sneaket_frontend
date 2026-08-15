@@ -18,7 +18,10 @@ export default function ProductDetailDrawer({
   const [added, setAdded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sizeError, setSizeError] = useState(false);
+  const [stockError, setStockError] = useState(null);
   const sizeSelectRef = useRef(null);
+
+  const outOfStock = Number(product?.copies) === 0;
 
   const availableSizes = Array.isArray(product?.available_sizes)
     ? product.available_sizes
@@ -30,6 +33,7 @@ export default function ProductDetailDrawer({
       setAdded(false);
       setLoading(false);
       setSizeError(false);
+      setStockError(null);
     }
   }, [isOpen, product?.id]);
 
@@ -278,24 +282,29 @@ onClick={async () => {
                    }
                    setLoading(true);
                    try {
-                    const success = onAddToCart
-                      ? await onAddToCart(selectedSize)
-                      : false;
-                    if (success !== false) {
-                      setAdded(true);
-                      setTimeout(() => setAdded(false), 1800);
-                    }
-                  } catch {
-                    // ignore errors
-                  } finally {
-                    setLoading(false);
-                  }
-                }}
-                disabled={added || loading}
+                     const success = onAddToCart
+                       ? await onAddToCart(selectedSize)
+                       : false;
+                     if (success === true) {
+                       setAdded(true);
+                       setStockError(null);
+                       setTimeout(() => setAdded(false), 1800);
+                     } else if (success && success.available != null) {
+                       setStockError(success.available);
+                     }
+                   } catch {
+                     // ignore errors
+                   } finally {
+                     setLoading(false);
+                   }
+                 }}
+                disabled={added || loading || outOfStock}
                 className={`group relative w-full overflow-hidden px-6 py-3 text-sm font-mono transition-all duration-500 cursor-pointer ${
-                  added || inCart
-                    ? "bg-emerald-500/20 text-white hover:scale-[1.02]"
-                    : "bg-blue-500/30 text-white hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(34,211,238,0.2)]"
+                  outOfStock
+                    ? "bg-red-500/20 text-red-300 opacity-70 cursor-not-allowed"
+                    : added || inCart
+                      ? "bg-emerald-500/20 text-white hover:scale-[1.02]"
+                      : "bg-blue-500/30 text-white hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(34,211,238,0.2)]"
                 } ${loading ? "opacity-80 cursor-wait" : ""}`}
               >
                 <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-white/20 group-hover:border-white group-hover:shadow-[0_0_8px_rgba(34,211,238,0.3)] transition-all duration-300" />
@@ -314,17 +323,24 @@ onClick={async () => {
                   ) : (
                     <FiShoppingBag className="w-5 h-5" />
                   )}
-                  <span className="tracking-[0.2em] font-bold">
-                    {loading
-                      ? "ADDING..."
-                      : added
-                        ? "ADDED TO CART"
-                        : inCart
-                          ? "IN CART"
-                          : "ADD TO CART"}
+                   <span className="tracking-[0.2em] font-bold">
+                    {outOfStock
+                      ? "OUT OF STOCK"
+                      : loading
+                        ? "ADDING..."
+                        : added
+                          ? "ADDED TO CART"
+                          : inCart
+                            ? "IN CART"
+                            : "ADD TO CART"}
                   </span>
                 </span>
-              </button>
+               </button>
+               {stockError != null && (
+                 <p className="text-xs font-mono text-red-400 text-center">
+                   Only {stockError} left in stock
+                 </p>
+               )}
             </div>
             </div>
           </motion.div>

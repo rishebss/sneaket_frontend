@@ -359,7 +359,11 @@ export default function Products() {
           body: JSON.stringify({ sneaker_id: sneakerId, size }),
         }
       );
-      if (!res.ok) return false;
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        if (err.available != null) return err; // stock error
+        return false;
+      }
       const data = await res.json();
       window.dispatchEvent(
         new CustomEvent("cart-change", {
@@ -551,6 +555,7 @@ function ProductCard({ product, index, isFavorited = false, onToggle, onProductC
   const hasDiscount =
     product.original_price &&
     parseFloat(product.original_price) > parseFloat(product.price);
+  const outOfStock = Number(product.copies) === 0;
 
   return (
     <motion.div
@@ -560,19 +565,26 @@ function ProductCard({ product, index, isFavorited = false, onToggle, onProductC
       whileHover={{ y: -5 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="group relative bg-white/5 backdrop-blur-xl rounded-lg border border-white/10 overflow-hidden hover:border-blue-500/50 transition-all duration-500 flex flex-col h-full shadow-2xl"
+      className={`group relative bg-white/5 backdrop-blur-xl rounded-lg border border-white/10 overflow-hidden hover:border-blue-500/50 transition-all duration-500 flex flex-col h-full shadow-2xl ${
+        outOfStock ? "opacity-50 grayscale" : ""
+      }`}
     >
       {/* Badge */}
       <div className="absolute top-2 left-2 z-20 flex flex-col gap-2">
-        {hasDiscount && (
+        {hasDiscount && !outOfStock && (
           <span className="bg-red-500 text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter">
             -
             {Math.round(
               ((product.original_price - product.price) /
                 product.original_price) *
-              100,
+                100
             )}
             %
+          </span>
+        )}
+        {outOfStock && (
+          <span className="bg-gray-700 text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter">
+            Sold Out
           </span>
         )}
       </div>

@@ -293,7 +293,11 @@ export default function Cart() {
                     body: JSON.stringify({ sneaker_id: sneakerId, size }),
                 }
             );
-            if (!res.ok) return false;
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                if (err.available != null) return err; // stock error
+                return false;
+            }
             const data = await res.json();
             window.dispatchEvent(
                 new CustomEvent("cart-change", {
@@ -639,6 +643,7 @@ function CartRow({ item, index, selected, onToggleSelect, onUpdate, onRemove, on
                                 <QuantityStepper
                                     quantity={item.quantity}
                                     onUpdate={onUpdate}
+                                    max={item.sneaker_copies}
                                 />
                             </div>
                         </div>
@@ -752,6 +757,7 @@ function CartRow({ item, index, selected, onToggleSelect, onUpdate, onRemove, on
                                         quantity={item.quantity}
                                         onUpdate={onUpdate}
                                         compact
+                                        max={item.sneaker_copies}
                                     />
                                 </div>
                             </div>
@@ -763,10 +769,11 @@ function CartRow({ item, index, selected, onToggleSelect, onUpdate, onRemove, on
     );
 }
 
-function QuantityStepper({ quantity, onUpdate, compact = false }) {
+function QuantityStepper({ quantity, onUpdate, compact = false, max }) {
     const boxClass = compact ? "w-7 h-7" : "w-8 h-8";
     const iconClass = compact ? "w-3.5 h-3.5" : "w-4 h-4";
     const countClass = compact ? "text-xs" : "text-sm";
+    const atMax = max != null && quantity >= max;
     return (
         <div className="flex items-stretch border border-white/10 rounded-sm overflow-hidden divide-x divide-white/10 bg-white/5">
             <button
@@ -782,8 +789,9 @@ function QuantityStepper({ quantity, onUpdate, compact = false }) {
             </span>
             <button
                 onClick={() => onUpdate(1)}
+                disabled={atMax}
                 aria-label="Increase quantity"
-                className={`${boxClass} flex items-center justify-center text-white hover:bg-white/10 transition-all`}
+                className={`${boxClass} flex items-center justify-center text-white hover:bg-white/10 transition-all disabled:opacity-40 disabled:cursor-not-allowed`}
             >
                 <FiPlus className={iconClass} />
             </button>
