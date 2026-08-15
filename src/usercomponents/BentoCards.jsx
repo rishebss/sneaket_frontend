@@ -203,7 +203,7 @@ export default function BentoCards() {
                     </Link>
 
                     {/* Medium Card - Account */}
-                    <div className="md:col-span-3 group relative overflow-hidden border border-white/10 bg-gradient-to-br from-gray-700/80 to-black-500/80 p-5 backdrop-blur-xl transition-all duration-500 min-h-[220px] hover:border-amber-500/30 hover:shadow-[0_0_40px_rgba(245,158,11,0.15)]">
+                    <Link to="/accounts" className="md:col-span-3 group relative overflow-hidden border border-white/10 bg-gradient-to-br from-gray-700/80 to-black-500/80 p-5 backdrop-blur-xl transition-all duration-500 min-h-[220px] hover:border-amber-500/30 hover:shadow-[0_0_40px_rgba(245,158,11,0.15)] cursor-pointer block">
                         {/* Top Right Grid Pattern */}
                         <div
                             className="absolute top-0 right-0 z-0 opacity-40 pointer-events-none"
@@ -258,17 +258,17 @@ export default function BentoCards() {
                                     </div>
                                 </div>
 
-                                {/* Login button - integrated into the flow to prevent overlap */}
+                                {/* View button - integrated into the flow to prevent overlap */}
                                 <div className="z-20 mb-1">
-                                    <Link to="/login" className="px-4 py-2 rounded-none border border-amber-500/20 bg-amber-500/10 backdrop-blur-md group-hover:bg-amber-500/20 transition-all duration-300 cursor-pointer block">
+                                    <span className="px-4 py-2 rounded-none border border-amber-500/20 bg-amber-500/10 backdrop-blur-md group-hover:bg-amber-500/20 transition-all duration-300 block">
                                         <span className="text-amber-400 text-sm font-mono uppercase tracking-widest">VIEW</span>
-                                    </Link>
+                                    </span>
                                 </div>
                             </div>
                         </div>
 
                         <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    </div>
+                    </Link>
 
                 </div>
 

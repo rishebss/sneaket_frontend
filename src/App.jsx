@@ -16,6 +16,7 @@ import About from "./defaultpages/About";
 import Products from "./userpages/Products";
 import Favorites from "./userpages/Favorites";
 import Cart from "./userpages/Cart";
+import Accounts from "./userpages/Accounts";
 import PageTransition from "./components/PageTransition";
 
 function App() {
@@ -119,6 +120,18 @@ function App() {
                 element={
                   <PageTransition>
                     <About />
+                  </PageTransition>
+                }
+              />
+              <Route
+                path="/accounts"
+                element={
+                  <PageTransition>
+                    {isLoggedIn ? (
+                      <Accounts />
+                    ) : (
+                      <Navigate to="/login" replace />
+                    )}
                   </PageTransition>
                 }
               />
