@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -14,6 +14,7 @@ import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
 import { RiArrowUpDoubleLine } from "react-icons/ri";
 import Loader from "../defaultcomponents/Loader";
 import ConfirmRemoveModal from "../usercomponents/ConfirmRemoveModal";
+import ProductDetailDrawer from "./ProductDetailDrawer";
 
 const fetchCart = async () => {
     const token = localStorage.getItem("token");
@@ -42,6 +43,8 @@ export default function Cart() {
     const queryClient = useQueryClient();
     const [itemToRemove, setItemToRemove] = useState(null);
     const [isMobileSummaryExpanded, setIsMobileSummaryExpanded] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [favoriteSet, setFavoriteSet] = useState(new Set());
 
     const {
         data,
@@ -162,6 +165,109 @@ export default function Cart() {
         }
     };
 
+    // Open the product detail drawer for an item
+    const handleViewProduct = async (item) => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login");
+            return;
+        }
+        try {
+            const res = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/api/sneakers/${item.sneaker}/`
+            );
+            if (!res.ok) return;
+            setSelectedProduct(await res.json());
+        } catch {
+            // ignore
+        }
+    };
+
+    // Toggle favorite for the product shown in the drawer
+    const handleToggleFavorite = async (sneakerId) => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login");
+            return;
+        }
+        setFavoriteSet((prev) => {
+            const next = new Set(prev);
+            if (next.has(sneakerId)) next.delete(sneakerId);
+            else next.add(sneakerId);
+            return next;
+        });
+        try {
+            const res = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/api/favorites/toggle/`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Token ${token}`,
+                    },
+                    body: JSON.stringify({ sneaker_id: sneakerId }),
+                }
+            );
+            if (!res.ok) throw new Error("Failed to toggle favorite");
+            const resp = await res.json();
+            setFavoriteSet((prev) => {
+                const next = new Set(prev);
+                if (resp.is_favorited) next.add(sneakerId);
+                else next.delete(sneakerId);
+                return next;
+            });
+        } catch {
+            // Revert optimistic change on error
+            setFavoriteSet((prev) => {
+                const next = new Set(prev);
+                if (next.has(sneakerId)) next.delete(sneakerId);
+                else next.add(sneakerId);
+                return next;
+            });
+        }
+    };
+
+    // Add to cart from the drawer (keeps cart query + badge in sync)
+    const handleAddToCart = async (sneakerId, size) => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login");
+            return false;
+        }
+        try {
+            const res = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/api/cart/add/`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Token ${token}`,
+                    },
+                    body: JSON.stringify({ sneaker_id: sneakerId, size }),
+                }
+            );
+            if (!res.ok) return false;
+            const data = await res.json();
+            window.dispatchEvent(
+                new CustomEvent("cart-change", {
+                    detail: { count: data.cart_count },
+                })
+            );
+            queryClient.invalidateQueries({ queryKey: ["cart"] });
+            return true;
+        } catch {
+            return false;
+        }
+    };
+
+    // Lock page scroll while the drawer is open
+    useEffect(() => {
+        document.body.style.overflow = selectedProduct ? "hidden" : "";
+        return () => {
+            document.body.style.overflow = "";
+        };
+    }, [selectedProduct]);
+
     return (
         <>
             <div className="pb-6 px-4 md:px-8 lg:px-12 relative mt-20 md:mt-28">
@@ -195,6 +301,7 @@ export default function Cart() {
                                                 handleUpdateQuantity(item, delta)
                                             }
                                             onRemove={() => setItemToRemove(item)}
+                                            onView={() => handleViewProduct(item)}
                                         />
                                     ))}
                                 </div>
@@ -342,11 +449,41 @@ export default function Cart() {
                 onConfirm={() => itemToRemove && handleRemove(itemToRemove)}
                 item={itemToRemove}
             />
+
+            <ProductDetailDrawer
+                product={selectedProduct}
+                isOpen={!!selectedProduct}
+                onClose={() => setSelectedProduct(null)}
+                isFavorited={
+                    selectedProduct
+                        ? favoriteSet.has(selectedProduct.id)
+                        : false
+                }
+                onToggleFavorite={() =>
+                    selectedProduct &&
+                    handleToggleFavorite(selectedProduct.id)
+                }
+                onAddToCart={(size) =>
+                    selectedProduct &&
+                    handleAddToCart(selectedProduct.id, size)
+                }
+                inCartSizes={
+                    selectedProduct
+                        ? items
+                              .filter(
+                                  (it) =>
+                                      Number(it.sneaker) ===
+                                      Number(selectedProduct.id)
+                              )
+                              .map((it) => it.size ?? null)
+                        : []
+                }
+            />
         </>
     );
 }
 
-function CartRow({ item, index, onUpdate, onRemove }) {
+function CartRow({ item, index, onUpdate, onRemove, onView }) {
     const displayPrice = parseFloat(item.sneaker_price).toLocaleString();
     const hasDiscount =
         item.sneaker_original_price &&
@@ -398,6 +535,7 @@ function CartRow({ item, index, onUpdate, onRemove }) {
                             </button>
                             <button
                                 type="button"
+                                onClick={onView}
                                 className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-white/10 bg-white/5 text-cyan-400 hover:bg-white/10 hover:border-cyan-400/40 text-xs font-mono font-bold tracking-wider uppercase transition-all cursor-pointer hover:scale-105"
                             >
                                 <span>VIEW ITEM</span>
@@ -470,6 +608,7 @@ function CartRow({ item, index, onUpdate, onRemove }) {
                             </div>                            <div className="flex items-center gap-2 shrink-0 mt-auto">
                                 <button
                                     type="button"
+                                    onClick={onView}
                                     className="p-2 rounded-sm border border-white/10 bg-white/5 text-[10px] font-mono font-bold tracking-wider text-white hover:bg-white/10 hover:border-cyan-400/40 transition-all cursor-pointer"
                                 >
                                     VIEW
