@@ -61,6 +61,8 @@ export default function Cart() {
         0
     );
 
+    const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+
     // Update quantity of a line (optimistic)
     const handleUpdateQuantity = async (item, delta) => {
         const token = localStorage.getItem("token");
@@ -209,6 +211,12 @@ export default function Cart() {
                                             </span>
                                         </div>
                                         <div className="flex items-center justify-between text-gray-400 text-xs mb-4">
+                                            <span>Total Items</span>
+                                            <span className="font-mono text-white">
+                                                {totalItems}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center justify-between text-gray-400 text-xs mb-4">
                                             <span>Shipping</span>
                                             <span className="font-mono text-green-400">
                                                 FREE
@@ -245,13 +253,19 @@ export default function Cart() {
                             </div>
                         </div>
                     {/* Mobile fixed checkout footer */}
-                    <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white/5 backdrop-blur-xl border-t border-white/10">
+                    <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 border-t border-white/10">
                         {isMobileSummaryExpanded && (
                             <div className="px-4 py-4 space-y-3 border-b border-white/10 bg-transparent">
                                 <div className="flex items-center justify-between text-gray-300 text-sm">
                                     <span>Subtotal</span>
                                     <span className="font-mono text-white">
                                         ₹{subtotal.toLocaleString()}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between text-gray-400 text-xs">
+                                    <span>Total Items</span>
+                                    <span className="font-mono text-white">
+                                        {totalItems}
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between text-gray-400 text-xs">
@@ -276,7 +290,7 @@ export default function Cart() {
                                 onClick={() =>
                                     setIsMobileSummaryExpanded((v) => !v)
                                 }
-                                className="group relative flex items-center justify-center h-12 w-12 shrink-0 overflow-hidden bg-blue-500/30 text-white transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(34,211,238,0.2)] cursor-pointer"
+                                className="group relative flex items-center justify-center h-12 w-12 shrink-0 overflow-hidden bg-green-500/30 text-white transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(34,197,94,0.2)] cursor-pointer"
                                 aria-label="Toggle order summary"
                             >
                                 <RiArrowUpDoubleLine
@@ -285,7 +299,7 @@ export default function Cart() {
                                     }`}
                                 />
                                 </button>
-                            <button className="group relative flex-1 h-12 overflow-hidden bg-blue-500/30 px-6 text-sm font-mono text-white transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(34,211,238,0.2)] cursor-pointer">
+                            <button className="group relative flex-1 h-12 overflow-hidden bg-green-500/30 px-6 text-sm font-mono text-white transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(34,197,94,0.2)] cursor-pointer">
                                 <span className="relative z-10 flex items-center justify-center gap-2">
                                     <FiShoppingBag className="w-5 h-5" />
                                     <span className="tracking-[0.2em] font-bold">
@@ -337,6 +351,7 @@ function CartRow({ item, index, onUpdate, onRemove }) {
         item.sneaker_original_price &&
         parseFloat(item.sneaker_original_price) > parseFloat(item.sneaker_price);
     const lineTotal = parseFloat(item.sneaker_price) * item.quantity;
+    const [expanded, setExpanded] = useState(false);
 
     return (
         <motion.div
@@ -344,87 +359,207 @@ function CartRow({ item, index, onUpdate, onRemove }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}
             whileHover={{ y: -2 }}
-            className="group relative bg-white/5 backdrop-blur-xl rounded-lg border border-white/10 overflow-hidden hover:border-blue-500/50 transition-all duration-500 flex flex-col sm:flex-row gap-4 p-4 shadow-2xl"
+            className="group relative bg-white/5 backdrop-blur-xl rounded-lg border border-white/10 overflow-hidden hover:border-blue-500/50 transition-all duration-500 shadow-2xl"
         >
-            <Link
-                to={`/products/${item.sneaker}`}
-                className="w-full sm:w-32 aspect-square rounded-md overflow-hidden bg-gradient-to-b from-[#1a2333]/50 to-transparent border border-white/10 shrink-0"
-            >
-                <img
-                    src={item.sneaker_image}
-                    alt={item.sneaker_name}
-                    className="w-full h-full object-contain"
-                />
-            </Link>
+            {/* Desktop layout */}
+            <div className="hidden lg:flex gap-4 p-4">
+                <Link
+                    to={`/products/${item.sneaker}`}
+                    className="w-32 aspect-square rounded-md overflow-hidden bg-gradient-to-b from-[#1a2333]/50 to-transparent border border-white/10 shrink-0"
+                >
+                    <img
+                        src={item.sneaker_image}
+                        alt={item.sneaker_name}
+                        className="w-full h-full object-contain"
+                    />
+                </Link>
 
-            <div className="flex-1 flex flex-col">
-                <div className="flex items-start justify-between gap-3">
-                    <div>
-                        <span className="text-gray-500 text-[10px] font-mono uppercase tracking-[0.15em]">
-                            {item.sneaker_brand}
-                        </span>
-                        <Link
-                            to={`/products/${item.sneaker}`}
-                            className="block text-white/90 hover:text-blue-400 transition-colors font-medium"
-                        >
-                            {item.sneaker_name}
-                        </Link>
-                        {item.size && (
-                            <span className="inline-block mt-1 text-xs font-mono text-gray-400 bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
-                                US {item.size}
-                            </span>
-                        )}
-                    </div>
-                    <button
-                        onClick={onRemove}
-                        className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:border-red-500/50 text-xs font-mono font-bold tracking-wider uppercase transition-all cursor-pointer hover:scale-105"
-                    >
-                        <FiTrash2 className="w-4 h-4" />
-                        <span>REMOVE</span>
-                    </button>
-                </div>
-
-                <div className="mt-auto pt-3 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <button
-                            onClick={() => onUpdate(-1)}
-                            disabled={item.quantity <= 1}
-                            aria-label="Decrease quantity"
-                            className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                        >
-                            <FiMinus className="w-4 h-4" />
-                        </button>
-                        <span className="w-8 text-center font-mono text-white">
-                            {item.quantity}
-                        </span>
-                        <button
-                            onClick={() => onUpdate(1)}
-                            aria-label="Increase quantity"
-                            className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all"
-                        >
-                            <FiPlus className="w-4 h-4" />
-                        </button>
-                    </div>
-
-                    <div className="text-right">
-                        <div className="flex items-baseline gap-2 justify-end">
-                            {hasDiscount && (
-                                <span className="text-xs text-gray-500 line-through font-mono opacity-70">
-                                    ₹
-                                    {parseFloat(
-                                        item.sneaker_original_price
-                                    ).toLocaleString()}
+                <div className="flex-1 flex flex-col">
+                    <div className="flex items-start justify-between gap-3">
+                        <div>
+                                <span className="text-gray-500 text-[10px] font-mono uppercase tracking-[0.15em]">
+                                    {item.sneaker_brand}
                                 </span>
-                            )}
-                            <span className="text-sm font-mono font-bold text-white">
-                                ₹{lineTotal.toLocaleString()}
+                                <Link
+                                    to={`/products/${item.sneaker}`}
+                                    className="block text-white/90 hover:text-blue-400 transition-colors font-medium"
+                                >
+                                    {item.sneaker_name}
+                                </Link>
+                                {item.size && (
+                                    <span className="inline-block mt-1 text-xs font-mono text-gray-400 bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
+                                        US {item.size}
+                                    </span>
+                                )}
+                            </div>
+                        <button
+                            onClick={onRemove}
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:border-red-500/50 text-xs font-mono font-bold tracking-wider uppercase transition-all cursor-pointer hover:scale-105"
+                        >
+                            <FiTrash2 className="w-4 h-4" />
+                            <span>REMOVE</span>
+                        </button>
+                    </div>
+
+                    <div className="mt-auto pt-3 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <button
+                                onClick={() => onUpdate(-1)}
+                                disabled={item.quantity <= 1}
+                                aria-label="Decrease quantity"
+                                className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                            >
+                                <FiMinus className="w-4 h-4" />
+                            </button>
+                            <span className="w-8 text-center font-mono text-white">
+                                {item.quantity}
+                            </span>
+                            <button
+                                onClick={() => onUpdate(1)}
+                                aria-label="Increase quantity"
+                                className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all"
+                            >
+                                <FiPlus className="w-4 h-4" />
+                            </button>
+                        </div>
+
+                        <div className="text-right">
+                            <div className="flex items-baseline gap-2 justify-end">
+                                {hasDiscount && (
+                                    <span className="text-xs text-gray-500 line-through font-mono opacity-70">
+                                        ₹
+                                        {parseFloat(
+                                            item.sneaker_original_price
+                                        ).toLocaleString()}
+                                    </span>
+                                )}
+                                <span className="text-sm font-mono font-bold text-white">
+                                    ₹{lineTotal.toLocaleString()}
+                                </span>
+                            </div>
+                            <span className="text-[10px] text-gray-500 font-mono">
+                                ₹{displayPrice} each
                             </span>
                         </div>
-                        <span className="text-[10px] text-gray-500 font-mono">
-                            ₹{displayPrice} each
-                        </span>
                     </div>
                 </div>
+            </div>
+
+            {/* Mobile layout: banner with collapsible details */}
+            <div className="lg:hidden p-3">
+                <div className="flex items-start gap-3">
+                    <Link
+                        to={`/products/${item.sneaker}`}
+                        className="w-20 h-20 rounded-md overflow-hidden bg-gradient-to-b from-[#1a2333]/50 to-transparent border border-white/10 shrink-0"
+                    >
+                        <img
+                            src={item.sneaker_image}
+                            alt={item.sneaker_name}
+                            className="w-full h-full object-contain"
+                        />
+                    </Link>
+
+                    <div className="flex-1 min-w-0 flex flex-col">
+                        <div className="flex items-start justify-between gap-2">
+                            <div className="min-w-0">
+                                <Link
+                                    to={`/products/${item.sneaker}`}
+                                    className="block text-white/90 hover:text-blue-400 transition-colors font-medium truncate"
+                                >
+                                    {item.sneaker_name}
+                                </Link>
+                                <span className="block mt-1 text-sm font-mono font-bold text-white">
+                                    ₹{lineTotal.toLocaleString()}
+                                </span>
+                            </div>
+
+                            <div className="flex flex-col items-center gap-2 shrink-0">
+                                <button
+                                    onClick={onRemove}
+                                    aria-label="Remove item"
+                                    className="p-2 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:border-red-500/50 transition-all cursor-pointer"
+                                >
+                                    <FiTrash2 className="w-4 h-4" />
+                                </button>
+                                <button
+                                    onClick={() => setExpanded((v) => !v)}
+                                    aria-label="Toggle details"
+                                    className="p-2 rounded-lg border border-white/10 bg-white/5 text-white hover:bg-white/10 transition-all cursor-pointer"
+                                >
+                                    <FiChevronDown
+                                        className={`w-4 h-4 transition-transform duration-300 ${
+                                            expanded ? "rotate-180" : ""
+                                        }`}
+                                    />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <AnimatePresence initial={false}>
+                    {expanded && (
+                        <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.25 }}
+                            className="overflow-hidden"
+                        >
+                            <div className="pt-3 mt-3 border-t border-white/10 space-y-3">
+                                <div className="flex items-center justify-between text-xs font-mono">
+                                    <span className="text-gray-400">Brand</span>
+                                    <span className="text-white">
+                                        {item.sneaker_brand}
+                                    </span>
+                                </div>
+                                {item.size && (
+                                    <div className="flex items-center justify-between text-xs font-mono">
+                                        <span className="text-gray-400">
+                                            Size
+                                        </span>
+                                        <span className="text-cyan-400">
+                                            US {item.size}
+                                        </span>
+                                    </div>
+                                )}
+                                <div className="flex items-center justify-between text-xs font-mono">
+                                    <span className="text-gray-400">
+                                        Unit Price
+                                    </span>
+                                    <span className="text-white">
+                                        ₹{displayPrice}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs font-mono text-gray-400">
+                                        Quantity
+                                    </span>
+                                    <div className="flex items-center gap-3">
+                                        <button
+                                            onClick={() => onUpdate(-1)}
+                                            disabled={item.quantity <= 1}
+                                            aria-label="Decrease quantity"
+                                            className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                                        >
+                                            <FiMinus className="w-4 h-4" />
+                                        </button>
+                                        <span className="w-8 text-center font-mono text-white">
+                                            {item.quantity}
+                                        </span>
+                                        <button
+                                            onClick={() => onUpdate(1)}
+                                            aria-label="Increase quantity"
+                                            className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all"
+                                        >
+                                            <FiPlus className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
         </motion.div>
     );
