@@ -525,23 +525,6 @@ function CartRow({ item, index, onUpdate, onRemove, onView }) {
                                     {item.sneaker_name}
                                 </Link>
                             </div>
-                        <div className="flex flex-col items-end gap-2">
-                            <button
-                                onClick={onRemove}
-                                className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:border-red-500/50 text-xs font-mono font-bold tracking-wider uppercase transition-all cursor-pointer hover:scale-105"
-                            >
-                                <FiTrash2 className="w-4 h-4" />
-                                <span>REMOVE</span>
-                            </button>
-                            <button
-                                type="button"
-                                onClick={onView}
-                                className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-white/10 bg-white/5 text-cyan-400 hover:bg-white/10 hover:border-cyan-400/40 text-xs font-mono font-bold tracking-wider uppercase transition-all cursor-pointer hover:scale-105"
-                            >
-                                <span>VIEW ITEM</span>
-                                <MdOutlineKeyboardDoubleArrowRight className="w-4 h-4" />
-                            </button>
-                        </div>
                     </div>
 
                     <div className="mt-auto pt-3 flex items-center justify-between">
@@ -564,16 +547,35 @@ function CartRow({ item, index, onUpdate, onRemove, onView }) {
                             </span>
                         </div>
 
-                        <div className="flex items-center gap-2">
-                            {item.size && (
-                                <span className="h-8 px-3 flex items-center justify-center font-mono text-xs text-cyan-400 bg-white/5 border border-white/10 rounded-sm whitespace-nowrap">
-                                    US {item.size}
-                                </span>
-                            )}
-                            <QuantityStepper
-                                quantity={item.quantity}
-                                onUpdate={onUpdate}
-                            />
+                        <div className="flex flex-col items-end gap-2">
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={onRemove}
+                                    aria-label="Remove item"
+                                    className="flex items-center justify-center h-8 w-8 rounded-sm border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:border-red-500/50 transition-all cursor-pointer hover:scale-105"
+                                >
+                                    <FiTrash2 className="w-4 h-4" />
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={onView}
+                                    className="flex items-center gap-2 h-8 px-3 rounded-sm border border-white/10 bg-white/5 text-cyan-400 hover:bg-white/10 hover:border-cyan-400/40 text-xs font-mono font-bold tracking-wider uppercase transition-all cursor-pointer hover:scale-105"
+                                >
+                                    <span>VIEW ITEM</span>
+                                    <MdOutlineKeyboardDoubleArrowRight className="w-4 h-4" />
+                                </button>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                {item.size && (
+                                    <span className="h-8 px-3 flex items-center justify-center font-mono text-xs text-cyan-400 bg-white/5 border border-white/10 rounded-sm whitespace-nowrap">
+                                        US {item.size}
+                                    </span>
+                                )}
+                                <QuantityStepper
+                                    quantity={item.quantity}
+                                    onUpdate={onUpdate}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
