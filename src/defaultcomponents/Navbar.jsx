@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { MdBubbleChart } from "react-icons/md";
 
 export default function Navbar({ isLoggedIn }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -47,13 +48,13 @@ export default function Navbar({ isLoggedIn }) {
   };
 
   const navItems = isLoggedIn
-    ? ["Products", "Cart", "About Us", "Profile", "Logout"]
+    ? ["Products", "Favorites", "Cart", "About Us", "Profile", "Logout"]
     : ["About Us", "Login", "Signup", "Github"];
 
   return (
     <>
       <div className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 sm:px-12 pointer-events-none">
-        <nav className="w-full max-w-2xl md:max-w-3xl transition-all duration-500 rounded-[2.5rem] border border-white/10 bg-white/5 backdrop-blur-xl py-4 shadow-[0_8px_32px_rgba(0,0,0,0.2)] pointer-events-auto">
+        <nav className="relative w-full max-w-2xl md:max-w-5xl transition-all duration-500 rounded-[2.5rem] border border-white/10 bg-white/5 backdrop-blur-xl py-2.5 md:py-4 shadow-[0_8px_32px_rgba(0,0,0,0.2)] pointer-events-auto">
           <div className="px-6 sm:px-10 flex items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2">
@@ -91,6 +92,7 @@ export default function Navbar({ isLoggedIn }) {
                 ) : item === "Login" ||
                   item === "Signup" ||
                   item === "Products" ||
+                  item === "Favorites" ||
                   item === "About Us" ||
                   item === "Profile" ? (
                   <Link
@@ -124,38 +126,11 @@ export default function Navbar({ isLoggedIn }) {
             <div className="flex items-center gap-3 sm:gap-8">
               {/* Mobile Menu Toggle */}
               <button
-                className="md:hidden text-white/70 hover:text-white transition-colors"
+                className="md:hidden flex items-center justify-center -mr-[14px] sm:-mr-[30px] w-10 h-10 rounded-full border border-white/10 bg-white/5 text-white/70 hover:text-white hover:bg-white/10 transition-all"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
+                aria-label="Menu"
               >
-                {isMenuOpen ? (
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M4 6h16M4 12h16m-7 6h7"
-                    />
-                  </svg>
-                )}
+                <MdBubbleChart className="w-6 h-6" />
               </button>
             </div>
           </div>
@@ -256,6 +231,7 @@ export default function Navbar({ isLoggedIn }) {
               ) : item === "Login" ||
                 item === "Signup" ||
                 item === "Products" ||
+                item === "Favorites" ||
                 item === "About Us" ||
                 item === "Profile" ? (
                 <Link

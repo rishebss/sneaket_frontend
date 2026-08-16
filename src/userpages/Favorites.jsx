@@ -11,6 +11,7 @@ import {
     FiArrowLeft,
 } from "react-icons/fi";
 import { AiFillHeart } from "react-icons/ai";
+import { TbShoe } from "react-icons/tb";
 import { MdDoubleArrow } from "react-icons/md";
 import Loader from "../defaultcomponents/Loader";
 import DefaultFooter from "../defaultcomponents/DefaultFooter";
@@ -230,7 +231,7 @@ export default function Favorites() {
                     <div className="flex flex-col md:flex-row md:items-center justify-end gap-6">
 
 
-                        <div className="flex items-center gap-3 mt-10">
+                        <div className="flex items-center gap-3 mt-10 hidden md:flex">
                             <div className="relative group flex-1 md:flex-none md:w-80">
                                 <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-cyan-400 transition-colors" />
                                 <input
@@ -241,6 +242,14 @@ export default function Favorites() {
                                     className="w-full h-11 bg-white/5 border border-white/10 rounded-lg pl-12 pr-4 text-white focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 transition-all backdrop-blur-xl"
                                 />
                             </div>
+
+                            <button
+                                onClick={() => navigate("/products")}
+                                aria-label="Products"
+                                className="flex items-center justify-center h-11 w-11 rounded-lg border border-white/10 bg-white/5 text-gray-300 hover:border-white/20 backdrop-blur-xl transition-all"
+                            >
+                                <TbShoe className="w-6 h-6" />
+                            </button>
 
                             <button
                                 onClick={() => setShowFilters(!showFilters)}
@@ -379,6 +388,42 @@ export default function Favorites() {
                     )}
                 </div>
             </div>
+            {/* Mobile action footer: search / cart / filter */}
+            <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 border-t border-white/10">
+                <div className="px-4 py-3 flex items-center gap-2">
+                    <div className="relative flex-1">
+                        <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                        <input
+                            type="text"
+                            placeholder="Search favorites..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full h-11 bg-white/5 border border-white/10 rounded-lg pl-12 pr-4 text-white focus:outline-none focus:border-cyan-500/50 transition-all"
+                        />
+                    </div>
+
+                    <button
+                        onClick={() => navigate("/products")}
+                        aria-label="Products"
+                        className="relative flex items-center justify-center h-11 w-11 shrink-0 rounded-lg border border-white/10 bg-white/5 text-gray-300"
+                    >
+                        <TbShoe className="w-6 h-6" />
+                    </button>
+
+                    <button
+                        onClick={() => setShowFilters((v) => !v)}
+                        aria-label="Filter"
+                        className={`flex items-center justify-center h-11 w-11 shrink-0 rounded-lg border transition-all ${
+                            showFilters
+                                ? "bg-cyan-500/10 border-cyan-500/50 text-cyan-400"
+                                : "border-white/10 bg-white/5 text-gray-300"
+                        }`}
+                    >
+                        <FiFilter className="w-5 h-5" />
+                    </button>
+                </div>
+            </div>
+
             <DefaultFooter />
             <ProductDetailDrawer
                 product={selectedProduct}

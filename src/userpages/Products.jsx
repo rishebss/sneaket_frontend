@@ -390,7 +390,7 @@ export default function Products() {
               ></motion.div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 hidden md:flex">
               <div className="relative group flex-1 md:flex-none md:w-80">
                 <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-cyan-400 transition-colors" />
                 <input
@@ -542,6 +542,47 @@ export default function Products() {
         onAddToCart={(size) => selectedProduct && handleAddToCart(selectedProduct.id, size)}
         inCartSizes={selectedProduct ? cartSizesMap[selectedProduct.id] || [] : []}
       />
+      {/* Mobile action footer: search / cart / filter */}
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 border-t border-white/10">
+        <div className="px-4 py-3 flex items-center gap-2">
+          <div className="relative flex-1">
+            <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+            <input
+              type="text"
+              placeholder="Search kicks..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full h-11 bg-white/5 border border-white/10 rounded-lg pl-12 pr-4 text-white focus:outline-none focus:border-cyan-500/50 transition-all"
+            />
+          </div>
+
+          <button
+            onClick={() => navigate("/cart")}
+            aria-label="Cart"
+            className="relative flex items-center justify-center h-11 w-11 shrink-0 rounded-lg border border-white/10 bg-white/5 text-gray-300"
+          >
+            <FiShoppingBag className="w-5 h-5" />
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full bg-blue-800 text-white text-[10px] font-bold font-mono">
+                {cartCount}
+              </span>
+            )}
+          </button>
+
+          <button
+            onClick={() => setShowFilters((v) => !v)}
+            aria-label="Filter"
+            className={`flex items-center justify-center h-11 w-11 shrink-0 rounded-lg border transition-all ${
+              showFilters
+                ? "bg-cyan-500/10 border-cyan-500/50 text-cyan-400"
+                : "border-white/10 bg-white/5 text-gray-300"
+            }`}
+          >
+            <FiFilter className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+
       <DefaultFooter />
     </>
   );
