@@ -449,7 +449,7 @@ export default function Products() {
           }}
         />
 
-        <div className="max-w-[1600px] mx-auto flex flex-col gap-8 mt-0 md:mt-20">
+        <div className="max-w-[1600px] mx-auto flex flex-col gap-8 mt-[-25px] md:mt-20">
           {/* Products Grid */}
           <div className="w-full">
             {isLoading ? (

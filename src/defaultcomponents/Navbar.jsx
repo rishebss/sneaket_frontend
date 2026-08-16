@@ -126,7 +126,7 @@ export default function Navbar({ isLoggedIn }) {
             <div className="flex items-center gap-3 sm:gap-8">
               {/* Mobile Menu Toggle */}
               <button
-                className="md:hidden flex items-center justify-center -mr-[14px] sm:-mr-[30px] w-9 h-9 rounded-full border border-white/10 bg-white/5 text-white/70 hover:text-white hover:bg-white/10 transition-all"
+                className="md:hidden flex items-center justify-center -mr-[14px] sm:-mr-[30px] w-9 h-9 rounded-full border border-white/10 bg-white/5 text-white hover:text-white hover:bg-white/10 transition-all"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 aria-label="Menu"
               >

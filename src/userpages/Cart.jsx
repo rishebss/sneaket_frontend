@@ -45,6 +45,7 @@ export default function Cart() {
     const [itemToRemove, setItemToRemove] = useState(null);
     const [isMobileSummaryExpanded, setIsMobileSummaryExpanded] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
+    const [viewLoadingId, setViewLoadingId] = useState(null);
     const [favoriteSet, setFavoriteSet] = useState(new Set());
 
     const {
@@ -219,6 +220,7 @@ export default function Cart() {
             navigate("/login");
             return;
         }
+        setViewLoadingId(item.sneaker);
         try {
             const res = await fetch(
                 `${import.meta.env.VITE_API_BASE_URL}/api/sneakers/${item.sneaker}/`
@@ -227,6 +229,8 @@ export default function Cart() {
             setSelectedProduct(await res.json());
         } catch {
             // ignore
+        } finally {
+            setViewLoadingId(null);
         }
     };
 
@@ -354,7 +358,8 @@ export default function Cart() {
                                                 handleUpdateQuantity(item, delta)
                                             }
                                             onRemove={() => setItemToRemove(item)}
-                                            onView={() => handleViewProduct(item)}
+                                            onView={handleViewProduct}
+                                            viewLoading={viewLoadingId === item.sneaker}
                                         />
                                     ))}
                                 </div>
@@ -536,7 +541,7 @@ export default function Cart() {
     );
 }
 
-function CartRow({ item, index, selected, onToggleSelect, onUpdate, onRemove, onView }) {
+function CartRow({ item, index, selected, onToggleSelect, onUpdate, onRemove, onView, viewLoading }) {
     const displayPrice = parseFloat(item.sneaker_price).toLocaleString();
     const hasDiscount =
         item.sneaker_original_price &&
@@ -627,11 +632,18 @@ function CartRow({ item, index, selected, onToggleSelect, onUpdate, onRemove, on
                                 </button>
                                 <button
                                     type="button"
-                                    onClick={onView}
-                                    className="flex items-center gap-2 h-8 px-3 rounded-sm border border-white/10 bg-white/5 text-cyan-400 hover:bg-white/10 hover:border-cyan-400/40 text-xs font-mono font-bold tracking-wider uppercase transition-all cursor-pointer hover:scale-105"
+                                    onClick={() => onView(item)}
+                                    disabled={viewLoading}
+                                    className="flex items-center gap-2 h-8 px-3 rounded-sm border border-white/10 bg-white/5 text-cyan-400 hover:bg-white/10 hover:border-cyan-400/40 text-xs font-mono font-bold tracking-wider uppercase transition-all cursor-pointer hover:scale-105 disabled:opacity-60"
                                 >
-                                    <span>VIEW ITEM</span>
-                                    <MdOutlineKeyboardDoubleArrowRight className="w-4 h-4" />
+                                    {viewLoading ? (
+                                        <span className="w-4 h-4 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+                                    ) : (
+                                        <>
+                                            <span>VIEW ITEM</span>
+                                            <MdOutlineKeyboardDoubleArrowRight className="w-4 h-4" />
+                                        </>
+                                    )}
                                 </button>
                             </div>
                             <div className="flex items-center gap-2">
@@ -681,10 +693,15 @@ function CartRow({ item, index, selected, onToggleSelect, onUpdate, onRemove, on
                             </div>                            <div className="flex items-center gap-2 shrink-0 mt-auto">
                                 <button
                                     type="button"
-                                    onClick={onView}
-                                    className="p-2 rounded-sm border border-white/10 bg-white/5 text-[10px] font-mono font-bold tracking-wider text-white hover:bg-white/10 hover:border-cyan-400/40 transition-all cursor-pointer"
+                                    onClick={() => onView(item)}
+                                    disabled={viewLoading}
+                                    className="flex items-center justify-center p-2 rounded-sm border border-white/10 bg-white/5 text-[10px] font-mono font-bold tracking-wider text-white hover:bg-white/10 hover:border-cyan-400/40 transition-all cursor-pointer disabled:opacity-60"
                                 >
-                                    VIEW
+                                    {viewLoading ? (
+                                        <span className="w-5 h-5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+                                    ) : (
+                                        "VIEW"
+                                    )}
                                 </button>
                                 <button
                                     onClick={onRemove}
