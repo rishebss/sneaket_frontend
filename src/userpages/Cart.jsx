@@ -16,6 +16,7 @@ import { RiArrowUpDoubleLine } from "react-icons/ri";
 import Loader from "../defaultcomponents/Loader";
 import ConfirmRemoveModal from "../usercomponents/ConfirmRemoveModal";
 import ProductDetailDrawer from "./ProductDetailDrawer";
+import CheckoutDrawer from "../usercomponents/CheckoutDrawer";
 
 const fetchCart = async () => {
     const token = localStorage.getItem("token");
@@ -47,6 +48,9 @@ export default function Cart() {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [viewLoadingId, setViewLoadingId] = useState(null);
     const [favoriteSet, setFavoriteSet] = useState(new Set());
+    const [checkoutOpen, setCheckoutOpen] = useState(false);
+    const [profile, setProfile] = useState(null);
+    const [placing, setPlacing] = useState(false);
 
     const {
         data,
@@ -234,6 +238,58 @@ export default function Cart() {
         }
     };
 
+    // Fetch the account profile so the checkout drawer can prefill shipping details
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+        const controller = new AbortController();
+        (async () => {
+            try {
+                const res = await fetch(
+                    `${import.meta.env.VITE_API_BASE_URL}/api/users/me`,
+                    {
+                        headers: { Authorization: `Token ${token}` },
+                        signal: controller.signal,
+                    }
+                );
+                if (res.ok) setProfile(await res.json());
+            } catch {
+                // ignore
+            }
+        })();
+        return () => controller.abort();
+    }, []);
+
+    // Placeholder until the orders backend (model + view) is added
+    const handlePlaceOrder = async (payload) => {
+        setPlacing(true);
+        try {
+            const token = localStorage.getItem("token");
+            const res = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/api/orders/`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Token ${token}`,
+                    },
+                    body: JSON.stringify(payload),
+                }
+            );
+            if (res.ok) {
+                setCheckoutOpen(false);
+                queryClient.invalidateQueries({ queryKey: ["cart"] });
+            } else {
+                // backend not wired yet — keep drawer open
+                console.warn("Order placement not available yet");
+            }
+        } catch {
+            // ignore until backend exists
+        } finally {
+            setPlacing(false);
+        }
+    };
+
     // Toggle favorite for the product shown in the drawer
     const handleToggleFavorite = async (sneakerId) => {
         const token = localStorage.getItem("token");
@@ -396,7 +452,7 @@ export default function Cart() {
                                                 ₹{subtotal.toLocaleString()}
                                             </span>
                                         </div>
-                                        <button className="group relative w-full mt-6 overflow-hidden bg-blue-500/30 px-6 py-3 text-sm font-mono text-white transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(34,211,238,0.2)] cursor-pointer">
+                                        <button onClick={() => setCheckoutOpen(true)} className="group relative w-full mt-6 overflow-hidden bg-blue-500/30 px-6 py-3 text-sm font-mono text-white transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(34,211,238,0.2)] cursor-pointer">
                                             <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-white/20 group-hover:border-white group-hover:shadow-[0_0_8px_rgba(34,211,238,0.3)] transition-all duration-300" />
                                             <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-white/20 group-hover:border-white group-hover:shadow-[0_0_8px_rgba(34,211,238,0.3)] transition-all duration-300" />
                                             <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-white/20 group-hover:border-white group-hover:shadow-[0_0_8px_rgba(34,211,238,0.3)] transition-all duration-300" />
@@ -465,7 +521,7 @@ export default function Cart() {
                                     }`}
                                 />
                                 </button>
-                            <button className="group relative flex-1 h-12 overflow-hidden bg-green-500/30 px-6 text-sm font-mono text-white transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(34,197,94,0.2)] cursor-pointer">
+                            <button onClick={() => setCheckoutOpen(true)} className="group relative flex-1 h-12 overflow-hidden bg-green-500/30 px-6 text-sm font-mono text-white transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(34,197,94,0.2)] cursor-pointer">
                                 <span className="relative z-10 flex items-center justify-center gap-2">
                                     <FiShoppingBag className="w-5 h-5" />
                                     <span className="tracking-[0.2em] font-bold">
@@ -536,6 +592,16 @@ export default function Cart() {
                               .map((it) => it.size ?? null)
                         : []
                 }
+            />
+
+            <CheckoutDrawer
+                isOpen={checkoutOpen}
+                onClose={() => setCheckoutOpen(false)}
+                profile={profile}
+                items={selectedItems}
+                subtotal={subtotal}
+                placing={placing}
+                onPlaceOrder={handlePlaceOrder}
             />
         </>
     );
