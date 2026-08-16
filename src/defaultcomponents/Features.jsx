@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { FiCheck } from "react-icons/fi"
 
 const Features = ({
   className,
@@ -99,7 +100,7 @@ const Features = ({
                     style={{ height: `100%` }}
                   >
                     <motion.div
-                      className="h-full w-full bg-cyan-500"
+                      className="h-full w-full bg-blue-800"
                       initial={{ scaleY: 0 }}
                       animate={{
                         scaleY:
@@ -122,7 +123,7 @@ const Features = ({
                     <motion.div
                       className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center border-2 ${
                         index <= currentFeature // Condition for color
-                          ? "bg-cyan-500 border-cyan-500 text-white"
+                          ? "bg-blue-800 border-blue-800 text-white"
                           : "bg-gray-800 border-gray-700"
                       } ${
                         index === currentFeature // Condition for scale
@@ -131,7 +132,7 @@ const Features = ({
                       }`}
                     >
                       {index <= currentFeature ? (
-                        <span className="text-lg font-bold">✓</span>
+                        <FiCheck className="w-4 h-4 md:w-5 md:h-5" />
                       ) : (
                         <span className="text-lg font-semibold text-gray-300">
                           {index + 1}
