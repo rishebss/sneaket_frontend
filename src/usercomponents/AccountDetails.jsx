@@ -16,7 +16,7 @@ export default function AccountDetails({ data, onEdit }) {
     );
 
     return (
-        <div className="lg:col-span-2 p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
+        <div className="lg:col-span-2 p-6 rounded-md border border-white/10 bg-white/5 backdrop-blur-xl">
             <div className="flex items-center justify-between mb-6">
                 <h3 className="text-white font-mono font-bold tracking-widest uppercase text-sm">
                     Account Details
@@ -30,17 +30,17 @@ export default function AccountDetails({ data, onEdit }) {
                 </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="grid grid-cols-2 gap-4">
                 <DisplayField label="First Name" value={data.first_name} />
                 <DisplayField label="Last Name" value={data.last_name} />
-                <div className="sm:col-span-2">
+                <div className="col-span-2">
                     <DisplayField label="Email" value={data.email} />
                 </div>
                 <DisplayField label="Phone" value={p.phone} />
                 <DisplayField label="Pincode" value={p.pincode} />
                 <DisplayField label="City" value={p.city} />
                 <DisplayField label="State" value={p.state} />
-                <div className="sm:col-span-2">
+                <div className="col-span-2">
                     <DisplayField label="Address" value={p.address} />
                 </div>
             </div>

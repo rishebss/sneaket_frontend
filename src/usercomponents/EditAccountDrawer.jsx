@@ -72,16 +72,16 @@ export default function EditAccountDrawer({
                             <div className="flex-1 overflow-y-auto p-4 md:p-6 custom-scrollbar">
                                 <div className="grid grid-cols-2 gap-4">
                                     <InputField label="First Name" name="first_name" value={form.first_name} onChange={update} />
-                                    <InputField label="Last Name" value={form.last_name} onChange={update} />
+                                    <InputField label="Last Name" name="last_name" value={form.last_name} onChange={update} />
                                     <div className="col-span-2">
-                                        <InputField label="Email" value={form.email} onChange={update} />
+                                        <InputField label="Email" name="email" value={form.email} onChange={update} />
                                     </div>
-                                    <InputField label="Phone" value={form.phone} onChange={update} />
-                                    <InputField label="Pincode" value={form.pincode} onChange={update} />
-                                    <InputField label="City" value={form.city} onChange={update} />
-                                    <InputField label="State" value={form.state} onChange={update} />
+                                    <InputField label="Phone" name="phone" value={form.phone} onChange={update} />
+                                    <InputField label="Pincode" name="pincode" value={form.pincode} onChange={update} />
+                                    <InputField label="City" name="city" value={form.city} onChange={update} />
+                                    <InputField label="State" name="state" value={form.state} onChange={update} />
                                     <div className="col-span-2">
-                                        <InputField label="Address" value={form.address} onChange={update} textarea />
+                                        <InputField label="Address" name="address" value={form.address} onChange={update} textarea />
                                     </div>
                                 </div>
                             </div>

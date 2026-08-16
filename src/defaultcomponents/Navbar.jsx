@@ -91,11 +91,16 @@ export default function Navbar({ isLoggedIn }) {
                 ) : item === "Login" ||
                   item === "Signup" ||
                   item === "Products" ||
-                  item === "About Us" ? (
+                  item === "About Us" ||
+                  item === "Profile" ? (
                   <Link
                     key={item}
                     to={
-                      item === "About Us" ? "/about" : `/${item.toLowerCase()}`
+                      item === "About Us"
+                        ? "/about"
+                        : item === "Profile"
+                        ? "/accounts"
+                        : `/${item.toLowerCase()}`
                     }
                     className="text-[10px] font-semibold text-gray-400 hover:text-white transition-all tracking-[0.2em] uppercase font-mono relative group"
                   >
@@ -251,10 +256,17 @@ export default function Navbar({ isLoggedIn }) {
               ) : item === "Login" ||
                 item === "Signup" ||
                 item === "Products" ||
-                item === "About Us" ? (
+                item === "About Us" ||
+                item === "Profile" ? (
                 <Link
                   key={item}
-                  to={item === "About Us" ? "/about" : `/${item.toLowerCase()}`}
+                  to={
+                    item === "About Us"
+                      ? "/about"
+                      : item === "Profile"
+                      ? "/accounts"
+                      : `/${item.toLowerCase()}`
+                  }
                   onClick={() => setIsMenuOpen(false)}
                   className="group relative text-sm text-white/60 hover:text-cyan-400 transition-all duration-300"
                   style={{
