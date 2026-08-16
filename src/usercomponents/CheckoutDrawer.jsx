@@ -346,7 +346,7 @@ export default function CheckoutDrawer({
                                                     }`}
                                                 >
                                                     {m.tag && (
-                                                        <span className="absolute top-2 right-2 text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded-xs border border-red-500/40 bg-red-500/10 text-red-400">
+                                                        <span className="absolute top-2 right-2 text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded-sm border border-red-500/40 bg-red-500/10 text-red-400">
                                                             {m.tag}
                                                         </span>
                                                     )}

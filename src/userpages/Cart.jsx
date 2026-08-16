@@ -320,7 +320,7 @@ export default function Cart() {
                 amount: data.amount,
                 currency: data.currency || "INR",
                 name: "SNEAKET",
-                description: `Order ${data.order_number}`,
+                description: `Order ${data.razorpay_order_id}`,
                 order_id: data.razorpay_order_id,
                 prefill: {
                     name: body.recipient_name,
@@ -339,7 +339,6 @@ export default function Cart() {
                                     Authorization: `Token ${token}`,
                                 },
                                 body: JSON.stringify({
-                                    order_number: data.order_number,
                                     razorpay_order_id: response.razorpay_order_id,
                                     razorpay_payment_id: response.razorpay_payment_id,
                                     razorpay_signature: response.razorpay_signature,
