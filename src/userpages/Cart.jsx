@@ -18,6 +18,16 @@ import ConfirmRemoveModal from "../usercomponents/ConfirmRemoveModal";
 import ProductDetailDrawer from "./ProductDetailDrawer";
 import CheckoutDrawer from "../usercomponents/CheckoutDrawer";
 
+const loadRazorpayScript = () =>
+    new Promise((resolve) => {
+        if (window.Razorpay) return resolve(true);
+        const script = document.createElement("script");
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
+        script.onload = () => resolve(true);
+        script.onerror = () => resolve(false);
+        document.body.appendChild(script);
+    });
+
 const fetchCart = async () => {
     const token = localStorage.getItem("token");
     if (!token) return { results: [], count: 0 };
@@ -260,11 +270,23 @@ export default function Cart() {
         return () => controller.abort();
     }, []);
 
-    // Placeholder until the orders backend (model + view) is added
+    // Two-phase Razorpay checkout: create order -> open checkout -> verify
     const handlePlaceOrder = async (payload) => {
         setPlacing(true);
         try {
             const token = localStorage.getItem("token");
+            const body = {
+                recipient_name: `${payload.first_name} ${payload.last_name}`.trim(),
+                email: payload.email,
+                phone: payload.phone,
+                address: payload.address,
+                pincode: payload.pincode,
+                state: payload.state,
+                city: payload.city,
+                payment_method: payload.payment_method || "online",
+            };
+
+            // Step 1: create the order (backend also creates the Razorpay order)
             const res = await fetch(
                 `${import.meta.env.VITE_API_BASE_URL}/api/orders/`,
                 {
@@ -273,20 +295,78 @@ export default function Cart() {
                         "Content-Type": "application/json",
                         Authorization: `Token ${token}`,
                     },
-                    body: JSON.stringify(payload),
+                    body: JSON.stringify(body),
                 }
             );
-            if (res.ok) {
-                setCheckoutOpen(false);
-                queryClient.invalidateQueries({ queryKey: ["cart"] });
-            } else {
-                // backend not wired yet — keep drawer open
-                console.warn("Order placement not available yet");
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                alert(err.error || "Could not start checkout");
+                setPlacing(false);
+                return;
             }
-        } catch {
-            // ignore until backend exists
-        } finally {
+            const data = await res.json();
+
+            // Step 2: open Razorpay checkout
+            const ok = await loadRazorpayScript();
+            if (!ok) {
+                alert("Could not load the payment gateway");
+                setPlacing(false);
+                return;
+            }
             setPlacing(false);
+
+            const options = {
+                key: data.razorpay_key,
+                amount: data.amount,
+                currency: data.currency || "INR",
+                name: "SNEAKET",
+                description: `Order ${data.order_number}`,
+                order_id: data.razorpay_order_id,
+                prefill: {
+                    name: body.recipient_name,
+                    email: body.email,
+                    contact: body.phone,
+                },
+                theme: { color: "#10b981" },
+                handler: async (response) => {
+                    try {
+                        const vres = await fetch(
+                            `${import.meta.env.VITE_API_BASE_URL}/api/orders/verify/`,
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    Authorization: `Token ${token}`,
+                                },
+                                body: JSON.stringify({
+                                    order_number: data.order_number,
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_signature: response.razorpay_signature,
+                                }),
+                            }
+                        );
+                        if (vres.ok) {
+                            setCheckoutOpen(false);
+                            queryClient.invalidateQueries({ queryKey: ["cart"] });
+                            queryClient.invalidateQueries({ queryKey: ["orders"] });
+                        } else {
+                            const verr = await vres.json().catch(() => ({}));
+                            alert(verr.error || "Payment verification failed");
+                        }
+                    } catch {
+                        alert("Payment verification failed. Please contact support.");
+                    }
+                },
+            };
+            const rzp = new window.Razorpay(options);
+            rzp.on("payment.failed", (e) => {
+                alert(e?.error?.description || "Payment failed");
+            });
+            rzp.open();
+        } catch {
+            setPlacing(false);
+            alert("Something went wrong during checkout");
         }
     };
 

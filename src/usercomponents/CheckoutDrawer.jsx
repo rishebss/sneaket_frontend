@@ -63,12 +63,14 @@ const PAYMENT_METHODS = [
         label: "Cash on Delivery",
         icon: FiTruck,
         desc: "Pay with cash when your order is delivered to your doorstep.",
+        disabled: true,
+        tag: "Not Available",
     },
     {
         id: "online",
         label: "Pay Now",
         icon: FiCreditCard,
-        desc: "Pay securely online via card, UPI, or net banking.",
+        desc: "Pay securely on razorpay via card, UPI, or net banking.",
     },
 ];
 
@@ -129,7 +131,7 @@ export default function CheckoutDrawer({
         state: "",
         city: "",
     });
-    const [paymentMethod, setPaymentMethod] = useState("cod");
+    const [paymentMethod, setPaymentMethod] = useState("online");
     const [editing, setEditing] = useState(false);
 
     // Prefill shipping details from the account profile when available / drawer opens
@@ -330,13 +332,24 @@ export default function CheckoutDrawer({
                                             return (
                                                 <button
                                                     key={m.id}
-                                                    onClick={() => setPaymentMethod(m.id)}
-                                                    className={`flex items-center gap-3 p-3 rounded-lg border transition-all text-left ${
-                                                        active
+                                                    type="button"
+                                                    disabled={m.disabled}
+                                                    onClick={() =>
+                                                        !m.disabled && setPaymentMethod(m.id)
+                                                    }
+                                                    className={`flex items-center gap-3 p-3 rounded-lg border transition-all text-left relative ${
+                                                        m.disabled
+                                                            ? "border-white/10 bg-white/5 opacity-60 cursor-not-allowed"
+                                                            : active
                                                             ? "border-yellow-500/50 bg-yellow-400/20"
-                                                            : "border-white/10 bg-white/5 hover:bg-white/10"
+                                                            : "border-white/10 bg-white/5 hover:bg-white/10 cursor-pointer"
                                                     }`}
                                                 >
+                                                    {m.tag && (
+                                                        <span className="absolute top-2 right-2 text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded-xs border border-red-500/40 bg-red-500/10 text-red-400">
+                                                            {m.tag}
+                                                        </span>
+                                                    )}
                                                     <div
                                                         className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center border border-white bg-white/5 text-white transition-all"
                                                     >
@@ -347,7 +360,7 @@ export default function CheckoutDrawer({
                                                             <span className="text-sm font-mono font-bold text-white uppercase tracking-wider">
                                                                 {m.label}
                                                             </span>
-                                                            {active && (
+                                                            {active && !m.disabled && (
                                                                 <FiCheck className="w-3.5 h-3.5 text-yellow-400" />
                                                             )}
                                                         </div>
