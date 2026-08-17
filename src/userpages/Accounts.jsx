@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { FiMail, FiChevronRight } from "react-icons/fi";
@@ -18,6 +18,8 @@ const TABS = [
     { key: "orders", label: "Orders" },
     { key: "settings", label: "Settings" },
 ];
+
+const TAB_KEYS = TABS.map((t) => t.key);
 
 const fetchMe = async () => {
     const token = localStorage.getItem("token");
@@ -97,6 +99,17 @@ const MobileTabs = ({ active, onChange }) => (
 export default function Accounts() {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const tabParam = searchParams.get("tab");
+    const activeTab = TAB_KEYS.includes(tabParam) ? tabParam : "wallet";
+
+    const setActiveTab = (key) => {
+        if (key === "wallet") {
+            setSearchParams({}, { replace: true });
+        } else {
+            setSearchParams({ tab: key }, { replace: true });
+        }
+    };
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ["me"],
@@ -108,7 +121,6 @@ export default function Accounts() {
     const [form, setForm] = useState(emptyForm);
     const [saving, setSaving] = useState(false);
     const [msg, setMsg] = useState(null);
-    const [activeTab, setActiveTab] = useState("wallet");
 
     useEffect(() => {
         if (data) {
