@@ -217,7 +217,7 @@ export default function Accounts() {
             <div className="max-w-[1100px] mx-auto">
                 {/* Mobile profile banner on top */}
                 {data && (
-                    <div className="lg:hidden mt-5 mb-3 rounded-md border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden flex items-center gap-4 p-4">
+                    <div className="lg:hidden sticky top-0 z-20 mt-5 mb-3 rounded-md border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden flex items-center gap-4 p-4">
                         <div className="relative shrink-0 w-16 h-16 rounded-full overflow-hidden border border-white/10">
                             <PixelBlast color="#3b82f6" />
                             <div

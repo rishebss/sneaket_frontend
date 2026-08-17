@@ -158,7 +158,7 @@ export default function WalletSettings() {
     };
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 overflow-y-auto max-h-[calc(100vh-220px)] pr-1 custom-scrollbar lg:grid-cols-2 lg:max-h-none lg:overflow-visible lg:pr-0">
             {/* Left column: balance + add money */}
             <div className="lg:order-2 self-start lg:min-h-[460px] p-6 rounded-md border border-white/10 bg-white/5 backdrop-blur-xl">
                 <h3 className="text-white font-mono font-bold tracking-widest uppercase text-sm mb-6">
