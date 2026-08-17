@@ -1,6 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import Loader from "../defaultcomponents/Loader";
+import ConfirmCancel from "./ConfirmCancel";
+
+const API = import.meta.env.VITE_API_BASE_URL;
 
 const fetchOrders = async () => {
     const token = localStorage.getItem("token");
@@ -19,9 +23,13 @@ const STATUS_BADGE = {
     processing: "border-blue-500/40 bg-blue-500/10 text-blue-300",
     shipped: "border-blue-500/40 bg-blue-500/10 text-blue-300",
     delivered: "border-green-500/40 bg-green-500/10 text-green-300",
+    cancellation_requested: "border-amber-500/40 bg-amber-500/10 text-amber-300",
+    cancellation_approved: "border-red-500/40 bg-red-500/10 text-red-300",
     cancelled: "border-red-500/40 bg-red-500/10 text-red-300",
     refunded: "border-red-500/40 bg-red-500/10 text-red-300",
 };
+
+const CANCELABLE = ["confirmed", "processing", "shipped"];
 
 const PAYMENT_BADGE = {
     pending: "border-yellow-500/40 bg-yellow-500/10 text-yellow-300",
@@ -42,10 +50,44 @@ const formatINR = (n) =>
 
 export default function AccountsOrders() {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
+    const [busyNumber, setBusyNumber] = useState(null);
+    const [cancelOrder, setCancelOrder] = useState(null);
     const { data: orders, isLoading, isError } = useQuery({
         queryKey: ["orders"],
         queryFn: fetchOrders,
     });
+
+    const openCancel = (order) => setCancelOrder(order);
+
+    const handleRequestCancel = async (orderNumber, reason = "") => {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+        setBusyNumber(orderNumber);
+        try {
+            const res = await fetch(
+                `${API}/api/orders/${orderNumber}/request-cancel/`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Token ${token}`,
+                    },
+                    body: JSON.stringify({ reason }),
+                }
+            );
+            if (res.ok) {
+                queryClient.invalidateQueries({ queryKey: ["orders"] });
+            } else {
+                const err = await res.json().catch(() => ({}));
+                alert(err.error || "Could not request cancellation");
+            }
+        } catch {
+            alert("Something went wrong");
+        } finally {
+            setBusyNumber(null);
+        }
+    };
 
     if (isLoading) {
         return (
@@ -90,6 +132,7 @@ export default function AccountsOrders() {
     }
 
     return (
+        <>
         <div className="max-h-[70vh] overflow-y-auto custom-scrollbar pr-2 space-y-4">
             {orders.map((o) => (
                 <div
@@ -157,17 +200,37 @@ export default function AccountsOrders() {
                         ))}
                     </div>
 
-                    {/* Total */}
-                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
-                        <span className="text-white font-mono font-bold">
-                            Total
-                        </span>
-                        <span className="text-white font-mono font-bold text-lg">
+                    {/* Total + Cancel */}
+                    <div className="flex items-center justify-end gap-3 mt-4 pt-4 border-t border-white/10">
+                        <span className="flex items-center justify-center px-4 py-2.5 rounded-sm bg-green-500/20 border border-green-500/40 text-green-300 font-mono font-bold text-xs">
                             {formatINR(o.total)}
                         </span>
+
+                        {CANCELABLE.includes(o.status) && (
+                            <button
+                                onClick={() => openCancel(o)}
+                                disabled={busyNumber === o.order_number}
+                                className="shrink-0 flex items-center justify-center gap-2 px-4 py-2.5 rounded-sm border border-red-500/40 bg-red-500/10 text-red-300 text-xs font-mono tracking-wider uppercase transition-all hover:bg-red-500/20 disabled:opacity-60 cursor-pointer"
+                            >
+                                {busyNumber === o.order_number
+                                    ? "REQUESTING..."
+                                    : "Cancel"}
+                            </button>
+                        )}
                     </div>
                 </div>
             ))}
         </div>
+
+        <ConfirmCancel
+            isOpen={!!cancelOrder}
+            onClose={() => setCancelOrder(null)}
+            onConfirm={(reason) =>
+                cancelOrder && handleRequestCancel(cancelOrder.order_number, reason)
+            }
+            order={cancelOrder}
+            busy={cancelOrder && busyNumber === cancelOrder.order_number}
+        />
+        </>
     );
 }
