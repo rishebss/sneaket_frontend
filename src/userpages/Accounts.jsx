@@ -64,14 +64,14 @@ const BannerNavCard = ({ label, active, onClick }) => (
 );
 
 const tabRadius = (key) => {
-    if (key === "profile") return "rounded-l-xl rounded-tr-none rounded-br-none";
+    if (key === "profile") return "rounded-l-full rounded-tr-none rounded-br-none";
     if (key === "orders") return "rounded-none";
-    if (key === "settings") return "rounded-r-xl rounded-tl-none rounded-bl-none";
-    return "rounded-xl";
+    if (key === "settings") return "rounded-r-full rounded-tl-none rounded-bl-none";
+    return "rounded-full";
 };
 
 const MobileTabs = ({ active, onChange }) => (
-    <div className="lg:hidden relative flex items-center gap-2 mb-6 sticky top-24 z-30 p-1 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
+    <div className="lg:hidden relative flex items-center gap-2 mb-6 sticky top-24 z-30 p-1 rounded-full border border-white/10 bg-white/5 backdrop-blur-xl">
         {TABS.map((t) => {
             const isActive = active === t.key;
             return (
