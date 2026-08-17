@@ -74,7 +74,7 @@ const AccountsSettings = ({ onLogout }) => {
             </h3>
 
             <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-gray-500 mb-4">
-                Change Password
+                Reset
             </p>
 
             <div className="grid grid-cols-1 gap-4">
