@@ -8,12 +8,13 @@ import PixelBlast from "../usercomponents/PixelBlast";
 import AccountDetails from "../usercomponents/AccountDetails";
 import AccountsOrders from "../usercomponents/AccountsOrders";
 import AccountsSettings from "../usercomponents/AccountSettings";
+import WalletSettings from "../usercomponents/WalletSettings";
 import EditAccountDrawer from "../usercomponents/EditAccountDrawer";
 
 const API = import.meta.env.VITE_API_BASE_URL;
 
 const TABS = [
-    { key: "profile", label: "Profile" },
+    { key: "wallet", label: "Wallet" },
     { key: "orders", label: "Orders" },
     { key: "settings", label: "Settings" },
 ];
@@ -64,10 +65,12 @@ const BannerNavCard = ({ label, active, onClick }) => (
 );
 
 const tabRadius = (key) => {
-    if (key === "profile") return "rounded-l-full rounded-tr-none rounded-br-none";
+    if (key === "wallet")
+        return "rounded-l-full rounded-tr-none rounded-br-none";
     if (key === "orders") return "rounded-none";
-    if (key === "settings") return "rounded-r-full rounded-tl-none rounded-bl-none";
-    return "rounded-full";
+    if (key === "settings")
+        return "rounded-r-full rounded-tl-none rounded-bl-none";
+    return "rounded-none";
 };
 
 const MobileTabs = ({ active, onChange }) => (
@@ -116,7 +119,7 @@ export default function Accounts() {
     const [form, setForm] = useState(emptyForm);
     const [saving, setSaving] = useState(false);
     const [msg, setMsg] = useState(null);
-    const [activeTab, setActiveTab] = useState("profile");
+    const [activeTab, setActiveTab] = useState("wallet");
 
     useEffect(() => {
         if (data) {
@@ -275,15 +278,19 @@ export default function Accounts() {
 
                         {/* Right column: active tab content */}
                         <div className="lg:col-span-2">
-                            {activeTab === "profile" && (
-                                <AccountDetails
-                                    data={data}
-                                    onEdit={() => setDrawerOpen(true)}
-                                />
-                            )}
+                            {activeTab === "wallet" && <WalletSettings />}
                             {activeTab === "orders" && <AccountsOrders />}
                             {activeTab === "settings" && (
-                                <AccountsSettings onLogout={handleLogout} />
+                                <>
+                                    <AccountDetails
+                                        data={data}
+                                        onEdit={() => setDrawerOpen(true)}
+                                    />
+                                    <div className="mt-6" />
+                                    <AccountsSettings
+                                        onLogout={handleLogout}
+                                    />
+                                </>
                             )}
                         </div>
 

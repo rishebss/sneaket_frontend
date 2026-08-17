@@ -19,6 +19,7 @@ export default function ConfirmCancel({
     const handleConfirm = () => {
         onConfirm(reason.trim());
         setReason("");
+        onClose();
     };
 
     if (!isOpen) return null;

@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import Loader from "../defaultcomponents/Loader";
 import ConfirmCancel from "./ConfirmCancel";
+import RefundDialog from "./RefundDialog";
 
 const API = import.meta.env.VITE_API_BASE_URL;
 
@@ -53,12 +54,52 @@ export default function AccountsOrders() {
     const queryClient = useQueryClient();
     const [busyNumber, setBusyNumber] = useState(null);
     const [cancelOrder, setCancelOrder] = useState(null);
+    const [removed, setRemoved] = useState([]);
+    const [refundedInfo, setRefundedInfo] = useState(null);
     const { data: orders, isLoading, isError } = useQuery({
         queryKey: ["orders"],
         queryFn: fetchOrders,
     });
 
     const openCancel = (order) => setCancelOrder(order);
+
+    const handleRefund = async (order) => {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+        setBusyNumber(order.order_number);
+        try {
+            const res = await fetch(
+                `${API}/api/orders/${order.order_number}/refund-to-wallet/`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Token ${token}`,
+                    },
+                }
+            );
+            const data = await res.json().catch(() => ({}));
+            if (res.ok) {
+                if (!data.already_refunded) {
+                    setRefundedInfo({
+                        amount: order.total,
+                        order_number: order.order_number,
+                    });
+                }
+                queryClient.invalidateQueries({ queryKey: ["orders"] });
+            } else {
+                alert(data.error || "Could not process refund");
+            }
+        } catch {
+            alert("Something went wrong");
+        } finally {
+            setBusyNumber(null);
+        }
+    };
+
+    const handleRemove = (orderNumber) => {
+        setRemoved((prev) => [...prev, orderNumber]);
+    };
 
     const handleRequestCancel = async (orderNumber, reason = "") => {
         const token = localStorage.getItem("token");
@@ -134,7 +175,9 @@ export default function AccountsOrders() {
     return (
         <>
         <div className="max-h-[70vh] overflow-y-auto custom-scrollbar pr-2 space-y-4">
-            {orders.map((o) => (
+            {orders
+                .filter((o) => !removed.includes(o.order_number))
+                .map((o) => (
                 <div
                     key={o.order_number}
                     className="rounded-md border border-white/10 bg-white/5 backdrop-blur-xl p-5"
@@ -202,9 +245,37 @@ export default function AccountsOrders() {
 
                     {/* Total + Cancel */}
                     <div className="flex items-center justify-end gap-3 mt-4 pt-4 border-t border-white/10">
-                        <span className="flex items-center justify-center px-4 py-2.5 rounded-sm bg-green-500/20 border border-green-500/40 text-green-300 font-mono font-bold text-xs">
-                            {formatINR(o.total)}
-                        </span>
+                        {["cancellation_approved", "refunded"].includes(
+                            o.status
+                        ) ? o.status === "cancellation_approved" ? (
+                            <button
+                                type="button"
+                                onClick={() => handleRefund(o)}
+                                disabled={busyNumber === o.order_number}
+                                className="flex items-center justify-center px-4 py-2.5 rounded-sm bg-amber-500/20 border border-amber-500/40 text-amber-300 font-mono font-bold text-xs cursor-pointer hover:bg-amber-500/30 transition-all disabled:opacity-60"
+                            >
+                                {busyNumber === o.order_number
+                                    ? "PROCESSING..."
+                                    : `Refund ${formatINR(o.total)}`}
+                            </button>
+                        ) : (
+                            <div className="flex items-center gap-3">
+                                <span className="flex items-center justify-center px-4 py-2.5 rounded-sm bg-amber-500/20 border border-amber-500/40 text-amber-300 font-mono font-bold text-xs">
+                                    Refunded {formatINR(o.total)}
+                                </span>
+                                <button
+                                    type="button"
+                                    onClick={() => handleRemove(o.order_number)}
+                                    className="shrink-0 flex items-center justify-center px-4 py-2.5 rounded-sm border border-white/10 bg-white/5 text-gray-300 text-xs font-mono tracking-wider uppercase transition-all hover:bg-white/10 cursor-pointer"
+                                >
+                                    Remove
+                                </button>
+                            </div>
+                        ) : (
+                            <span className="flex items-center justify-center px-4 py-2.5 rounded-sm bg-green-500/20 border border-green-500/40 text-green-300 font-mono font-bold text-xs">
+                                {formatINR(o.total)}
+                            </span>
+                        )}
 
                         {CANCELABLE.includes(o.status) && (
                             <button
@@ -230,6 +301,12 @@ export default function AccountsOrders() {
             }
             order={cancelOrder}
             busy={cancelOrder && busyNumber === cancelOrder.order_number}
+        />
+
+        <RefundDialog
+            isOpen={!!refundedInfo}
+            onClose={() => setRefundedInfo(null)}
+            amount={refundedInfo?.amount}
         />
         </>
     );

@@ -306,6 +306,19 @@ export default function Cart() {
             }
             const data = await res.json();
 
+            // Wallet payment: order is created and paid immediately (no gateway)
+            if (payload.payment_method === "wallet") {
+                if (data.success) {
+                    setCheckoutOpen(false);
+                    queryClient.invalidateQueries({ queryKey: ["cart"] });
+                    queryClient.invalidateQueries({ queryKey: ["orders"] });
+                } else {
+                    alert(data.error || "Wallet payment failed");
+                }
+                setPlacing(false);
+                return;
+            }
+
             // Step 2: open Razorpay checkout
             const ok = await loadRazorpayScript();
             if (!ok) {

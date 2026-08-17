@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiX, FiTruck, FiCreditCard, FiCheck, FiEdit2 } from "react-icons/fi";
+import { useQuery } from "@tanstack/react-query";
+import { FiX, FiTruck, FiCreditCard, FiDollarSign, FiCheck, FiEdit2 } from "react-icons/fi";
 import GradientDrawerBg from "../usercomponents/GradientDrawerBg";
 import {
     Select,
@@ -9,6 +10,18 @@ import {
     SelectTrigger,
     SelectValue,
 } from "../components/ui/select";
+
+const API = import.meta.env.VITE_API_BASE_URL;
+
+const fetchWallet = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return { balance: "0.00" };
+    const res = await fetch(`${API}/api/wallet/`, {
+        headers: { Authorization: `Token ${token}` },
+    });
+    if (!res.ok) return { balance: "0.00" };
+    return res.json();
+};
 
 const SHIPPING_DISPLAY = [
     { name: "recipient", label: "Recipient Name" },
@@ -59,12 +72,10 @@ const StateSelect = ({ value, onChange }) => {
 
 const PAYMENT_METHODS = [
     {
-        id: "cod",
-        label: "Cash on Delivery",
-        icon: FiTruck,
-        desc: "Pay with cash when your order is delivered to your doorstep.",
-        disabled: true,
-        tag: "Not Available",
+        id: "wallet",
+        label: "Pay with Wallet",
+        icon: FiDollarSign,
+        desc: "Pay using your SNEAKET wallet balance.",
     },
     {
         id: "online",
@@ -133,6 +144,13 @@ export default function CheckoutDrawer({
     });
     const [paymentMethod, setPaymentMethod] = useState("online");
     const [editing, setEditing] = useState(false);
+
+    const { data: walletData } = useQuery({
+        queryKey: ["wallet"],
+        queryFn: fetchWallet,
+        enabled: isOpen,
+    });
+    const walletBalance = Number(walletData?.balance || 0);
 
     // Prefill shipping details from the account profile when available / drawer opens
     useEffect(() => {
@@ -329,25 +347,37 @@ export default function CheckoutDrawer({
                                         {PAYMENT_METHODS.map((m) => {
                                             const Icon = m.icon;
                                             const active = paymentMethod === m.id;
+                                            const isWallet = m.id === "wallet";
+                                            const insufficient =
+                                                isWallet && walletBalance < subtotal;
+                                            const disabled = insufficient;
                                             return (
                                                 <button
                                                     key={m.id}
                                                     type="button"
-                                                    disabled={m.disabled}
+                                                    disabled={disabled}
                                                     onClick={() =>
-                                                        !m.disabled && setPaymentMethod(m.id)
+                                                        !disabled && setPaymentMethod(m.id)
                                                     }
                                                     className={`flex items-center gap-3 p-3 rounded-lg border transition-all text-left relative ${
-                                                        m.disabled
+                                                        disabled
                                                             ? "border-white/10 bg-white/5 opacity-60 cursor-not-allowed"
                                                             : active
                                                             ? "border-yellow-500/50 bg-yellow-400/20"
                                                             : "border-white/10 bg-white/5 hover:bg-white/10 cursor-pointer"
                                                     }`}
                                                 >
-                                                    {m.tag && (
-                                                        <span className="absolute top-2 right-2 text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded-sm border border-red-500/40 bg-red-500/10 text-red-400">
-                                                            {m.tag}
+                                                    {isWallet && (
+                                                        <span className="absolute top-2 right-2 flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-sm border border-green-500/40 bg-green-500/10 text-green-400">
+                                                            ₹
+                                                            {walletBalance.toLocaleString(
+                                                                "en-IN"
+                                                            )}
+                                                        </span>
+                                                    )}
+                                                    {insufficient && (
+                                                        <span className="absolute bottom-2 right-2 text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded-sm border border-red-500/40 bg-red-500/10 text-red-400">
+                                                            Insufficient
                                                         </span>
                                                     )}
                                                     <div
@@ -355,12 +385,12 @@ export default function CheckoutDrawer({
                                                     >
                                                         <Icon className="w-5 h-5" />
                                                     </div>
-                                                    <div className="flex-1 min-w-0">
+                                                    <div className={`flex-1 min-w-0 ${isWallet ? "pr-24" : ""}`}>
                                                         <div className="flex items-center gap-2">
                                                             <span className="text-sm font-mono font-bold text-white uppercase tracking-wider">
                                                                 {m.label}
                                                             </span>
-                                                            {active && !m.disabled && (
+                                                            {active && !disabled && (
                                                                 <FiCheck className="w-3.5 h-3.5 text-yellow-400" />
                                                             )}
                                                         </div>
