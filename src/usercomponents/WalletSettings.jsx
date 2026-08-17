@@ -160,7 +160,7 @@ export default function WalletSettings() {
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Left column: balance + add money */}
-            <div className="lg:order-2 self-start p-6 rounded-md border border-white/10 bg-white/5 backdrop-blur-xl">
+            <div className="lg:order-2 self-start lg:min-h-[460px] p-6 rounded-md border border-white/10 bg-white/5 backdrop-blur-xl">
                 <h3 className="text-white font-mono font-bold tracking-widest uppercase text-sm mb-6">
                     Wallet
                 </h3>
@@ -220,7 +220,7 @@ export default function WalletSettings() {
             </div>
 
             {/* Right column: transactions in its own container */}
-            <div className="lg:order-1 lg:min-h-[460px] p-6 rounded-md border border-white/10 bg-white/5 backdrop-blur-xl">
+            <div className="lg:order-1 lg:h-full p-6 rounded-md border border-white/10 bg-white/5 backdrop-blur-xl flex flex-col">
                 <h3 className="text-white font-mono font-bold tracking-widest uppercase text-sm mb-6">
                     Transactions
                 </h3>
@@ -230,7 +230,7 @@ export default function WalletSettings() {
                         No transactions yet.
                     </p>
                 ) : (
-                    <div className="space-y-2">
+                    <div className="space-y-2 max-h-[48vh] overflow-y-auto pr-1 custom-scrollbar">
                         {transactions.map((t) => (
                             <div
                                 key={t.id}

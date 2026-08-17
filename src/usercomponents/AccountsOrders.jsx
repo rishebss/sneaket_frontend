@@ -174,7 +174,7 @@ export default function AccountsOrders() {
 
     return (
         <>
-        <div className="max-h-[70vh] overflow-y-auto custom-scrollbar pr-2 space-y-4">
+        <div className="max-h-[70vh] overflow-y-auto custom-scrollbar fade-bottom pr-2 space-y-4">
             {orders
                 .filter((o) => !removed.includes(o.order_number))
                 .map((o) => (

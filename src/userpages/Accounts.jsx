@@ -64,17 +64,8 @@ const BannerNavCard = ({ label, active, onClick }) => (
     </button>
 );
 
-const tabRadius = (key) => {
-    if (key === "wallet")
-        return "rounded-l-full rounded-tr-none rounded-br-none";
-    if (key === "orders") return "rounded-none";
-    if (key === "settings")
-        return "rounded-r-full rounded-tl-none rounded-bl-none";
-    return "rounded-none";
-};
-
 const MobileTabs = ({ active, onChange }) => (
-    <div className="lg:hidden relative flex items-center gap-2 mb-6 sticky top-24 z-30 p-1 rounded-full border border-white/10 bg-white/5 backdrop-blur-xl">
+    <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 flex items-center gap-2 p-2 border-t border-white/10 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 backdrop-blur-xl">
         {TABS.map((t) => {
             const isActive = active === t.key;
             return (
@@ -87,9 +78,7 @@ const MobileTabs = ({ active, onChange }) => (
                         <motion.div
                             layoutId="mobileTabIndicator"
                             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-                            className={`absolute inset-0 bg-blue-500/20 border border-blue-500/40 ${tabRadius(
-                                t.key
-                            )}`}
+                            className="absolute inset-0 bg-blue-500/20 border border-blue-500/40"
                         />
                     )}
                     <span
@@ -214,7 +203,34 @@ export default function Accounts() {
     return (
         <div className="pb-28 lg:pb-20 px-4 md:px-8 lg:px-12 relative mt-24 md:mt-32">
             <div className="max-w-[1100px] mx-auto">
-                {/* Mobile tabs on top */}
+                {/* Mobile profile banner on top */}
+                {data && (
+                    <div className="lg:hidden mt-5 mb-3 rounded-md border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden flex items-center gap-4 p-4">
+                        <div className="relative shrink-0 w-16 h-16 rounded-full overflow-hidden border border-white/10">
+                            <PixelBlast color="#3b82f6" />
+                            <div
+                                className="absolute inset-0 flex items-center justify-center text-2xl font-mono font-bold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]"
+                                style={{ WebKitTextStroke: "2px #000", paintOrder: "stroke" }}
+                            >
+                                {bannerInitials}
+                            </div>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                            <h2 className="text-white font-mono text-base truncate">
+                                {fullName || data.username}
+                            </h2>
+                            <p className="text-gray-500 font-mono text-xs mt-0.5 truncate">
+                                @{data.username}
+                            </p>
+                            <div className="mt-2 flex items-center gap-2 text-gray-400 text-xs font-mono truncate">
+                                <FiMail className="w-3.5 h-3.5 shrink-0" />
+                                <span className="truncate">{data.email}</span>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Mobile tabs fixed as bottom footer */}
                 {data && (
                     <MobileTabs active={activeTab} onChange={setActiveTab} />
                 )}
@@ -281,16 +297,15 @@ export default function Accounts() {
                             {activeTab === "wallet" && <WalletSettings />}
                             {activeTab === "orders" && <AccountsOrders />}
                             {activeTab === "settings" && (
-                                <>
+                                <div className="max-h-[70vh] overflow-y-auto custom-scrollbar fade-bottom pr-2 space-y-6">
                                     <AccountDetails
                                         data={data}
                                         onEdit={() => setDrawerOpen(true)}
                                     />
-                                    <div className="mt-6" />
                                     <AccountsSettings
                                         onLogout={handleLogout}
                                     />
-                                </>
+                                </div>
                             )}
                         </div>
 
@@ -306,23 +321,6 @@ export default function Accounts() {
                     </div>
                 )}
             </div>
-
-            {/* Mobile identity footer */}
-            {data && (
-                <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 flex items-center gap-4 px-4 py-3 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 border-t border-white/10">
-                    <div className="w-10 h-10 shrink-0 rounded-full bg-gradient-to-br from-amber-500/30 to-orange-500/10 border border-amber-500/30 flex items-center justify-center text-base font-mono font-bold text-white">
-                        {bannerInitials}
-                    </div>
-                    <div className="min-w-0">
-                        <p className="text-white font-mono text-sm truncate">
-                            {fullName || data.username}
-                        </p>
-                        <p className="text-gray-400 text-xs font-mono truncate">
-                            {data.email}
-                        </p>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
