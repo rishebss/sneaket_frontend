@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { FiCheck } from "react-icons/fi";
 import LoginRewardDialog from "./LoginRewardDialog";
@@ -21,8 +21,27 @@ export default function LoginRewardButton() {
         queryFn: fetchMe,
     });
     const [open, setOpen] = useState(false);
+    const [now, setNow] = useState(() => Date.now());
 
     const rewardClaimed = meData?.daily_reward_claimed;
+
+    useEffect(() => {
+        if (!rewardClaimed) return;
+        const t = setInterval(() => setNow(Date.now()), 1000);
+        return () => clearInterval(t);
+    }, [rewardClaimed]);
+
+    let countdown = "";
+    if (rewardClaimed) {
+        const next = new Date();
+        next.setHours(24, 0, 0, 0);
+        let diff = Math.max(0, Math.floor((next.getTime() - now) / 1000));
+        const h = Math.floor(diff / 3600);
+        const m = Math.floor((diff % 3600) / 60);
+        const s = diff % 60;
+        const pad = (n) => String(n).padStart(2, "0");
+        countdown = `Come back in ${h}h ${pad(m)}m ${pad(s)}s for +₹25.`;
+    }
 
     return (
         <>
@@ -41,7 +60,7 @@ export default function LoginRewardButton() {
                             </span>
                             <p className="text-[11px] text-white/85 leading-snug mt-0.5 drop-shadow">
                                 {rewardClaimed
-                                    ? "Claimed today — come back tomorrow for +₹25."
+                                    ? countdown
                                     : "Tap to claim ₹25 free, every day you log in."}
                             </p>
                         </div>
