@@ -270,6 +270,32 @@ export default function Cart() {
         return () => controller.abort();
     }, []);
 
+    // Close checkout, refresh caches/badge, then open Accounts on the Orders tab
+    const finishSuccessfulCheckout = async () => {
+        setCheckoutOpen(false);
+        queryClient.invalidateQueries({ queryKey: ["cart"] });
+        queryClient.invalidateQueries({ queryKey: ["orders"] });
+        queryClient.invalidateQueries({ queryKey: ["wallet"] });
+        const token = localStorage.getItem("token");
+        if (token) {
+            try {
+                const countRes = await fetch(
+                    `${import.meta.env.VITE_API_BASE_URL}/api/cart/count/`,
+                    { headers: { Authorization: `Token ${token}` } }
+                );
+                if (countRes.ok) {
+                    const { count } = await countRes.json();
+                    window.dispatchEvent(
+                        new CustomEvent("cart-change", { detail: { count } })
+                    );
+                }
+            } catch {
+                // badge will catch up on next cart action
+            }
+        }
+        navigate("/accounts?tab=orders");
+    };
+
     // Two-phase Razorpay checkout: create order -> open checkout -> verify
     const handlePlaceOrder = async (payload) => {
         setPlacing(true);
@@ -309,9 +335,7 @@ export default function Cart() {
             // Wallet payment: order is created and paid immediately (no gateway)
             if (payload.payment_method === "wallet") {
                 if (data.success) {
-                    setCheckoutOpen(false);
-                    queryClient.invalidateQueries({ queryKey: ["cart"] });
-                    queryClient.invalidateQueries({ queryKey: ["orders"] });
+                    await finishSuccessfulCheckout();
                 } else {
                     alert(data.error || "Wallet payment failed");
                 }
@@ -359,9 +383,7 @@ export default function Cart() {
                             }
                         );
                         if (vres.ok) {
-                            setCheckoutOpen(false);
-                            queryClient.invalidateQueries({ queryKey: ["cart"] });
-                            queryClient.invalidateQueries({ queryKey: ["orders"] });
+                            await finishSuccessfulCheckout();
                         } else {
                             const verr = await vres.json().catch(() => ({}));
                             alert(verr.error || "Payment verification failed");
