@@ -108,7 +108,7 @@ const AccountsSettings = ({ onLogout }) => {
                     disabled={saving}
                     className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-blue-500/20 border border-blue-500/40 text-blue-300 text-sm font-mono hover:bg-blue-500/30 transition-all cursor-pointer disabled:opacity-60"
                 >
-                    {saving ? "SAVING..." : "Change Password"}
+                    {saving ? "SAVING..." : "Reset"}
                 </button>
 
                 <button

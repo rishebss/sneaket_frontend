@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { FiCheck } from "react-icons/fi";
 import LoginRewardDialog from "./LoginRewardDialog";
 
 const API = import.meta.env.VITE_API_BASE_URL;
@@ -49,14 +48,19 @@ export default function LoginRewardButton() {
                 type="button"
                 onClick={() => setOpen(true)}
                 disabled={rewardClaimed}
-                className="uiverse relative mt-4 block w-full overflow-hidden text-left"
+                className={
+                    "uiverse relative mt-4 block w-full overflow-hidden text-left" +
+                    (rewardClaimed ? " claimed" : "")
+                }
             >
-                <div className="wrapper">
-                    <div className="scrim"></div>
+                <div className={rewardClaimed ? "wrapper dull" : "wrapper"}>
+                    <div className={rewardClaimed ? "scrim scrim-dark" : "scrim"}></div>
                     <div className="relative z-[5] flex items-center gap-4 px-4 py-3 text-left">
                         <div className="flex-1 min-w-0">
                             <span className="text-sm font-mono font-bold text-white uppercase tracking-wider drop-shadow">
-                                Daily Login Reward
+                                {rewardClaimed
+                                    ? "Login reward claimed"
+                                    : "Daily Login Reward"}
                             </span>
                             <p className="text-[11px] text-white/85 leading-snug mt-0.5 drop-shadow">
                                 {rewardClaimed
@@ -64,15 +68,6 @@ export default function LoginRewardButton() {
                                     : "Tap to claim ₹25 free, every day you log in."}
                             </p>
                         </div>
-                        {rewardClaimed ? (
-                            <span className="shrink-0 text-[10px] font-mono uppercase tracking-wider text-white/90 drop-shadow">
-                                Claimed ✓
-                            </span>
-                        ) : (
-                            <span className="shrink-0 font-mono font-bold text-white text-base drop-shadow">
-                                +₹25
-                            </span>
-                        )}
                     </div>
                     <div className="circle circle-1"></div>
                     <div className="circle circle-2"></div>

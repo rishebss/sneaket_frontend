@@ -181,6 +181,11 @@
   box-shadow: 0 0 14px var(--c-shadow);
 }
 
+.uiverse.claimed {
+  background: #0b111e;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
 .uiverse:before {
   content: '';
   pointer-events: none;
@@ -212,6 +217,10 @@
   pointer-events: none;
 }
 
+.uiverse .wrapper .scrim.scrim-dark {
+  background: rgba(0, 0, 0, 0.64);
+}
+
 .uiverse .wrapper span {
   display: inline-block;
   position: relative;
@@ -229,6 +238,10 @@
   background: var(--background, transparent);
   transform: translate(var(--x, 0), var(--y, 0)) translateZ(0);
   animation: var(--animation, none) var(--duration) var(--easing) infinite;
+}
+
+.uiverse .wrapper.dull .circle {
+  opacity: 0.35;
 }
 
 .uiverse .wrapper .circle.circle-1, .uiverse .wrapper .circle.circle-9, .uiverse .wrapper .circle.circle-10 {
