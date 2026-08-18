@@ -28,16 +28,13 @@ const STATUS_BADGE = {
     cancellation_requested: "border-amber-500/40 bg-amber-500/10 text-amber-300",
     cancellation_approved: "border-red-500/40 bg-red-500/10 text-red-300",
     cancelled: "border-red-500/40 bg-red-500/10 text-red-300",
-    refunded: "border-red-500/40 bg-red-500/10 text-red-300",
+    refunded: "border-white/20 bg-white/5 text-gray-300",
 };
 
-const CANCELABLE = ["confirmed", "processing", "shipped"];
+const CANCELABLE = ["confirmed", "processing"];
 
-const PAYMENT_BADGE = {
-    pending: "border-yellow-500/40 bg-yellow-500/10 text-yellow-300",
-    paid: "border-green-500/40 bg-green-500/10 text-green-300",
-    failed: "border-red-500/40 bg-red-500/10 text-red-300",
-    refunded: "border-red-500/40 bg-red-500/10 text-red-300",
+const STATUS_LABEL = {
+    delivery: "Out for Delivery",
 };
 
 const formatDate = (iso) =>
@@ -315,28 +312,28 @@ export default function AccountsOrders() {
                         <div>
                             <p className="text-white font-mono text-sm tracking-wider uppercase">
                                 {o.order_number}
+                                {o.status === "refunded" ? (
+                                    <span className="ml-2 text-gray-400 normal-case tracking-normal text-[10px]">
+                                        (refunded: {formatINR(o.total)})
+                                    </span>
+                                ) : o.payment_method === "wallet" ? (
+                                    <span className="ml-2 text-green-400 normal-case tracking-normal text-[10px]">
+                                        (wallet payment)
+                                    </span>
+                                ) : o.payment_status === "paid" ? (
+                                    <span className="ml-2 text-green-400 normal-case tracking-normal text-[10px]">
+                                        (paid)
+                                    </span>
+                                ) : null}
                             </p>
                             <p className="text-gray-500 font-mono text-[11px] mt-1">
                                 {formatDate(o.created_at)}
                             </p>
-                        </div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                            <span
-                                className={`text-[10px] font-mono uppercase tracking-wider px-2 py-1 rounded-full border ${
-                                    STATUS_BADGE[o.status] ||
-                                    "border-white/20 bg-white/5 text-gray-300"
-                                }`}
-                            >
-                                {o.status.replace("_", " ")}
-                            </span>
-                            <span
-                                className={`text-[10px] font-mono uppercase tracking-wider px-2 py-1 rounded-full border ${
-                                    PAYMENT_BADGE[o.payment_status] ||
-                                    "border-white/20 bg-white/5 text-gray-300"
-                                }`}
-                            >
-                                {o.payment_status}
-                            </span>
+                            {o.delivery_date && (
+                                <p className="text-green-400 font-mono text-[11px] mt-0.5">
+                                    Est. delivery {formatDate(o.delivery_date)}
+                                </p>
+                            )}
                         </div>
                     </div>
 
@@ -372,51 +369,63 @@ export default function AccountsOrders() {
                         ))}
                     </div>
 
-                    {/* Total + Cancel */}
-                    <div className="flex items-center justify-end gap-3 mt-4 pt-4 border-t border-white/10">
-                        {["cancellation_approved", "refunded"].includes(
-                            o.status
-                        ) ? o.status === "cancellation_approved" ? (
-                            <button
-                                type="button"
-                                onClick={() => handleRefund(o)}
-                                disabled={busyNumber === o.order_number}
-                                className="flex items-center justify-center px-4 py-2.5 rounded-sm bg-amber-500/20 border border-amber-500/40 text-amber-300 font-mono font-bold text-xs cursor-pointer hover:bg-amber-500/30 transition-all disabled:opacity-60"
-                            >
-                                {busyNumber === o.order_number
-                                    ? "PROCESSING..."
-                                    : `Refund ${formatINR(o.total)}`}
-                            </button>
-                        ) : (
-                            <div className="flex items-center gap-3">
-                                <span className="flex items-center justify-center px-4 py-2.5 rounded-sm bg-amber-500/20 border border-amber-500/40 text-amber-300 font-mono font-bold text-xs">
-                                    Refunded {formatINR(o.total)}
-                                </span>
+                    {/* Status (left, fills remaining width) + Total + Cancel (right) */}
+                    <div className="flex items-center gap-3 mt-4 pt-4 border-t border-white/10">
+                        <span
+                            className={`flex-1 min-w-0 flex items-center justify-center px-4 py-2.5 rounded-sm border text-[10px] font-mono uppercase tracking-wider ${
+                                STATUS_BADGE[o.status] ||
+                                "border-white/20 bg-white/5 text-gray-300"
+                            }`}
+                        >
+                            status:{" "}
+                            {STATUS_LABEL[o.status] ||
+                                o.status.replace("_", " ")}
+                        </span>
+
+                        <div className="flex items-center gap-3">
+                            {["cancellation_approved", "refunded"].includes(
+                                o.status
+                            ) ? o.status === "cancellation_approved" ? (
                                 <button
                                     type="button"
-                                    onClick={() => handleRemove(o.order_number)}
-                                    className="shrink-0 flex items-center justify-center px-4 py-2.5 rounded-sm border border-white/10 bg-white/5 text-gray-300 text-xs font-mono tracking-wider uppercase transition-all hover:bg-white/10 cursor-pointer"
+                                    onClick={() => handleRefund(o)}
+                                    disabled={busyNumber === o.order_number}
+                                    className="flex items-center justify-center px-4 py-2.5 rounded-sm bg-amber-500/20 border border-amber-500/40 text-amber-300 font-mono font-bold text-xs cursor-pointer hover:bg-amber-500/30 transition-all disabled:opacity-60"
                                 >
-                                    Remove
+                                    {busyNumber === o.order_number
+                                        ? "PROCESSING..."
+                                        : `Refund ${formatINR(o.total)}`}
                                 </button>
-                            </div>
-                        ) : (
-                            <span className="flex items-center justify-center px-4 py-2.5 rounded-sm bg-green-500/20 border border-green-500/40 text-green-300 font-mono font-bold text-xs">
-                                {formatINR(o.total)}
-                            </span>
-                        )}
+                            ) : (
+                                <div className="flex items-center gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemove(o.order_number)}
+                                        className="shrink-0 flex items-center justify-center px-4 py-2.5 rounded-sm border border-white/10 bg-white/5 text-gray-300 text-xs font-mono tracking-wider uppercase transition-all hover:bg-white/10 cursor-pointer"
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+                            ) : (
+                                <span
+                                    className="flex items-center justify-center px-4 py-2.5 rounded-sm bg-green-500/20 border border-green-500/40 text-green-300 font-mono font-bold text-xs"
+                                >
+                                    {formatINR(o.total)}
+                                </span>
+                            )}
 
-                        {CANCELABLE.includes(o.status) && (
-                            <button
-                                onClick={() => openCancel(o)}
-                                disabled={busyNumber === o.order_number}
-                                className="shrink-0 flex items-center justify-center gap-2 px-4 py-2.5 rounded-sm border border-red-500/40 bg-red-500/10 text-red-300 text-xs font-mono tracking-wider uppercase transition-all hover:bg-red-500/20 disabled:opacity-60 cursor-pointer"
-                            >
-                                {busyNumber === o.order_number
-                                    ? "REQUESTING..."
-                                    : "Cancel"}
-                            </button>
-                        )}
+                            {CANCELABLE.includes(o.status) && (
+                                <button
+                                    onClick={() => openCancel(o)}
+                                    disabled={busyNumber === o.order_number}
+                                    className="shrink-0 flex items-center justify-center gap-2 px-4 py-2.5 rounded-sm border border-red-500/40 bg-red-500/10 text-red-300 text-xs font-mono tracking-wider uppercase transition-all hover:bg-red-500/20 disabled:opacity-60 cursor-pointer"
+                                >
+                                    {busyNumber === o.order_number
+                                        ? "REQUESTING..."
+                                        : "Cancel"}
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
             ))}

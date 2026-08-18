@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import { FiX, FiTruck, FiCreditCard, FiDollarSign, FiCheck, FiEdit2 } from "react-icons/fi";
+import { FiX, FiCreditCard, FiDollarSign, FiCheck, FiEdit2 } from "react-icons/fi";
 import GradientDrawerBg from "../usercomponents/GradientDrawerBg";
 import {
     Select,
@@ -22,6 +22,24 @@ const fetchWallet = async () => {
     if (!res.ok) return { balance: "0.00" };
     return res.json();
 };
+
+const addWorkingDays = (start, days) => {
+    const d = new Date(start);
+    let added = 0;
+    while (added < days) {
+        d.setDate(d.getDate() + 1);
+        const day = d.getDay();
+        if (day !== 0 && day !== 6) added += 1;
+    }
+    return d;
+};
+
+const formatDeliveryDate = (date) =>
+    date.toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+    });
 
 const SHIPPING_DISPLAY = [
     { name: "recipient", label: "Recipient Name" },
@@ -439,13 +457,22 @@ export default function CheckoutDrawer({
                                             </div>
                                         ))}
                                     </div>
-                                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
-                                        <span className="text-white font-mono font-bold">
-                                            Total
-                                        </span>
-                                        <span className="text-white font-mono font-bold text-lg">
-                                            ₹{subtotal.toLocaleString()}
-                                        </span>
+                                    <div className="mt-4 pt-4 border-t border-white/10">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-white font-mono font-bold">
+                                                Total
+                                            </span>
+                                            <span className="text-white font-mono font-bold text-lg">
+                                                ₹{subtotal.toLocaleString()}
+                                            </span>
+                                        </div>
+                                        <p className="text-green-400 font-mono text-[11px] mt-1">
+                                            Estimated delivery date:{" "}
+                                            {formatDeliveryDate(
+                                                addWorkingDays(new Date(), 7)
+                                            )}{" "}
+                                            (7 days)
+                                        </p>
                                     </div>
                                 </section>
                             </div>
