@@ -137,6 +137,16 @@ export default function Accounts() {
         }
     }, [data]);
 
+    useEffect(() => {
+        if (window.location.hash === "#address-book") {
+            const el = document.getElementById("address-book");
+            if (el) {
+                setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
+                history.replaceState(null, "", window.location.pathname + window.location.search);
+            }
+        }
+    }, []);
+
     if (!localStorage.getItem("token")) {
         return <Navigate to="/login" replace />;
     }

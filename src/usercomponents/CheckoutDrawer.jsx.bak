@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { FiX, FiCreditCard, FiDollarSign, FiCheck, FiEdit2 } from "react-icons/fi";
 import GradientDrawerBg from "../usercomponents/GradientDrawerBg";
 import {
@@ -21,16 +20,6 @@ const fetchWallet = async () => {
         headers: { Authorization: `Token ${token}` },
     });
     if (!res.ok) return { balance: "0.00" };
-    return res.json();
-};
-
-const fetchAddresses = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) return [];
-    const res = await fetch(`${API}/api/users/addresses`, {
-        headers: { Authorization: `Token ${token}` },
-    });
-    if (!res.ok) return [];
     return res.json();
 };
 
@@ -174,50 +163,12 @@ export default function CheckoutDrawer({
     const [paymentMethod, setPaymentMethod] = useState("online");
     const [editing, setEditing] = useState(false);
 
-    const [addresses, setAddresses] = useState([]);
-    const [selectedAddressId, setSelectedAddressId] = useState(null);
-    const navigate = useNavigate();
-
     const { data: walletData } = useQuery({
         queryKey: ["wallet"],
         queryFn: fetchWallet,
         enabled: isOpen,
     });
-    const { data: addressesData } = useQuery({
-        queryKey: ["addresses"],
-        queryFn: fetchAddresses,
-        enabled: isOpen,
-    });
     const walletBalance = Number(walletData?.balance || 0);
-    const queryClient = useQueryClient();
-
-    const applyAddress = (a) => {
-        const parts = (a.recipient_name || "").trim().split(/\s+/);
-        const fn = parts[0] || "";
-        const ln = parts.slice(1).join(" ") || "";
-        setForm((f) => ({
-            ...f,
-            first_name: fn,
-            last_name: ln,
-            phone: a.phone || "",
-            address: a.address || "",
-            pincode: a.pincode || "",
-            state: a.state || "",
-            city: a.city || "",
-        }));
-    };
-
-    // Auto-select the default (or first) saved address when the list loads
-    useEffect(() => {
-        if (addressesData && addressesData.length > 0) {
-            const def = addressesData.find((a) => a.is_default) || addressesData[0];
-            setAddresses(addressesData);
-            setSelectedAddressId(def.id);
-            applyAddress(def);
-        } else if (addressesData) {
-            setAddresses(addressesData);
-        }
-    }, [addressesData]);
 
     // Prefill shipping details from the account profile when available / drawer opens
     useEffect(() => {
@@ -236,26 +187,9 @@ export default function CheckoutDrawer({
         setEditing(false);
     }, [profile, isOpen]);
 
-// Prefill shipping details from the account profile when available / drawer opens
-useEffect(() => {
-    if (profile) {
-        setForm({
-            first_name: profile.first_name || "",
-            last_name: profile.last_name || "",
-            email: profile.email || "",
-            phone: profile.profile?.phone || "",
-            address: profile.profile?.address || "",
-            pincode: profile.profile?.pincode || "",
-            state: profile.profile?.state || "",
-            city: profile.profile?.city || "",
-        });
-    }
-    setEditing(false);
-}, [profile, isOpen]);
+    const update = (name, val) => setForm((f) => ({ ...f, [name]: val }));
 
-const update = (name, val) => setForm((f) => ({ ...f, [name]: val }));
-
-return (
+    return (
         <AnimatePresence>
             {isOpen && (
                 <>
@@ -289,66 +223,136 @@ return (
                             </div>
 
                             <div className="flex-1 overflow-y-auto p-4 md:p-6 custom-scrollbar space-y-6">
-                                {/* Saved addresses */}
+                                {/* Shipping details (prefilled from profile) */}
                                 <section>
                                     <div className="flex items-center justify-between mb-4">
                                         <h3 className="text-white font-mono font-bold tracking-widest uppercase text-xs">
-                                            Addresses
+                                            Shipping Details
                                         </h3>
                                         <button
-                                            onClick={() => {
-                                                onClose();
-                                                navigate("/accounts?tab=settings#address-book");
-                                            }}
-                                            className="px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-gray-300 text-[10px] font-mono uppercase tracking-wider transition-all hover:bg-white/10 cursor-pointer"
+                                            onClick={() => setEditing((e) => !e)}
+                                            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-[10px] font-mono uppercase tracking-wider transition-all ${
+                                                editing
+                                                    ? "border-blue-500/50 bg-blue-500/10 text-blue-300"
+                                                    : "border-white/10 bg-white/5 text-gray-300 hover:bg-white/10"
+                                            }`}
                                         >
-                                            Edit
+                                            {editing ? (
+                                                <>
+                                                    <FiCheck className="w-3.5 h-3.5" />
+                                                    Done
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <FiEdit2 className="w-3.5 h-3.5" />
+                                                    Edit
+                                                </>
+                                            )}
                                         </button>
                                     </div>
-                                    <div className="flex flex-col gap-2">
-                                        {addresses.map((a) => (
-                                            <button
-                                                key={a.id}
-                                                type="button"
-                                                onClick={() => {
-                                                    setSelectedAddressId(a.id);
-                                                    applyAddress(a);
-                                                }}
-                                                className={`w-full text-left rounded-lg border p-3 transition-all ${
-                                                    selectedAddressId === a.id
-                                                        ? "border-blue-500/50 bg-blue-500/10"
-                                                        : "border-white/10 bg-white/5 hover:bg-white/10 cursor-pointer"
-                                                }`}
-                                            >
-                                                <div className="flex items-center justify-between">
-                                                    <span className="text-white text-sm font-mono">
-                                                        {a.label || "Address"}
+
+                                    {/* Non-editable identity fields — plain text, no box */}
+                                    <div className="space-y-2">
+                                        {SHIPPING_DISPLAY.map((f) => {
+                                            const value =
+                                                f.name === "recipient"
+                                                    ? `${form.first_name} ${form.last_name}`.trim()
+                                                    : form[f.name];
+                                            return (
+                                                <div
+                                                    key={f.name}
+                                                    className="flex flex-col gap-0.5"
+                                                >
+                                                    <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-gray-500">
+                                                        {f.label}
                                                     </span>
-                                                    <div className="flex items-center gap-2">
-                                                        {a.is_default && (
-                                                            <span className="text-[10px] font-mono uppercase tracking-wider text-green-400">
-                                                                Default
-                                                            </span>
-                                                        )}
-                                                        {selectedAddressId === a.id && (
-                                                            <FiCheck className="w-4 h-4 text-blue-400" />
-                                                        )}
-                                                    </div>
+                                                    <span className="text-white text-sm font-mono">
+                                                        {value || "—"}
+                                                    </span>
                                                 </div>
-                                                <p className="text-gray-400 text-xs font-mono mt-1">
-                                                    {a.recipient_name}
-                                                </p>
-                                                <p className="text-gray-500 text-xs font-mono">
-                                                    {a.address}
-                                                    {a.city ? `, ${a.city}` : ""}
-                                                    {a.state ? `, ${a.state}` : ""} -{" "}
-                                                    {a.pincode}
-                                                </p>
-                                                <p className="text-gray-500 text-xs font-mono">
-                                                    {a.phone}
-                                                </p>
-                                            </button>
-                                        ))}
+                                            );
+                                        })}
+                                    </div>
+
+                                    {/* Editable address fields */}
+                                    <div className="mt-4 space-y-3">
+                                        {/* Phone + State in the same row */}
+                                        <div className="grid grid-cols-2 gap-3">
+                                            {editing ? (
+                                                <Field
+                                                    label="Phone"
+                                                    name="phone"
+                                                    value={form.phone}
+                                                    onChange={update}
+                                                />
+                                            ) : (
+                                                <DisplayRow
+                                                    label="Phone"
+                                                    value={form.phone}
+                                                />
+                                            )}
+                                            {editing ? (
+                                                <div>
+                                                    <label className="block text-[10px] font-mono uppercase tracking-[0.2em] text-gray-500 mb-2">
+                                                        State
+                                                    </label>
+                                                    <StateSelect
+                                                        value={form.state}
+                                                        onChange={update}
+                                                    />
+                                                </div>
+                                            ) : (
+                                                <DisplayRow
+                                                    label="State"
+                                                    value={form.state}
+                                                />
+                                            )}
+                                        </div>
+
+                                        <div className="grid grid-cols-2 gap-3">
+                                            {editing ? (
+                                                <Field
+                                                    label="Pincode"
+                                                    name="pincode"
+                                                    value={form.pincode}
+                                                    onChange={update}
+                                                />
+                                            ) : (
+                                                <DisplayRow
+                                                    label="Pincode"
+                                                    value={form.pincode}
+                                                />
+                                            )}
+                                            {editing ? (
+                                                <Field
+                                                    label="City"
+                                                    name="city"
+                                                    value={form.city}
+                                                    onChange={update}
+                                                />
+                                            ) : (
+                                                <DisplayRow
+                                                    label="City"
+                                                    value={form.city}
+                                                />
+                                            )}
+                                        </div>
+
+                                        {editing ? (
+                                            <Field
+                                                label="Address"
+                                                name="address"
+                                                value={form.address}
+                                                onChange={update}
+                                                textarea
+                                            />
+                                        ) : (
+                                            <DisplayRow
+                                                label="Address"
+                                                value={form.address}
+                                                wrap
+                                            />
+                                        )}
                                     </div>
                                 </section>
 

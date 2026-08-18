@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import AddressFormDrawer from "./AddressFormDrawer";
 
 const API = import.meta.env.VITE_API_BASE_URL;
 
@@ -67,57 +69,161 @@ const AccountsSettings = ({ onLogout }) => {
         }
     };
 
+    // ---- Address book ----
+    const queryClient = useQueryClient();
+    const [addresses, setAddresses] = useState([]);
+    const [loadingAddr, setLoadingAddr] = useState(false);
+    const [addrBusy, setAddrBusy] = useState(false);
+    const [drawerOpen, setDrawerOpen] = useState(false);
+
+    const token = () => localStorage.getItem("token");
+
+    const loadAddresses = async () => {
+        setLoadingAddr(true);
+        try {
+            const res = await fetch(`${API}/api/users/addresses`, {
+                headers: { Authorization: `Token ${token()}` },
+            });
+            if (res.ok) setAddresses(await res.json());
+        } finally {
+            setLoadingAddr(false);
+        }
+    };
+
+    useEffect(() => {
+        loadAddresses();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const openDrawer = () => setDrawerOpen(true);
+
     return (
-        <div className="p-6 rounded-md border border-white/10 bg-white/5 backdrop-blur-xl">
-            <h3 className="text-white font-mono font-bold tracking-widest uppercase text-sm mb-6">
-                Settings
-            </h3>
+        <div className="space-y-6">
+            {/* Address book */}
+            <div id="address-book" className="p-6 rounded-md border border-white/10 bg-white/5 backdrop-blur-xl">
+                <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-white font-mono font-bold tracking-widest uppercase text-sm">
+                        Address Book
+                    </h3>
+                    <button
+                        onClick={openDrawer}
+                        className="px-3 py-1.5 rounded-lg border border-green-500/40 bg-green-500/10 text-green-300 text-[11px] font-mono uppercase tracking-wider transition-all hover:bg-green-500/20 cursor-pointer"
+                    >
+                        Edit
+                    </button>
+                </div>
 
-            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-gray-500 mb-4">
-                Reset
-            </p>
-
-            <div className="grid grid-cols-1 gap-4">
-                <PasswordField
-                    label="Current Password"
-                    name="old_password"
-                    value={form.old_password}
-                    onChange={update}
-                />
-                <PasswordField
-                    label="New Password"
-                    name="new_password"
-                    value={form.new_password}
-                    onChange={update}
-                />
+                {loadingAddr ? (
+                    <p className="text-gray-500 text-xs font-mono">
+                        Loading...
+                    </p>
+                ) : addresses.length === 0 ? (
+                    <p className="text-gray-500 text-xs font-mono">
+                        No saved addresses yet.
+                    </p>
+                ) : (
+                    <div className="space-y-3">
+                        {addresses.map((a) => (
+                            <div
+                                key={a.id}
+                                className={`rounded-lg border p-3 ${
+                                    a.is_default
+                                        ? "border-blue-500/40 bg-blue-500/10"
+                                        : "border-white/10 bg-white/5"
+                                }`}
+                            >
+                                <div className="flex items-center gap-2">
+                                    <span className="text-white text-sm font-mono">
+                                        {a.label || "Address"}
+                                        {a.is_default && (
+                                            <span className="text-gray-500">
+                                                {" "}
+                                                (default)
+                                            </span>
+                                        )}
+                                    </span>
+                                </div>
+                                <p className="text-gray-400 text-xs font-mono mt-1">
+                                    {a.recipient_name}
+                                </p>
+                                <p className="text-gray-500 text-xs font-mono">
+                                    {a.address}
+                                    {a.city ? `, ${a.city}` : ""}
+                                    {a.state ? `, ${a.state}` : ""} -{" "}
+                                    {a.pincode}
+                                </p>
+                                <p className="text-gray-500 text-xs font-mono">
+                                    {a.phone}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
 
-            {msg && (
-                <p
-                    className={`mt-4 text-xs font-mono ${
-                        msg.type === "success" ? "text-green-400" : "text-red-400"
-                    }`}
-                >
-                    {msg.text}
+            {/* Settings */}
+            <div className="p-6 rounded-md border border-white/10 bg-white/5 backdrop-blur-xl">
+                <h3 className="text-white font-mono font-bold tracking-widest uppercase text-sm mb-6">
+                    Settings
+                </h3>
+
+                <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-gray-500 mb-4">
+                    Change Password
                 </p>
-            )}
 
-            <div className="mt-5 flex items-center gap-3">
-                <button
-                    onClick={handleChangePassword}
-                    disabled={saving}
-                    className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-blue-500/20 border border-blue-500/40 text-blue-300 text-sm font-mono hover:bg-blue-500/30 transition-all cursor-pointer disabled:opacity-60"
-                >
-                    {saving ? "SAVING..." : "Reset"}
-                </button>
+                <div className="grid grid-cols-1 gap-4">
+                    <PasswordField
+                        label="Current Password"
+                        name="old_password"
+                        value={form.old_password}
+                        onChange={update}
+                    />
+                    <PasswordField
+                        label="New Password"
+                        name="new_password"
+                        value={form.new_password}
+                        onChange={update}
+                    />
+                </div>
 
-                <button
-                    onClick={onLogout}
-                    className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 text-sm font-mono hover:bg-red-500/20 transition-all cursor-pointer"
-                >
-                    Sign Out
-                </button>
+                {msg && (
+                    <p
+                        className={`mt-4 text-xs font-mono ${
+                            msg.type === "success"
+                                ? "text-green-400"
+                                : "text-red-400"
+                        }`}
+                    >
+                        {msg.text}
+                    </p>
+                )}
+
+                <div className="mt-5 flex items-center gap-3">
+                    <button
+                        onClick={handleChangePassword}
+                        disabled={saving}
+                        className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-blue-500/20 border border-blue-500/40 text-blue-300 text-sm font-mono hover:bg-blue-500/30 transition-all cursor-pointer disabled:opacity-60"
+                    >
+                        {saving ? "SAVING..." : "Update Password"}
+                    </button>
+
+                    <button
+                        onClick={onLogout}
+                        className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 text-sm font-mono hover:bg-red-500/20 transition-all cursor-pointer"
+                    >
+                        Sign Out
+                    </button>
+                </div>
             </div>
+
+            <AddressFormDrawer
+                open={drawerOpen}
+                onClose={() => {
+                    setDrawerOpen(false);
+                    loadAddresses();
+                    queryClient.invalidateQueries({ queryKey: ["me"] });
+                }}
+            />
         </div>
     );
 };

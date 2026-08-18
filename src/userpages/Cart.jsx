@@ -311,6 +311,7 @@ export default function Cart() {
                 city: payload.city,
                 payment_method: payload.payment_method || "online",
             };
+            if (payload.address_id) body.address_id = payload.address_id;
 
             // Step 1: create the order (backend also creates the Razorpay order)
             const res = await fetch(

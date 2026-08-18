@@ -1,6 +1,47 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { FiX, FiSave } from "react-icons/fi";
 import GradientDrawerBg from "../usercomponents/GradientDrawerBg";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "../components/ui/select";
+
+const INDIAN_STATES = [
+    "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+    "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka",
+    "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram",
+    "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
+    "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
+    "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu",
+    "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry",
+];
+
+const StateSelect = ({ value, onChange }) => {
+    const canonical =
+        INDIAN_STATES.find(
+            (s) => s.toLowerCase() === String(value || "").toLowerCase()
+        ) || undefined;
+    return (
+        <Select
+            value={canonical}
+            onValueChange={(v) => onChange("state", v)}
+        >
+            <SelectTrigger>
+                <SelectValue placeholder="Select state" />
+            </SelectTrigger>
+            <SelectContent>
+                {INDIAN_STATES.map((s) => (
+                    <SelectItem key={s} value={s}>
+                        {s}
+                    </SelectItem>
+                ))}
+            </SelectContent>
+        </Select>
+    );
+};
 
 const InputField = ({ label, name, value, onChange, textarea }) => (
     <div>
@@ -79,7 +120,12 @@ export default function EditAccountDrawer({
                                     <InputField label="Phone" name="phone" value={form.phone} onChange={update} />
                                     <InputField label="Pincode" name="pincode" value={form.pincode} onChange={update} />
                                     <InputField label="City" name="city" value={form.city} onChange={update} />
-                                    <InputField label="State" name="state" value={form.state} onChange={update} />
+                                    <div>
+                                        <label className="block text-[10px] font-mono uppercase tracking-[0.2em] text-gray-500 mb-2">
+                                            State
+                                        </label>
+                                        <StateSelect value={form.state} onChange={update} />
+                                    </div>
                                     <div className="col-span-2">
                                         <InputField label="Address" name="address" value={form.address} onChange={update} textarea />
                                     </div>
