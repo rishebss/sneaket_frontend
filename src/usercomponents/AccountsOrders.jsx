@@ -369,18 +369,42 @@ export default function AccountsOrders() {
                         ))}
                     </div>
 
-                    {/* Status (left, fills remaining width) + Total + Cancel (right) */}
-                    <div className="flex items-center gap-3 mt-4 pt-4 border-t border-white/10">
-                        <span
-                            className={`flex-1 min-w-0 flex items-center justify-center px-4 py-2.5 rounded-sm border text-[10px] font-mono uppercase tracking-wider ${
-                                STATUS_BADGE[o.status] ||
-                                "border-white/20 bg-white/5 text-gray-300"
-                            }`}
-                        >
-                            status:{" "}
-                            {STATUS_LABEL[o.status] ||
-                                o.status.replace("_", " ")}
+                    {/* Total */}
+                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
+                        <span className="text-white font-mono font-bold uppercase tracking-wider text-sm">
+                            Total
                         </span>
+                        <span className="text-white font-mono font-bold text-lg">
+                            {formatINR(o.total)}
+                        </span>
+                    </div>
+
+                    {/* Status (sizes to content, left) + Cancel (left) | Refund/Remove (right) */}
+                    <div className="flex items-center justify-between gap-3 mt-4 pt-4 border-t border-white/10">
+                        <div className="flex items-center gap-3">
+                            <span
+                                className={`flex items-center justify-center px-4 py-2.5 rounded-sm border text-[10px] font-mono uppercase tracking-wider ${
+                                    STATUS_BADGE[o.status] ||
+                                    "border-white/20 bg-white/5 text-gray-300"
+                                }`}
+                            >
+                                status:{" "}
+                                {STATUS_LABEL[o.status] ||
+                                    o.status.replace("_", " ")}
+                            </span>
+
+                            {CANCELABLE.includes(o.status) && (
+                                <button
+                                    onClick={() => openCancel(o)}
+                                    disabled={busyNumber === o.order_number}
+                                    className="shrink-0 flex items-center justify-center gap-2 px-4 py-2.5 rounded-sm border border-red-500/40 bg-red-500/10 text-red-300 text-xs font-mono tracking-wider uppercase transition-all hover:bg-red-500/20 disabled:opacity-60 cursor-pointer"
+                                >
+                                    {busyNumber === o.order_number
+                                        ? "REQUESTING..."
+                                        : "Cancel"}
+                                </button>
+                            )}
+                        </div>
 
                         <div className="flex items-center gap-3">
                             {["cancellation_approved", "refunded"].includes(
@@ -397,34 +421,14 @@ export default function AccountsOrders() {
                                         : `Refund ${formatINR(o.total)}`}
                                 </button>
                             ) : (
-                                <div className="flex items-center gap-3">
-                                    <button
-                                        type="button"
-                                        onClick={() => handleRemove(o.order_number)}
-                                        className="shrink-0 flex items-center justify-center px-4 py-2.5 rounded-sm border border-white/10 bg-white/5 text-gray-300 text-xs font-mono tracking-wider uppercase transition-all hover:bg-white/10 cursor-pointer"
-                                    >
-                                        Remove
-                                    </button>
-                                </div>
-                            ) : (
-                                <span
-                                    className="flex items-center justify-center px-4 py-2.5 rounded-sm bg-green-500/20 border border-green-500/40 text-green-300 font-mono font-bold text-xs"
-                                >
-                                    {formatINR(o.total)}
-                                </span>
-                            )}
-
-                            {CANCELABLE.includes(o.status) && (
                                 <button
-                                    onClick={() => openCancel(o)}
-                                    disabled={busyNumber === o.order_number}
-                                    className="shrink-0 flex items-center justify-center gap-2 px-4 py-2.5 rounded-sm border border-red-500/40 bg-red-500/10 text-red-300 text-xs font-mono tracking-wider uppercase transition-all hover:bg-red-500/20 disabled:opacity-60 cursor-pointer"
+                                    type="button"
+                                    onClick={() => handleRemove(o.order_number)}
+                                    className="shrink-0 flex items-center justify-center px-4 py-2.5 rounded-sm border border-white/10 bg-white/5 text-gray-300 text-xs font-mono tracking-wider uppercase transition-all hover:bg-white/10 cursor-pointer"
                                 >
-                                    {busyNumber === o.order_number
-                                        ? "REQUESTING..."
-                                        : "Cancel"}
+                                    Remove
                                 </button>
-                            )}
+                            ) : null}
                         </div>
                     </div>
                 </div>
