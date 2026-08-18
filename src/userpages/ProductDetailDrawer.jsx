@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiX, FiHeart, FiStar, FiShoppingBag, FiCheck } from "react-icons/fi";
+import { FiX, FiHeart, FiStar, FiShoppingBag, FiCheck, FiTrash2, FiEdit2 } from "react-icons/fi";
 import { AiFillHeart } from "react-icons/ai";
 import GradientDrawerBg from "../usercomponents/GradientDrawerBg";
 
@@ -20,6 +20,107 @@ export default function ProductDetailDrawer({
   const [sizeError, setSizeError] = useState(false);
   const [stockError, setStockError] = useState(null);
   const sizeSelectRef = useRef(null);
+
+  const API = import.meta.env.VITE_API_BASE_URL;
+  const token = localStorage.getItem("token");
+  const currentUsername =
+    (() => {
+      try {
+        return JSON.parse(localStorage.getItem("user") || "{}").username;
+      } catch {
+        return null;
+      }
+    })() || null;
+
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [myReview, setMyReview] = useState(null);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewTitle, setReviewTitle] = useState("");
+  const [reviewComment, setReviewComment] = useState("");
+  const [reviewHover, setReviewHover] = useState(0);
+  const [submittingReview, setSubmittingReview] = useState(false);
+  const [reviewError, setReviewError] = useState(null);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+
+  const renderStars = (value) => (
+    <div className="flex items-center gap-0.5">
+      {[1, 2, 3, 4, 5].map((n) => (
+        <FiStar
+          key={n}
+          className={`w-3.5 h-3.5 ${
+            n <= value
+              ? "text-amber-500 fill-amber-500"
+              : "text-gray-600"
+          }`}
+        />
+      ))}
+    </div>
+  );
+
+  const submitReview = async () => {
+    if (!token) {
+      setReviewError("Please log in to review");
+      return;
+    }
+    if (reviewRating < 1) {
+      setReviewError("Select a rating");
+      return;
+    }
+    setSubmittingReview(true);
+    setReviewError(null);
+    try {
+      const res = await fetch(`${API}/api/reviews/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+        body: JSON.stringify({
+          sneaker: product.id,
+          rating: reviewRating,
+          title: reviewTitle,
+          comment: reviewComment,
+        }),
+      });
+      if (!res.ok) {
+        const e = await res.json().catch(() => ({}));
+        setReviewError(e.error || "Could not submit review");
+        return;
+      }
+      const saved = await res.json();
+      setReviews((prev) =>
+        prev.filter((rv) => rv.id !== saved.id).concat(saved)
+      );
+      setMyReview(saved);
+      setShowReviewForm(false);
+    } catch {
+      setReviewError("Something went wrong");
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
+
+  const deleteReview = async () => {
+    if (!myReview || !token) return;
+    setSubmittingReview(true);
+    try {
+      const res = await fetch(`${API}/api/reviews/${myReview.id}/`, {
+        method: "DELETE",
+        headers: { Authorization: `Token ${token}` },
+      });
+      if (res.ok) {
+        setReviews((prev) => prev.filter((rv) => rv.id !== myReview.id));
+        setMyReview(null);
+        setReviewTitle("");
+        setReviewComment("");
+        setReviewRating(5);
+        setShowReviewForm(false);
+      }
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
 
   const outOfStock = Number(product?.copies) === 0;
 
@@ -52,6 +153,41 @@ export default function ProductDetailDrawer({
       setSelectedSize(null);
     }
   }, [isOpen, product?.id, inCartSizes]);
+
+  // Fetch reviews for the product and detect the current user's own review
+  useEffect(() => {
+    if (!isOpen || !product?.id) return;
+    let cancelled = false;
+    setReviewsLoading(true);
+    fetch(`${API}/api/reviews/?sneaker=${product.id}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (cancelled) return;
+        const list = Array.isArray(data) ? data : data.results || [];
+        setReviews(list);
+        const mine = currentUsername
+          ? list.find((rv) => rv.username === currentUsername)
+          : null;
+        setMyReview(mine || null);
+        setShowReviewForm(false);
+        if (mine) {
+          setReviewRating(mine.rating);
+          setReviewComment(mine.comment || "");
+          setReviewTitle(mine.title || "");
+        } else {
+          setReviewRating(5);
+          setReviewComment("");
+          setReviewTitle("");
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) setReviewsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen, product?.id, API, currentUsername]);
 
   // Cart membership (which sizes of this product are already in the cart) is
   // owned by Products.jsx and passed in as inCartSizes - same pattern as
@@ -243,6 +379,195 @@ export default function ProductDetailDrawer({
                     </div>
                   </div>
                 )}
+              </div>
+
+              {/* Reviews section */}
+              <div className="mt-8 border-t border-white/10 pt-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-white font-mono font-bold tracking-widest uppercase text-sm">
+                    Reviews
+                  </h4>
+                  {product.review_count > 0 && (
+                    <div className="flex items-center gap-2">
+                      {renderStars(Math.round(product.rating || 0))}
+                      <span className="text-gray-400 text-xs font-mono">
+                        {product.rating} ({product.review_count})
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Review form (toggled) for logged-in users */}
+                {token ? (
+                  showReviewForm ? (
+                    <div className="rounded-lg border border-white/10 bg-white/5 p-4 space-y-3">
+                      <div className="flex items-center justify-end">
+                        {myReview && (
+                          <button
+                            onClick={deleteReview}
+                            disabled={submittingReview}
+                            className="px-4 py-2 rounded-lg border border-red-500/40 bg-red-500/10 text-red-400 text-xs font-mono tracking-wider uppercase hover:bg-red-500/20 transition-all disabled:opacity-60 cursor-pointer"
+                          >
+                            <FiTrash2 className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+                      <p className="text-xs font-mono uppercase tracking-widest text-gray-400">
+                        {myReview ? "Edit your review" : "Write a review"}
+                      </p>
+                      <div className="flex items-center gap-1">
+                        {[1, 2, 3, 4, 5].map((n) => (
+                          <button
+                            key={n}
+                            type="button"
+                            onMouseEnter={() => setReviewHover(n)}
+                            onMouseLeave={() => setReviewHover(0)}
+                            onClick={() => setReviewRating(n)}
+                            className="transition-transform hover:scale-110 cursor-pointer"
+                          >
+                            <FiStar
+                              className={`w-6 h-6 ${
+                                (reviewHover || reviewRating) >= n
+                                  ? "text-amber-500 fill-amber-500"
+                                  : "text-gray-600"
+                              }`}
+                            />
+                          </button>
+                        ))}
+                        <span className="ml-2 text-xs font-mono text-gray-500">
+                          {reviewRating}/5
+                        </span>
+                      </div>
+                      <input
+                        type="text"
+                        value={reviewTitle}
+                        onChange={(e) => setReviewTitle(e.target.value)}
+                        placeholder="Title (optional)"
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-blue-500/50"
+                      />
+                      <textarea
+                        value={reviewComment}
+                        onChange={(e) => setReviewComment(e.target.value)}
+                        placeholder="Share your experience..."
+                        rows={3}
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-blue-500/50 resize-none"
+                      />
+                      {reviewError && (
+                        <p className="text-xs font-mono text-red-400">{reviewError}</p>
+                      )}
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => setShowReviewForm(false)}
+                          className="flex-1 px-4 py-2 rounded-lg border border-white/10 bg-white/5 text-white text-xs font-mono tracking-wider uppercase hover:bg-white/10 transition-all cursor-pointer"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={submitReview}
+                          disabled={submittingReview}
+                          className="flex-1 px-4 py-2 rounded-lg bg-blue-500/30 border border-blue-500/40 text-white text-xs font-mono tracking-wider uppercase hover:bg-blue-500/40 transition-all disabled:opacity-60 cursor-pointer"
+                        >
+                          {submittingReview
+                            ? "SAVING..."
+                            : myReview
+                            ? "Update"
+                            : "Submit"}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    !myReview && (
+                      <button
+                        onClick={() => setShowReviewForm(true)}
+                        className="w-full px-4 py-2.5 rounded-lg border border-dashed border-white/20 bg-white/5 text-white text-xs font-mono tracking-wider uppercase hover:border-blue-500/50 hover:bg-white/10 transition-all cursor-pointer"
+                      >
+                        + Write a Review
+                      </button>
+                    )
+                  )
+                ) : (
+                  <p className="text-gray-500 text-xs font-mono">
+                    Log in to write a review.
+                  </p>
+                )}
+
+                {/* Reviews list */}
+                <div className="mt-4 space-y-3">
+                  {reviewsLoading ? (
+                    <p className="text-gray-500 text-xs font-mono">
+                      Loading reviews...
+                    </p>
+                  ) : reviews.length === 0 ? (
+                    <p className="text-gray-500 text-xs font-mono">
+                      No reviews yet. Be the first!
+                    </p>
+                  ) : (
+                    reviews.map((rv) => {
+                      const isMine = rv.username === currentUsername;
+                      return (
+                      <div
+                        key={rv.id}
+                        className={`rounded-lg border bg-white/5 p-3 ${
+                          isMine
+                            ? "border-blue-500/40"
+                            : "border-white/10"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="w-7 h-7 rounded-full bg-gradient-to-br from-amber-500/30 to-orange-500/10 border border-amber-500/30 flex items-center justify-center text-xs font-mono font-bold text-white shrink-0">
+                              {(
+                                rv.first_name?.[0] ||
+                                rv.username?.[0] ||
+                                "U"
+                              ).toUpperCase()}
+                            </span>
+                            <span className="text-white text-sm font-mono truncate">
+                              {rv.first_name
+                                ? `${rv.first_name} ${rv.last_name || ""}`.trim()
+                                : rv.username}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            {renderStars(rv.rating)}
+                            {isMine && (
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={() => setShowReviewForm(true)}
+                                  title="Edit review"
+                                  className="p-1 rounded-md text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                                >
+                                  <FiEdit2 className="w-3.5 h-3.5" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={deleteReview}
+                                  disabled={submittingReview}
+                                  title="Delete review"
+                                  className="p-1 rounded-md text-gray-400 hover:text-red-400 hover:bg-white/10 transition-colors cursor-pointer disabled:opacity-60"
+                                >
+                                  <FiTrash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                        {rv.title && (
+                          <p className="text-white text-sm font-mono mt-2">
+                            {rv.title}
+                          </p>
+                        )}
+                        {rv.comment && (
+                          <p className="text-gray-400 text-xs leading-relaxed mt-1">
+                            {rv.comment}
+                          </p>
+                        )}
+                       </div>
+                       );
+                    })
+                  )}
+                </div>
               </div>
             </div>
 

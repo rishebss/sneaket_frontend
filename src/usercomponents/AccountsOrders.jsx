@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Loader from "../defaultcomponents/Loader";
 import ConfirmCancel from "./ConfirmCancel";
 import RefundDialog from "./RefundDialog";
+import ProductDetailDrawer from "../userpages/ProductDetailDrawer";
 
 const API = import.meta.env.VITE_API_BASE_URL;
 
@@ -60,6 +61,133 @@ export default function AccountsOrders() {
         queryKey: ["orders"],
         queryFn: fetchOrders,
     });
+
+    // Product detail drawer (opened when an order item is clicked)
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [favoriteSet, setFavoriteSet] = useState(() => new Set());
+    const [cartSizesMap, setCartSizesMap] = useState({});
+
+    const openProduct = async (sneakerId) => {
+        if (!sneakerId) return;
+        const token = localStorage.getItem("token");
+        try {
+            const res = await fetch(`${API}/api/sneakers/${sneakerId}/`);
+            if (!res.ok) return;
+            const product = await res.json();
+            setSelectedProduct(product);
+            setDrawerOpen(true);
+
+            if (token) {
+                fetch(
+                    `${API}/api/favorites/check/?sneaker_id=${sneakerId}`,
+                    { headers: { Authorization: `Token ${token}` } }
+                )
+                    .then((r) => r.json())
+                    .then((d) => {
+                        setFavoriteSet((prev) => {
+                            const n = new Set(prev);
+                            if (d.is_favorited) n.add(sneakerId);
+                            else n.delete(sneakerId);
+                            return n;
+                        });
+                    })
+                    .catch(() => {});
+                fetch(`${API}/api/cart/`, {
+                    headers: { Authorization: `Token ${token}` },
+                })
+                    .then((r) => r.json())
+                    .then((json) => {
+                        const items = Array.isArray(json) ? json : json.results || [];
+                        const map = {};
+                        items.forEach((it) => {
+                            const sid = it.sneaker;
+                            (map[sid] = map[sid] || []).push(it.size ?? null);
+                        });
+                        setCartSizesMap(map);
+                    })
+                    .catch(() => {});
+            }
+        } catch {
+            // ignore
+        }
+    };
+
+    const handleToggleFavorite = async (sneakerId) => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login");
+            return;
+        }
+        setFavoriteSet((prev) => {
+            const n = new Set(prev);
+            if (n.has(sneakerId)) n.delete(sneakerId);
+            else n.add(sneakerId);
+            return n;
+        });
+        try {
+            const res = await fetch(`${API}/api/favorites/toggle/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Token ${token}`,
+                },
+                body: JSON.stringify({ sneaker_id: sneakerId }),
+            });
+            if (res.ok) {
+                const r = await res.json();
+                setFavoriteSet((prev) => {
+                    const n = new Set(prev);
+                    if (r.is_favorited) n.add(sneakerId);
+                    else n.delete(sneakerId);
+                    return n;
+                });
+            }
+        } catch {
+            // ignore
+        }
+    };
+
+    const handleAddToCart = async (sneakerId, size) => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login");
+            return false;
+        }
+        setCartSizesMap((prev) => {
+            const n = { ...prev };
+            const sid = String(sneakerId);
+            const ex = n[sid] || [];
+            if (!ex.some((s) => String(s) === String(size))) {
+                n[sid] = [...ex, size ?? null];
+            }
+            return n;
+        });
+        try {
+            const res = await fetch(`${API}/api/cart/add/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Token ${token}`,
+                },
+                body: JSON.stringify({ sneaker_id: sneakerId, size }),
+            });
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                if (err.available != null) return err;
+                return false;
+            }
+            const data = await res.json();
+            window.dispatchEvent(
+                new CustomEvent("cart-change", {
+                    detail: { count: data.cart_count },
+                })
+            );
+            return true;
+        } catch {
+            return false;
+        }
+    };
 
     const openCancel = (order) => setCancelOrder(order);
 
@@ -217,7 +345,8 @@ export default function AccountsOrders() {
                         {o.items.map((it) => (
                             <div
                                 key={it.id}
-                                className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-lg p-3"
+                                onClick={() => openProduct(it.sneaker_id)}
+                                className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-lg p-3 cursor-pointer hover:border-white/30 hover:bg-white/10 transition-all"
                             >
                                 <img
                                     src={
@@ -307,6 +436,24 @@ export default function AccountsOrders() {
             isOpen={!!refundedInfo}
             onClose={() => setRefundedInfo(null)}
             amount={refundedInfo?.amount}
+        />
+
+        <ProductDetailDrawer
+            product={selectedProduct}
+            isOpen={drawerOpen}
+            onClose={() => setDrawerOpen(false)}
+            isFavorited={
+                selectedProduct ? favoriteSet.has(selectedProduct.id) : false
+            }
+            onToggleFavorite={() =>
+                selectedProduct && handleToggleFavorite(selectedProduct.id)
+            }
+            onAddToCart={(size) =>
+                selectedProduct && handleAddToCart(selectedProduct.id, size)
+            }
+            inCartSizes={
+                selectedProduct ? cartSizesMap[selectedProduct.id] || [] : []
+            }
         />
         </>
     );
