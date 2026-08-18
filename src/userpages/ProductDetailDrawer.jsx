@@ -42,6 +42,8 @@ export default function ProductDetailDrawer({
   const [submittingReview, setSubmittingReview] = useState(false);
   const [reviewError, setReviewError] = useState(null);
   const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewsNext, setReviewsNext] = useState(null);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   const renderStars = (value) => (
     <div className="flex items-center gap-0.5">
@@ -122,6 +124,22 @@ export default function ProductDetailDrawer({
     }
   };
 
+  const loadMoreReviews = async () => {
+    if (!reviewsNext) return;
+    setLoadingMore(true);
+    try {
+      const res = await fetch(reviewsNext);
+      const data = await res.json();
+      const list = Array.isArray(data) ? data : data.results || [];
+      setReviews((prev) => [...prev, ...list]);
+      setReviewsNext(data.next || null);
+    } catch {
+      // ignore
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
   const outOfStock = Number(product?.copies) === 0;
 
   const availableSizes = Array.isArray(product?.available_sizes)
@@ -159,12 +177,13 @@ export default function ProductDetailDrawer({
     if (!isOpen || !product?.id) return;
     let cancelled = false;
     setReviewsLoading(true);
-    fetch(`${API}/api/reviews/?sneaker=${product.id}`)
+    fetch(`${API}/api/reviews/?sneaker=${product.id}&page=1`)
       .then((r) => r.json())
       .then((data) => {
         if (cancelled) return;
         const list = Array.isArray(data) ? data : data.results || [];
         setReviews(list);
+        setReviewsNext(Array.isArray(data) ? null : data.next || null);
         const mine = currentUsername
           ? list.find((rv) => rv.username === currentUsername)
           : null;
@@ -502,7 +521,7 @@ export default function ProductDetailDrawer({
                       No reviews yet. Be the first!
                     </p>
                   ) : (
-                    reviews.map((rv) => {
+                    <>{reviews.map((rv) => {
                       const isMine = rv.username === currentUsername;
                       return (
                       <div
@@ -563,10 +582,20 @@ export default function ProductDetailDrawer({
                             {rv.comment}
                           </p>
                         )}
-                       </div>
-                       );
+                        </div>
+                        );
                     })
+                  }
+                  {reviewsNext && (
+                    <button
+                      onClick={loadMoreReviews}
+                      disabled={loadingMore}
+                      className="w-full px-4 py-2.5 rounded-lg border border-white/10 bg-white/5 text-white text-xs font-mono tracking-wider uppercase hover:bg-white/10 transition-all disabled:opacity-60 cursor-pointer"
+                    >
+                      {loadingMore ? "LOADING..." : "Load More Reviews"}
+                    </button>
                   )}
+                  </>)}
                 </div>
               </div>
             </div>
