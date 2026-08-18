@@ -159,7 +159,7 @@
   --c-shadow-inset-top: rgba(0, 0, 0, 0.5);
   --c-shadow-inset-bottom: rgba(0, 0, 0, 0.4);
   --c-radial-inner: #ff4081;
-  --c-radial-outer: #2196f3;
+  --c-radial-outer: #22c55e;
   --c-color: #fff;
   -webkit-tap-highlight-color: transparent;
   -webkit-appearance: none;
@@ -179,11 +179,6 @@
   color: var(--c-color);
   background: radial-gradient(circle, var(--c-radial-inner), var(--c-radial-outer) 80%);
   box-shadow: 0 0 14px var(--c-shadow);
-}
-
-.uiverse.claimed {
-  background: #0b111e;
-  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .uiverse:before {
@@ -217,10 +212,6 @@
   pointer-events: none;
 }
 
-.uiverse .wrapper .scrim.scrim-dark {
-  background: rgba(0, 0, 0, 0.64);
-}
-
 .uiverse .wrapper span {
   display: inline-block;
   position: relative;
@@ -238,10 +229,6 @@
   background: var(--background, transparent);
   transform: translate(var(--x, 0), var(--y, 0)) translateZ(0);
   animation: var(--animation, none) var(--duration) var(--easing) infinite;
-}
-
-.uiverse .wrapper.dull .circle {
-  opacity: 0.35;
 }
 
 .uiverse .wrapper .circle.circle-1, .uiverse .wrapper .circle.circle-9, .uiverse .wrapper .circle.circle-10 {
