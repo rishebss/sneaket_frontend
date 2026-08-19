@@ -33,6 +33,8 @@ const STATUS_BADGE = {
 
 const CANCELABLE = ["confirmed", "processing"];
 
+const HIDE_DETAILS = ["cancellation_approved", "cancelled", "refunded"];
+
 const STATUS_LABEL = {
     delivery: "Out for Delivery",
 };
@@ -329,7 +331,7 @@ export default function AccountsOrders() {
                             <p className="text-gray-500 font-mono text-[11px] mt-1">
                                 {formatDate(o.created_at)}
                             </p>
-                            {o.delivery_date && (
+                            {o.delivery_date && !HIDE_DETAILS.includes(o.status) && (
                                 <p className="text-green-400 font-mono text-[11px] mt-0.5">
                                     Est. delivery {formatDate(o.delivery_date)}
                                 </p>
@@ -342,7 +344,7 @@ export default function AccountsOrders() {
                         {o.items.map((it) => (
                             <div
                                 key={it.id}
-                                onClick={() => openProduct(it.sneaker_id)}
+                                onClick={() => openProduct(it.sneaker)}
                                 className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-lg p-3 cursor-pointer hover:border-white/30 hover:bg-white/10 transition-all"
                             >
                                 <img
@@ -381,14 +383,13 @@ export default function AccountsOrders() {
 
                     {/* Status (sizes to content, left) + Cancel (left) | Refund/Remove (right) */}
                     <div className="flex items-center justify-between gap-3 mt-4 pt-4 border-t border-white/10">
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 flex-wrap">
                             <span
-                                className={`flex items-center justify-center px-4 py-2.5 rounded-sm border text-[10px] font-mono uppercase tracking-wider ${
+                                className={`flex items-center justify-center shrink-0 px-4 py-2.5 rounded-sm border text-[10px] font-mono uppercase tracking-wider ${
                                     STATUS_BADGE[o.status] ||
                                     "border-white/20 bg-white/5 text-gray-300"
                                 }`}
                             >
-                                status:{" "}
                                 {STATUS_LABEL[o.status] ||
                                     o.status.replace("_", " ")}
                             </span>

@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { FiCheck } from "react-icons/fi";
 import AddressFormDrawer from "./AddressFormDrawer";
 
 const API = import.meta.env.VITE_API_BASE_URL;
 
-const PasswordField = ({ label, name, value, onChange }) => (
+const PasswordField = ({ label, name, value, onChange, disabled }) => (
     <div>
         <label className="block text-[10px] font-mono uppercase tracking-[0.2em] text-gray-500 mb-2">
             {label}
@@ -12,8 +13,9 @@ const PasswordField = ({ label, name, value, onChange }) => (
         <input
             type="password"
             value={value}
+            disabled={disabled}
             onChange={(e) => onChange(name, e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-blue-500/50 transition-all"
+            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-blue-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         />
     </div>
 );
@@ -23,10 +25,50 @@ const AccountsSettings = ({ onLogout }) => {
         old_password: "",
         new_password: "",
     });
+    const [verified, setVerified] = useState(false);
+    const [verifying, setVerifying] = useState(false);
+    const [verifyError, setVerifyError] = useState(null);
     const [saving, setSaving] = useState(false);
     const [msg, setMsg] = useState(null);
 
-    const update = (name, val) => setForm((f) => ({ ...f, [name]: val }));
+    const update = (name, val) => {
+        if (name === "old_password") {
+            setVerified(false);
+            setVerifyError(null);
+        }
+        setForm((f) => ({ ...f, [name]: val }));
+    };
+
+    const verifyCurrentPassword = async () => {
+        setVerifyError(null);
+        if (!form.old_password) {
+            setVerifyError("Enter current password first");
+            return;
+        }
+        setVerifying(true);
+        try {
+            const token = localStorage.getItem("token");
+            const res = await fetch(`${API}/api/users/verify-password`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Token ${token}`,
+                },
+                body: JSON.stringify({ old_password: form.old_password }),
+            });
+            if (!res.ok) {
+                setVerifyError("Current password is incorrect");
+                setVerified(false);
+            } else {
+                setVerified(true);
+                setVerifyError(null);
+            }
+        } catch {
+            setVerifyError("Network error");
+        } finally {
+            setVerifying(false);
+        }
+    };
 
     const handleChangePassword = async () => {
         setMsg(null);
@@ -164,25 +206,56 @@ const AccountsSettings = ({ onLogout }) => {
             {/* Settings */}
             <div className="p-6 rounded-md border border-white/10 bg-white/5 backdrop-blur-xl">
                 <h3 className="text-white font-mono font-bold tracking-widest uppercase text-sm mb-6">
-                    Settings
+                    Change password
                 </h3>
 
-                <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-gray-500 mb-4">
-                    Change Password
-                </p>
+               
 
                 <div className="grid grid-cols-1 gap-4">
-                    <PasswordField
-                        label="Current Password"
-                        name="old_password"
-                        value={form.old_password}
-                        onChange={update}
-                    />
+                    <div>
+                        <label className="block text-[10px] font-mono uppercase tracking-[0.2em] text-gray-500 mb-2">
+                            {verifyError ? (
+                                <span className="text-red-400">
+                                    password incorrect, retry
+                                </span>
+                            ) : verified ? (
+                                <span className="text-green-400">
+                                    password verified
+                                </span>
+                            ) : (
+                                "Current Password"
+                            )}
+                        </label>
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="password"
+                                value={form.old_password}
+                                onChange={(e) => update("old_password", e.target.value)}
+                                className="flex-1 min-w-0 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-blue-500/50 transition-all"
+                            />
+                            <button
+                                type="button"
+                                onClick={verifyCurrentPassword}
+                                disabled={verifying}
+                                className={`shrink-0 flex items-center justify-center w-10 h-10 rounded-lg border transition-all cursor-pointer disabled:opacity-60 ${
+                                    verified
+                                        ? "border-green-500/50 bg-green-500/20 text-green-400"
+                                        : verifyError
+                                        ? "border-red-500/50 bg-red-500/20 text-red-400"
+                                        : "border-blue-500/50 bg-blue-500/20 text-blue-300 hover:bg-blue-500/30"
+                                }`}
+                                title="Verify current password"
+                            >
+                                {verifying ? "..." : <FiCheck />}
+                            </button>
+                        </div>
+                    </div>
                     <PasswordField
                         label="New Password"
                         name="new_password"
                         value={form.new_password}
                         onChange={update}
+                        disabled={!verified}
                     />
                 </div>
 
@@ -201,10 +274,14 @@ const AccountsSettings = ({ onLogout }) => {
                 <div className="mt-5 flex items-center gap-3">
                     <button
                         onClick={handleChangePassword}
-                        disabled={saving}
-                        className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-blue-500/20 border border-blue-500/40 text-blue-300 text-sm font-mono hover:bg-blue-500/30 transition-all cursor-pointer disabled:opacity-60"
+                        disabled={saving || !verified}
+                        className={`flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-lg text-sm font-mono transition-all ${
+                            saving || !verified
+                                ? "bg-white/5 border border-white/10 text-gray-500 cursor-not-allowed"
+                                : "bg-blue-500/20 border border-blue-500/40 text-blue-300 hover:bg-blue-500/30 cursor-pointer"
+                        }`}
                     >
-                        {saving ? "SAVING..." : "Update Password"}
+                        {saving ? "SAVING..." : "Update"}
                     </button>
 
                     <button
