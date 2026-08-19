@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MdBubbleChart } from "react-icons/md";
+import { HiOutlineSparkles } from "react-icons/hi2";
+import AskAIButton from "../ai/components/AskAIButton";
 
-export default function Navbar({ isLoggedIn }) {
+export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuth = () => setIsLoggedIn(!!localStorage.getItem("token"));
+    window.addEventListener("storage", checkAuth);
+    window.addEventListener("auth-change", checkAuth);
+    return () => {
+      window.removeEventListener("storage", checkAuth);
+      window.removeEventListener("auth-change", checkAuth);
+    };
+  }, []);
 
   // Keep cart badge in sync
   useEffect(() => {
@@ -122,8 +135,9 @@ export default function Navbar({ isLoggedIn }) {
               )}
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex items-center gap-3 sm:gap-8">
+            {/* Right side: Ask AI + Mobile menu */}
+            <div className="flex items-center gap-5 sm:gap-8">
+              <AskAIButton />
               {/* Mobile Menu Toggle */}
               <button
                 className="md:hidden flex items-center justify-center -mr-[14px] sm:-mr-[30px] w-9 h-9 rounded-full border border-white/10 bg-white/5 text-white hover:text-white hover:bg-white/10 transition-all"
@@ -274,7 +288,7 @@ export default function Navbar({ isLoggedIn }) {
                   </span>
                 </a>
               ),
-            )}
+             )}
           </nav>
 
           {/* Bottom Section */}
