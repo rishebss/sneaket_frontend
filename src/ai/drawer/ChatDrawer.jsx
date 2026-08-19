@@ -1,14 +1,37 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiX, FiSend } from "react-icons/fi";
 import { HiOutlineSparkles } from "react-icons/hi2";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import GradientDrawerBg from "../../usercomponents/GradientDrawerBg";
+
+const markdownComponents = {
+  p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+  ul: ({ children }) => <ul className="list-disc pl-5 mb-2 space-y-1">{children}</ul>,
+  ol: ({ children }) => <ol className="list-decimal pl-5 mb-2 space-y-1">{children}</ol>,
+  li: ({ children }) => <li className="pl-1">{children}</li>,
+  strong: ({ children }) => <strong className="font-semibold text-white">{children}</strong>,
+  a: ({ children, href }) => (
+    <a href={href} target="_blank" rel="noreferrer" className="text-cyan-400 underline">
+      {children}
+    </a>
+  ),
+  code: ({ children }) => (
+    <code className="bg-black/40 px-1 py-0.5 rounded text-cyan-200">{children}</code>
+  ),
+  h1: ({ children }) => <h1 className="text-base font-semibold mb-1">{children}</h1>,
+  h2: ({ children }) => <h2 className="text-sm font-semibold mb-1">{children}</h2>,
+  h3: ({ children }) => <h3 className="text-sm font-semibold mb-1">{children}</h3>,
+};
 
 const API = import.meta.env.VITE_API_BASE_URL;
 
 const transition = { type: "spring", damping: 25, stiffness: 200 };
 
 const ChatDrawer = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([
     {
       role: "assistant",
@@ -18,10 +41,38 @@ const ChatDrawer = ({ isOpen, onClose }) => {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
+  const loadedRef = useRef(false);
+
+  const openRedirect = (path) => {
+    if (!path) return;
+    onClose();
+    navigate(path);
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
+
+  useEffect(() => {
+    if (!isOpen || loadedRef.current) return;
+    loadedRef.current = true;
+    (async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch(`${API}/api/ai/chat`, {
+          method: "GET",
+          headers: { Authorization: `Token ${token}` },
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (Array.isArray(data.messages) && data.messages.length) {
+          setMessages(data.messages);
+        }
+      } catch {
+        /* keep default greeting on failure */
+      }
+    })();
+  }, [isOpen]);
 
   const sendMessage = async () => {
     const text = input.trim();
@@ -41,7 +92,14 @@ const ChatDrawer = ({ isOpen, onClose }) => {
       });
       if (!res.ok) throw new Error("Failed");
       const data = await res.json();
-      setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: data.reply,
+          redirect: data.redirect || null,
+        },
+      ]);
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -113,7 +171,22 @@ const ChatDrawer = ({ isOpen, onClose }) => {
                             : "bg-white/5 border border-white/10 text-gray-200 rounded-bl-sm"
                         }`}
                       >
-                        {msg.content}
+                        {msg.role === "assistant" ? (
+                          <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+                            {msg.content}
+                          </ReactMarkdown>
+                        ) : (
+                          msg.content
+                        )}
+                        {msg.role === "assistant" && msg.redirect && (
+                          <button
+                            onClick={() => openRedirect(msg.redirect.path)}
+                            className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-300 hover:text-cyan-200 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 rounded-full px-3 py-1.5 transition-all"
+                          >
+                            {msg.redirect.label}
+                            <FiSend className="w-3 h-3" />
+                          </button>
+                        )}
                       </div>
                     </motion.div>
                   ))}
