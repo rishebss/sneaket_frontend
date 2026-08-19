@@ -151,7 +151,7 @@ function App() {
   return (
     <Router>
       <ChatProvider>
-        <FloatingChat />
+        {isLoggedIn && <FloatingChat />}
         {isLoggedIn ? (
           <div className="min-h-screen w-full relative bg-gradient-to-br from-gray-950 via-gray-900 to-black overflow-hidden">
             {/* Global Background Elements - Only for Logged In Users */}

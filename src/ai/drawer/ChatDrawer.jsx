@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiX, FiSend, FiMessageSquare } from "react-icons/fi";
+import { FiX, FiSend } from "react-icons/fi";
+import { HiOutlineSparkles } from "react-icons/hi2";
 import GradientDrawerBg from "../../usercomponents/GradientDrawerBg";
 
 const API = import.meta.env.VITE_API_BASE_URL;
@@ -17,13 +18,6 @@ const ChatDrawer = ({ isOpen, onClose }) => {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
-  const inputRef = useRef(null);
-
-  useEffect(() => {
-    if (isOpen) {
-      setTimeout(() => inputRef.current?.focus(), 400);
-    }
-  }, [isOpen]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -88,7 +82,7 @@ const ChatDrawer = ({ isOpen, onClose }) => {
             <div className="relative z-10 flex flex-col h-full">
               <div className="flex items-center justify-between px-4 py-4 border-b border-white/10">
                 <div className="flex items-center gap-2">
-                  <FiMessageSquare className="w-5 h-5 text-cyan-400" />
+                  <HiOutlineSparkles className="w-5 h-5 text-white" />
                   <h2 className="text-sm font-mono tracking-[0.2em] uppercase text-white">
                     AI Assistant
                   </h2>
@@ -144,7 +138,6 @@ const ChatDrawer = ({ isOpen, onClose }) => {
               <div className="p-4 border-t border-white/10">
                 <div className="flex items-center gap-2">
                   <input
-                    ref={inputRef}
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}

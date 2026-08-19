@@ -137,7 +137,7 @@ export default function Navbar() {
 
             {/* Right side: Ask AI + Mobile menu */}
             <div className="flex items-center gap-5 sm:gap-8">
-              <AskAIButton />
+              {isLoggedIn && <AskAIButton />}
               {/* Mobile Menu Toggle */}
               <button
                 className="md:hidden flex items-center justify-center -mr-[14px] sm:-mr-[30px] w-9 h-9 rounded-full border border-white/10 bg-white/5 text-white hover:text-white hover:bg-white/10 transition-all"
