@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiX, FiSend } from "react-icons/fi";
 import { HiOutlineSparkles } from "react-icons/hi2";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import GradientDrawerBg from "../../usercomponents/GradientDrawerBg";
+import BrowseButton from "../components/BrowseButton";
+import ConfirmButtons from "../components/ConfirmButtons";
+import { renderUi } from "../components/cards";
 
 const markdownComponents = {
   p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
@@ -30,8 +32,12 @@ const API = import.meta.env.VITE_API_BASE_URL;
 
 const transition = { type: "spring", damping: 25, stiffness: 200 };
 
+// Rolling-summary config: keep only the last RECENT_TURNS in raw form and
+// compact older turns into `summary` every SUMMARY_EVERY user turns.
+const RECENT_TURNS = 4;
+const SUMMARY_EVERY = 6;
+
 const ChatDrawer = ({ isOpen, onClose }) => {
-  const navigate = useNavigate();
   const [messages, setMessages] = useState([
     {
       role: "assistant",
@@ -40,45 +46,61 @@ const ChatDrawer = ({ isOpen, onClose }) => {
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [acting, setActing] = useState(false);
+  const [summary, setSummary] = useState("");
   const messagesEndRef = useRef(null);
-  const loadedRef = useRef(false);
-
-  const openRedirect = (path) => {
-    if (!path) return;
-    onClose();
-    navigate(path);
-  };
+  const userTurns = useRef(0);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  useEffect(() => {
-    if (!isOpen || loadedRef.current) return;
-    loadedRef.current = true;
-    (async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const res = await fetch(`${API}/api/ai/chat`, {
-          method: "GET",
-          headers: { Authorization: `Token ${token}` },
-        });
-        if (!res.ok) return;
-        const data = await res.json();
-        if (Array.isArray(data.messages) && data.messages.length) {
-          setMessages(data.messages);
-        }
-      } catch {
-        /* keep default greeting on failure */
-      }
-    })();
-  }, [isOpen]);
+  // Build the history payload: a rolling summary of older turns (if any)
+  // followed by only the last RECENT_TURNS. Keeps tokens bounded while
+  // preserving long-term context.
+  const buildHistory = () => {
+    const hist = [];
+    if (summary) {
+      hist.push({
+        role: "user",
+        content: `Summary of earlier conversation:\n${summary}`,
+      });
+    }
+    const recent = messages
+      .filter((m) => m.role === "user" || m.role === "assistant")
+      .slice(-RECENT_TURNS * 2)
+      .map((m) => ({ role: m.role, content: m.content }));
+    return [...hist, ...recent];
+  };
+
+  // Best-effort compaction: ask the backend to summarize the full conversation
+  // so far; store the result to (re)use on subsequent requests.
+  const summarize = async (fullMessages) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API}/api/ai/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+        body: JSON.stringify({ summarize: true, history: fullMessages }),
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.summary) setSummary(data.summary);
+    } catch {
+      /* summarization is best-effort; ignore failures */
+    }
+  };
 
   const sendMessage = async () => {
     const text = input.trim();
     if (!text || loading) return;
     setInput("");
-    setMessages((prev) => [...prev, { role: "user", content: text }]);
+
+    const userMsg = { role: "user", content: text };
+    setMessages((prev) => [...prev, userMsg]);
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
@@ -88,18 +110,21 @@ const ChatDrawer = ({ isOpen, onClose }) => {
           "Content-Type": "application/json",
           Authorization: `Token ${token}`,
         },
-        body: JSON.stringify({ message: text }),
+        body: JSON.stringify({ message: text, history: buildHistory() }),
       });
       if (!res.ok) throw new Error("Failed");
       const data = await res.json();
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: data.reply,
-          redirect: data.redirect || null,
-        },
-      ]);
+      const assistantMsg = {
+        role: "assistant",
+        content: data.reply,
+        redirect: data.redirect || null,
+        action: data.action || null,
+        ui: data.ui || null,
+      };
+      const nextMessages = [...messages, userMsg, assistantMsg];
+      setMessages(nextMessages);
+      userTurns.current += 1;
+      if (userTurns.current % SUMMARY_EVERY === 0) summarize(nextMessages);
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -115,6 +140,69 @@ const ChatDrawer = ({ isOpen, onClose }) => {
       e.preventDefault();
       sendMessage();
     }
+  };
+
+  // Execute a gated action after the user taps Confirm on the confirm_token.
+  const confirmAction = async (token, idx) => {
+    if (acting) return;
+    setActing(true);
+    try {
+      const tk = localStorage.getItem("token");
+      const res = await fetch(`${API}/api/ai/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${tk}`,
+        },
+        body: JSON.stringify({ confirm_token: token, history: buildHistory() }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      const data = await res.json();
+      setMessages((prev) =>
+        prev.map((m, i) =>
+          i === idx
+            ? {
+                ...m,
+                content: data.reply,
+                ui: data.ui || null,
+                redirect: data.redirect || null,
+                action: null,
+              }
+            : m
+        )
+      );
+    } catch {
+      setMessages((prev) =>
+        prev.map((m, i) =>
+          i === idx
+            ? { ...m, action: null, content: "Sorry, that action couldn't be completed." }
+            : m
+        )
+      );
+    } finally {
+      setActing(false);
+    }
+  };
+
+  // Dismiss a gated action without executing it.
+  const cancelAction = (idx) => {
+    setMessages((prev) =>
+      prev.map((m, i) =>
+        i === idx ? { ...m, action: null, content: "No problem — I didn't do that." } : m
+      )
+    );
+  };
+
+  // Patch a message's ui.data (e.g. mark a Razorpay card as paid) so the
+  // change survives the card unmounting/remounting when the drawer reopens.
+  const updateMessageData = (idx, patch) => {
+    setMessages((prev) =>
+      prev.map((m, i) =>
+        i === idx && m.ui
+          ? { ...m, ui: { ...m.ui, data: { ...(m.ui.data || {}), ...patch } } }
+          : m
+      )
+    );
   };
 
   return (
@@ -162,7 +250,7 @@ const ChatDrawer = ({ isOpen, onClose }) => {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -8 }}
                       transition={{ duration: 0.2 }}
-                      className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                      className={`flex flex-col ${msg.role === "user" ? "items-end" : "items-start"}`}
                     >
                       <div
                         className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
@@ -179,15 +267,28 @@ const ChatDrawer = ({ isOpen, onClose }) => {
                           msg.content
                         )}
                         {msg.role === "assistant" && msg.redirect && (
-                          <button
-                            onClick={() => openRedirect(msg.redirect.path)}
-                            className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-300 hover:text-cyan-200 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 rounded-full px-3 py-1.5 transition-all"
-                          >
-                            {msg.redirect.label}
-                            <FiSend className="w-3 h-3" />
-                          </button>
+                          <BrowseButton
+                            label={msg.redirect.label}
+                            path={msg.redirect.path}
+                            onClose={onClose}
+                          />
                         )}
                       </div>
+
+                      {msg.role === "assistant" && msg.action && (
+                        <ConfirmButtons
+                          action={msg.action}
+                          busy={acting}
+                          onConfirm={() => confirmAction(msg.action.confirm_token, i)}
+                          onCancel={() => cancelAction(i)}
+                        />
+                      )}
+
+                      {msg.role === "assistant" && msg.ui && (
+                        <div className="w-full mt-1">
+                          {renderUi(msg.ui, onClose, (patch) => updateMessageData(i, patch))}
+                        </div>
+                      )}
                     </motion.div>
                   ))}
                 </AnimatePresence>

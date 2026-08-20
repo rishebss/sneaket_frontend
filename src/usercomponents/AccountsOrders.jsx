@@ -224,8 +224,25 @@ export default function AccountsOrders() {
         }
     };
 
-    const handleRemove = (orderNumber) => {
+    const handleRemove = async (orderNumber) => {
+        // Optimistic removal for instant UI feedback
         setRemoved((prev) => [...prev, orderNumber]);
+        const token = localStorage.getItem("token");
+        if (!token) return;
+        try {
+            const res = await fetch(`${API}/api/orders/${orderNumber}/remove/`, {
+                method: "DELETE",
+                headers: { Authorization: `Token ${token}` },
+            });
+            if (res.ok) {
+                queryClient.invalidateQueries({ queryKey: ["orders"] });
+            } else {
+                // Revert if the server rejected it
+                setRemoved((prev) => prev.filter((n) => n !== orderNumber));
+            }
+        } catch {
+            setRemoved((prev) => prev.filter((n) => n !== orderNumber));
+        }
     };
 
     const handleRequestCancel = async (orderNumber, reason = "") => {

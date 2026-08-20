@@ -88,7 +88,7 @@ export default function FloatingChat() {
       onPointerUp={onPointerUp}
       onPointerLeave={() => setPressed(false)}
       aria-label="Ask AI"
-      className={`md:hidden fixed z-[80] flex items-center justify-center w-13 h-13 rounded-full
+      className={`md:hidden fixed z-[80] flex items-center justify-center w-14 h-14 rounded-full
         bg-gradient-to-b from-slate-700 via-slate-800 to-slate-950
         border border-white/20
         text-white
