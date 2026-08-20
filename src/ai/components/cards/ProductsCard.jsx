@@ -34,7 +34,10 @@ export default function ProductsCard({ data, onClose }) {
               className="w-full h-24 object-contain rounded-md bg-gradient-to-b from-[#1a2333]/50 to-transparent border border-white/10"
             />
             <p className="text-white text-[11px] font-medium mt-1 truncate">{p.name}</p>
-            <p className="text-gray-500 text-[9px] font-mono">{p.brand}</p>
+            <p className="text-gray-500 text-[9px] font-mono">
+              {p.brand}
+              {p.silhouette ? ` · ${p.silhouette} top` : ""}
+            </p>
             <p className="text-white text-xs font-mono mt-0.5">₹{Number(p.price).toLocaleString()}</p>
           </button>
         ))}
