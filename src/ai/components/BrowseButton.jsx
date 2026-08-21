@@ -11,8 +11,10 @@ export default function BrowseButton({ label, path, onClose }) {
 
   const handleClick = () => {
     if (!path) return;
-    if (onClose) onClose();
     navigate(path);
+    // Close the drawer on the next tick so unmounting this subtree can't
+    // interfere with react-router committing the navigation.
+    if (onClose) setTimeout(onClose, 0);
   };
 
   return (

@@ -97,6 +97,28 @@ const ChatDrawer = ({ isOpen, onClose }) => {
   const sendMessage = async () => {
     const text = input.trim();
     if (!text || loading) return;
+
+    // Typed confirmation: if the last assistant message is awaiting a gated
+    // action's confirm and this message reads as confirmation, execute it
+    // instead of starting a new chat turn. (Otherwise typing "yes" silently
+    // does nothing and the model may hallucinate the result.)
+    const pending = [...messages]
+      .reverse()
+      .find(
+        (m) => m.role === "assistant" && m.action && m.action.confirm_token
+      );
+    if (
+      pending &&
+      /^(yes|yeah|yep|y|confirm|proceed|ok|okay|sure|do it|go ahead|accept)\b|confirm/i.test(
+        text
+      )
+    ) {
+      const idx = messages.indexOf(pending);
+      setInput("");
+      confirmAction(pending.action.confirm_token, idx);
+      return;
+    }
+
     setInput("");
 
     const userMsg = { role: "user", content: text };
@@ -279,7 +301,7 @@ const ChatDrawer = ({ isOpen, onClose }) => {
                         <ConfirmButtons
                           action={msg.action}
                           busy={acting}
-                          onConfirm={() => confirmAction(msg.action.confirm_token, i)}
+                          onConfirm={(token) => confirmAction(token, i)}
                           onCancel={() => cancelAction(i)}
                         />
                       )}

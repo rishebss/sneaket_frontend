@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
+import CardLink from "./CardLink";
 
-export default function CartCard({ data }) {
+export default function CartCard({ data, onClose }) {
   const items = data?.items || [];
   const total = data?.total || "0.00";
   if (!items.length) {
@@ -36,12 +36,7 @@ export default function CartCard({ data }) {
         <span className="text-white font-mono font-bold">Total</span>
         <span className="text-white font-mono font-bold">₹{Number(total).toLocaleString()}</span>
       </div>
-      <Link
-        to="/cart"
-        className="block text-center text-xs font-semibold text-cyan-300 hover:text-cyan-200 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 rounded-full px-3 py-1.5 transition-all"
-      >
-        View Cart
-      </Link>
+      <CardLink label="View Cart" path="/cart" onClose={onClose} />
     </div>
   );
 }

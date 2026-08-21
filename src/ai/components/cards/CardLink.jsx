@@ -5,8 +5,10 @@ import { FiSend } from "react-icons/fi";
 export default function CardLink({ label, path, onClose }) {
   const navigate = useNavigate();
   const handle = () => {
-    if (onClose) onClose();
     navigate(path);
+    // Close the drawer on the next tick so unmounting this subtree can't
+    // interfere with react-router committing the navigation.
+    if (onClose) setTimeout(onClose, 0);
   };
   return (
     <button
