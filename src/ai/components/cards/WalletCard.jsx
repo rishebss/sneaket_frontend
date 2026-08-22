@@ -12,7 +12,7 @@ export default function WalletCard({ data }) {
     setBusy(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${API}/api/users/claim-daily-reward/`, {
+      const res = await fetch(`${API}/api/users/claim-daily-reward`, {
         method: "POST",
         headers: { Authorization: `Token ${token}` },
       });

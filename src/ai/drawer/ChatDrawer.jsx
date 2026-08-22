@@ -52,8 +52,13 @@ const ChatDrawer = ({ isOpen, onClose }) => {
   const userTurns = useRef(0);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, loading]);
+    if (!isOpen) return;
+    // Jump to the latest message whenever the drawer opens or a message
+    // arrives/loads — chat drawers always start pinned to the bottom.
+    messagesEndRef.current?.scrollIntoView({
+      behavior: messages.length > 1 ? "auto" : "smooth",
+    });
+  }, [messages, loading, isOpen]);
 
   // Build the history payload: a rolling summary of older turns (if any)
   // followed by only the last RECENT_TURNS. Keeps tokens bounded while
@@ -98,15 +103,16 @@ const ChatDrawer = ({ isOpen, onClose }) => {
     const text = input.trim();
     if (!text || loading) return;
 
-    // Typed confirmation: if the last assistant message is awaiting a gated
-    // action's confirm and this message reads as confirmation, execute it
-    // instead of starting a new chat turn. (Otherwise typing "yes" silently
-    // does nothing and the model may hallucinate the result.)
-    const pending = [...messages]
+    // Typed confirmation: ONLY the most recent assistant message can hold a
+    // pending gated action — scanning older ones would re-fire stale
+    // (already-used or expired) tokens when the user says "confirm" later.
+    const lastAssistant = [...messages]
       .reverse()
-      .find(
-        (m) => m.role === "assistant" && m.action && m.action.confirm_token
-      );
+      .find((m) => m.role === "assistant");
+    const pending =
+      lastAssistant && lastAssistant.action && lastAssistant.action.confirm_token
+        ? lastAssistant
+        : null;
     if (
       pending &&
       /^(yes|yeah|yep|y|confirm|proceed|ok|okay|sure|do it|go ahead|accept)\b|confirm/i.test(

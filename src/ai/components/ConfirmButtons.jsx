@@ -17,7 +17,16 @@ export default function ConfirmButtons({ action, onConfirm, onCancel, busy }) {
             disabled={busy}
             className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-white bg-cyan-500/20 hover:bg-cyan-500/35 border border-cyan-500/40 rounded-full px-4 py-1.5 transition-all disabled:opacity-50"
           >
-            {opt.label}
+            {opt.icon ? (
+              <img
+                src={opt.icon}
+                alt={opt.label}
+                className="h-3.5 w-auto"
+                style={{ filter: "brightness(0) invert(1)" }}
+              />
+            ) : (
+              opt.label
+            )}
           </button>
         ))}
         <button
