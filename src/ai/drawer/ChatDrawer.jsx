@@ -38,12 +38,7 @@ const RECENT_TURNS = 4;
 const SUMMARY_EVERY = 6;
 
 const ChatDrawer = ({ isOpen, onClose }) => {
-  const [messages, setMessages] = useState([
-    {
-      role: "assistant",
-      content: "Hi! I'm your SNEAKET assistant. Ask me about products, your cart, or daily rewards!",
-    },
-  ]);
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [acting, setActing] = useState(false);
@@ -258,7 +253,7 @@ const ChatDrawer = ({ isOpen, onClose }) => {
                 <div className="flex items-center gap-2">
                   <HiOutlineSparkles className="w-5 h-5 text-white" />
                   <h2 className="text-sm font-mono tracking-[0.2em] uppercase text-white">
-                    AI Assistant
+                    SNKY AI
                   </h2>
                 </div>
                 <button
@@ -270,6 +265,21 @@ const ChatDrawer = ({ isOpen, onClose }) => {
               </div>
 
               <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+                {messages.length === 0 && !loading && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="h-full flex flex-col items-center justify-center text-center gap-2"
+                  >
+                    <HiOutlineSparkles className="w-8 h-8 text-cyan-400" />
+                    <p className="text-white font-mono tracking-[0.2em] uppercase text-sm">
+                      Start chat with SNKY AI
+                    </p>
+                    <p className="text-gray-500 text-xs">
+                      Products, cart, orders, rewards — just ask.
+                    </p>
+                  </motion.div>
+                )}
                 <AnimatePresence>
                   {messages.map((msg, i) => (
                     <motion.div

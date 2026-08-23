@@ -20,7 +20,7 @@ export default function OrderDetailCard({ data, onClose }) {
   const items = data.items || [];
   return (
     <div className="w-full max-w-[300px] rounded-xl border border-white/10 bg-white/5 p-3 space-y-2">
-      <div className="flex items-center justify-between">
+      <div className="space-y-1">
         <p className="text-white text-sm font-medium">#{data.order_number}</p>
         <StatusBadge status={data.status} />
       </div>
